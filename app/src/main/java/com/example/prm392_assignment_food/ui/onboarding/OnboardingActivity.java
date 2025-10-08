@@ -34,14 +34,14 @@ public class OnboardingActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            // Do nothing
+            // Do nothing, we are using a custom indicator
         }).attach();
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                if (position == 2) {
+                if (position == adapter.getItemCount() - 1) {
                     btnNext.setVisibility(View.GONE);
                     btnSkip.setVisibility(View.GONE);
                     btnGetStarted.setVisibility(View.VISIBLE);
@@ -53,14 +53,19 @@ public class OnboardingActivity extends AppCompatActivity {
             }
         });
 
-        btnNext.setOnClickListener(v -> viewPager.setCurrentItem(viewPager.getCurrentItem() + 1));
+        btnNext.setOnClickListener(v -> {
+            if (viewPager.getCurrentItem() < adapter.getItemCount() - 1) {
+                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+            }
+        });
 
-        View.OnClickListener skipAndGetStartedListener = v -> {
-            startActivity(new Intent(OnboardingActivity.this, LoginActivity.class));
+        View.OnClickListener skipListener = v -> {
+            Intent intent = new Intent(OnboardingActivity.this, LoginActivity.class);
+            startActivity(intent);
             finish();
         };
 
-        btnSkip.setOnClickListener(skipAndGetStartedListener);
-        btnGetStarted.setOnClickListener(skipAndGetStartedListener);
+        btnSkip.setOnClickListener(skipListener);
+        btnGetStarted.setOnClickListener(skipListener);
     }
 }

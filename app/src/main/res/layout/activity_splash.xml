@@ -8,13 +8,35 @@
     tools:context=".ui.auth.SplashActivity">
 
     <ImageView
+        android:id="@+id/iv_top_left_graphic"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/ic_splash_top_left"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="-40dp"
+        android:layout_marginStart="-40dp"
+        android:alpha="0.0"/>
+
+    <ImageView
         android:id="@+id/splash_logo"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:src="@drawable/ic_launcher_foreground"
+        android:src="@drawable/logo" 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_bottom_right_graphic"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="-50dp"
+        android:layout_marginBottom="-50dp"
+        android:src="@drawable/ic_splash_bottom_right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:alpha="0.0"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
