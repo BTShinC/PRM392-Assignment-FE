@@ -18,6 +18,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
     private Button btnNext, btnSkip, btnGetStarted;
+    private OnboardingAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +31,10 @@ public class OnboardingActivity extends AppCompatActivity {
         btnSkip = findViewById(R.id.btn_skip);
         btnGetStarted = findViewById(R.id.btn_get_started);
 
-        OnboardingAdapter adapter = new OnboardingAdapter(this);
+        adapter = new OnboardingAdapter(this);
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            // Do nothing, we are using a custom indicator
         }).attach();
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -42,13 +42,9 @@ public class OnboardingActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 if (position == adapter.getItemCount() - 1) {
-                    btnNext.setVisibility(View.GONE);
-                    btnSkip.setVisibility(View.GONE);
-                    btnGetStarted.setVisibility(View.VISIBLE);
+                    showGetStartedButton();
                 } else {
-                    btnNext.setVisibility(View.VISIBLE);
-                    btnSkip.setVisibility(View.VISIBLE);
-                    btnGetStarted.setVisibility(View.GONE);
+                    showNextAndSkipButtons();
                 }
             }
         });
@@ -59,13 +55,25 @@ public class OnboardingActivity extends AppCompatActivity {
             }
         });
 
-        View.OnClickListener skipListener = v -> {
-            Intent intent = new Intent(OnboardingActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        };
+        btnSkip.setOnClickListener(v -> navigateToLogin());
+        btnGetStarted.setOnClickListener(v -> navigateToLogin());
+    }
 
-        btnSkip.setOnClickListener(skipListener);
-        btnGetStarted.setOnClickListener(skipListener);
+    private void showGetStartedButton() {
+        btnNext.setVisibility(View.GONE);
+        btnSkip.setVisibility(View.GONE);
+        btnGetStarted.setVisibility(View.VISIBLE);
+    }
+
+    private void showNextAndSkipButtons() {
+        btnNext.setVisibility(View.VISIBLE);
+        btnSkip.setVisibility(View.VISIBLE);
+        btnGetStarted.setVisibility(View.GONE);
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(OnboardingActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish(); // Finish OnboardingActivity so user can't go back to it
     }
 }

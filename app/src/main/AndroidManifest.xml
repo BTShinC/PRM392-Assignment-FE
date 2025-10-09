@@ -36,6 +36,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.auth.ProfileActivity"
             android:exported="false" />
 
