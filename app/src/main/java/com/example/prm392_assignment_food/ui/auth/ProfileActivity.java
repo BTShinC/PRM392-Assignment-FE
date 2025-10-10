@@ -5,43 +5,44 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.prm392_assignment_food.R;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextView tvEmail;
-    private Button btnLogout;
+    private ImageView ivBack;
+    private CircleImageView profileImage;
+    private EditText etFullName, etEmail, etPhoneNumber, etBio;
+    private Button btnSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        tvEmail = findViewById(R.id.tvEmail);
-        btnLogout = findViewById(R.id.btnLogout);
+        ivBack = findViewById(R.id.ivBack);
+        profileImage = findViewById(R.id.profile_image);
+        etFullName = findViewById(R.id.etFullName);
+        etEmail = findViewById(R.id.etEmail);
+        etPhoneNumber = findViewById(R.id.etPhoneNumber);
+        etBio = findViewById(R.id.etBio);
+        btnSave = findViewById(R.id.btnSave);
 
         SharedPreferences prefs = getSharedPreferences("FoodAppPrefs", MODE_PRIVATE);
         String email = prefs.getString("USER_EMAIL", "");
 
-        tvEmail.setText(email);
+        etEmail.setText(email);
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Clear SharedPreferences
-                SharedPreferences.Editor editor = getSharedPreferences("FoodAppPrefs", MODE_PRIVATE).edit();
-                editor.clear();
-                editor.apply();
+        ivBack.setOnClickListener(v -> finish());
 
-                // Redirect to LoginActivity
-                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        btnSave.setOnClickListener(v -> {
+            // TODO: Handle saving profile information
         });
     }
 }
