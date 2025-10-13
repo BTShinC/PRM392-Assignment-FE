@@ -12,16 +12,28 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.prm392_assignment_food.MainActivity;
 import com.example.prm392_assignment_food.R;
+import com.example.prm392_assignment_food.ui.cart.CartActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
+    private Button testCart;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        testCart = findViewById(R.id.btncart);
+        testCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, CartActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);

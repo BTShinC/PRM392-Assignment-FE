@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+File này định nghĩa background cho nút "Place Order".
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!--
+    Đặt màu nền màu cam cho nút.
+    Mã màu #F97316 là một màu cam hiện đại.
+    -->
+    <solid android:color="#F97316" />
+
+    <!--
+    Bo tròn tất cả các góc với bán kính 16dp để tạo ra nút có cạnh mềm mại,
+    tương tự như ô địa chỉ.
+    -->
+    <corners android:radius="16dp" />
+</shape>
