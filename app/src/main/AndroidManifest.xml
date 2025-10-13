@@ -62,6 +62,14 @@
             android:name=".ui.location.TrackOrderActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.customer.FoodListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.customer.FoodDetailActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
