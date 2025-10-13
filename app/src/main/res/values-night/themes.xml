@@ -3,5 +3,6 @@
     <style name="Base.Theme.PRM392_Assignment_Food" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:fontFamily">@font/sen_regular_family</item>
     </style>
 </resources>
