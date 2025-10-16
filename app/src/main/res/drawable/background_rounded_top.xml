@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+File này định nghĩa một hình dạng (shape) dùng làm background.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Đặt màu nền cho hình dạng là màu trắng -->
+    <solid android:color="@android:color/white" />
+
+    <!--
+    Định nghĩa bán kính bo tròn cho các góc.
+    Ở đây chỉ bo tròn góc trên bên trái (topLeftRadius) và góc trên bên phải (topRightRadius).
+    Hai góc dưới không được bo tròn (bán kính là 0).
+    -->
+    <corners
+        android:topLeftRadius="30dp"
+        android:topRightRadius="30dp"
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp" />
+</shape>
