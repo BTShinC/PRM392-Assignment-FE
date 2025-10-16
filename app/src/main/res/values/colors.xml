@@ -3,4 +3,11 @@
     <color name="orange">#FF9800</color>
     <color name="dark_gray">#A9A9A9</color>
     <color name="dark_blue">#1C1C1E</color>
+    <color name="light_orange">#FFE0B2</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="light_gray">#F5F5F5</color>
+    <color name="medium_gray">#9E9E9E</color>
+    <color name="red_star">#FF5722</color>
+    <color name="background_gray">#F8F8F8</color>
 </resources>
