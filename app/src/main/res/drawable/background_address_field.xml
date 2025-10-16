@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+File này định nghĩa background cho ô hiển thị địa chỉ giao hàng.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Đặt màu nền xám nhạt cho ô địa chỉ -->
+    <solid android:color="#F3F4F6" />
+
+    <!-- Bo tròn tất cả các góc với bán kính 16dp -->
+    <corners android:radius="16dp" />
+</shape>
