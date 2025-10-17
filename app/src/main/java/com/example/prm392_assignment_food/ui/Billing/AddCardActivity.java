@@ -7,6 +7,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.prm392_assignment_food.MainActivity;
 import com.example.prm392_assignment_food.R;
 
 public class AddCardActivity extends AppCompatActivity {
@@ -37,7 +39,7 @@ public class AddCardActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Card added successfully!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, PaymentSuccessActivity.class);
+                Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             }
         });
