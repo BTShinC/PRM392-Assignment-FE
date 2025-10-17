@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="start"
+    android:paddingVertical="6dp">
+
+    <!-- Thời gian -->
+    <TextView
+        android:id="@+id/tvTimeReceiver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="8:10 pm"
+        android:textColor="#999999"
+        android:textSize="12sp"
+        android:layout_marginStart="56dp"
+        android:layout_marginBottom="2dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start">
+
+        <!-- Avatar người nhận -->
+        <ImageView
+            android:id="@+id/imgReceiver"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_person_placeholder"
+            android:background="@drawable/circle_bg_gray"
+            android:scaleType="centerCrop"
+            android:layout_marginStart="8dp" />
+
+        <!-- Bong bóng tin nhắn -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_bubble_gray"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp"
+            android:layout_marginStart="8dp"
+            android:elevation="1dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvMessageReceiver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hay, congratulation for order"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:lineSpacingExtra="2dp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

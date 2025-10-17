@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#F8F9FD"
+    android:padding="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Header -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/circle_bg_gray"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Payment"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#000" />
+    </RelativeLayout>
+
+    <!-- Card Info -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_card_container"
+        android:padding="16dp"
+        android:layout_marginTop="32dp">
+
+        <TextView
+            android:id="@+id/tvCardName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No master card added"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/tvCardHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You can add a Mastercard and save it for later"
+            android:textSize="14sp"
+            android:textColor="#808080"
+            android:layout_marginTop="4dp" />
+
+        <Button
+            android:id="@+id/btnAddNew"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+ ADD NEW"
+            android:backgroundTint="#FF7A00"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+
+    <!-- Total -->
+    <TextView
+        android:id="@+id/tvTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="36dp"
+        android:text="TOTAL: $96"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#000" />
+
+    <!-- Pay Button -->
+    <Button
+        android:id="@+id/btnPayConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PAY &amp; CONFIRM"
+        android:backgroundTint="#FF7A00"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:paddingVertical="12dp" />
+</LinearLayout>

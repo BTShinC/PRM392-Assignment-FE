@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#F8F9FD"
+    android:padding="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:src="@drawable/ic_payment_success"
+        android:contentDescription="Success" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Congratulations!"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:textColor="#000000"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You successfully made a payment, enjoy our service!"
+        android:textColor="#808080"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnTrackOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TRACK ORDER"
+        android:backgroundTint="#FF7A00"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="36dp"
+        android:paddingVertical="12dp" />
+</LinearLayout>

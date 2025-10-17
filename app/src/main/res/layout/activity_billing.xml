@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#F8F9FD"
+    android:padding="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Header -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/circle_bg_gray"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Payment"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#000" />
+    </RelativeLayout>
+
+    <!-- Payment Methods -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/btnCash"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_payment_unselected"
+            android:padding="12dp">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_cash"
+                android:contentDescription="Cash" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnVisa"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="60dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_payment_unselected"
+            android:padding="12dp">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_visa"
+                android:contentDescription="Visa" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnMastercard"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="60dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_payment_unselected"
+            android:padding="12dp">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_mastercard"
+                android:contentDescription="Mastercard" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnPaypal"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="60dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_payment_unselected"
+            android:padding="12dp">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_paypal"
+                android:contentDescription="Paypal" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Total -->
+    <TextView
+        android:id="@+id/tvTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="36dp"
+        android:text="TOTAL: $96"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#000" />
+
+    <!-- Button -->
+    <Button
+        android:id="@+id/btnPayConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PAY &amp; CONFIRM"
+        android:backgroundTint="#FF7A00"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:paddingVertical="12dp" />
+</LinearLayout>
