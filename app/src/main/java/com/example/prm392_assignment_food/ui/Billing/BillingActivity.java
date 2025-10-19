@@ -2,7 +2,6 @@ package com.example.prm392_assignment_food.ui.Billing;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,7 +10,7 @@ import com.example.prm392_assignment_food.R;
 
 public class BillingActivity extends AppCompatActivity {
 
-    private LinearLayout btnCash, btnVisa, btnMastercard, btnPaypal;
+    private LinearLayout btnCash, btnVnPay;
     private TextView tvTotal;
     private ImageView btnBack;
 
@@ -21,9 +20,7 @@ public class BillingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_billing);
 
         btnCash = findViewById(R.id.btnCash);
-        btnVisa = findViewById(R.id.btnVisa);
-        btnMastercard = findViewById(R.id.btnMastercard);
-        btnPaypal = findViewById(R.id.btnPaypal);
+        btnVnPay = findViewById(R.id.btnVnPay);
         tvTotal = findViewById(R.id.tvTotal);
         btnBack = findViewById(R.id.btnBack);
 
@@ -31,20 +28,21 @@ public class BillingActivity extends AppCompatActivity {
 
         btnBack.setOnClickListener(v -> onBackPressed());
 
-        // chọn phương thức thanh toán
+        // 👉 Khi chọn thanh toán tiền mặt → đi thẳng đến trang thành công
         btnCash.setOnClickListener(v -> goToSuccess());
-        btnPaypal.setOnClickListener(v -> goToSuccess());
 
-        btnVisa.setOnClickListener(v -> openCardList("Visa"));
-        btnMastercard.setOnClickListener(v -> openCardList("Mastercard"));
+        // 👉 Khi chọn VNPay → chuyển qua danh sách thẻ
+        btnVnPay.setOnClickListener(v -> openCardList("VNPay"));
     }
 
+    /** Mở danh sách thẻ (CardListActivity) */
     private void openCardList(String cardType) {
         Intent intent = new Intent(this, CardListActivity.class);
         intent.putExtra("cardType", cardType);
         startActivity(intent);
     }
 
+    /** Đi đến màn hình thanh toán thành công */
     private void goToSuccess() {
         Intent intent = new Intent(this, PaymentSuccessActivity.class);
         startActivity(intent);

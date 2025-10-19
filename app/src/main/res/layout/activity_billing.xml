@@ -39,71 +39,57 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- CASH -->
         <LinearLayout
             android:id="@+id/btnCash"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
+            android:layout_height="80dp"
             android:background="@drawable/bg_payment_unselected"
             android:padding="12dp">
+
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:src="@drawable/ic_cash"
                 android:contentDescription="Cash" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cash"
+                android:textColor="#000"
+                android:textSize="14sp"
+                android:layout_marginTop="6dp" />
         </LinearLayout>
 
+        <!-- VNPAY -->
         <LinearLayout
-            android:id="@+id/btnVisa"
+            android:id="@+id/btnVnPay"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="60dp"
-            android:layout_marginStart="8dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="12dp"
             android:background="@drawable/bg_payment_unselected"
             android:padding="12dp">
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_visa"
-                android:contentDescription="Visa" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/btnMastercard"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="60dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/bg_payment_unselected"
-            android:padding="12dp">
             <ImageView
-                android:layout_width="36dp"
+                android:layout_width="48dp"
                 android:layout_height="36dp"
-                android:src="@drawable/ic_mastercard"
-                android:contentDescription="Mastercard" />
-        </LinearLayout>
+                android:src="@drawable/vnpay"
+                android:contentDescription="VNPay" />
 
-        <LinearLayout
-            android:id="@+id/btnPaypal"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="60dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/bg_payment_unselected"
-            android:padding="12dp">
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_paypal"
-                android:contentDescription="Paypal" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VNPay"
+                android:textColor="#000"
+                android:textSize="14sp"
+                android:layout_marginTop="6dp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -130,4 +116,5 @@
         android:textStyle="bold"
         android:layout_marginTop="24dp"
         android:paddingVertical="12dp" />
+
 </LinearLayout>
