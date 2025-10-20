@@ -16,7 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PRM392_Assignment_Food"
         android:usesCleartextTraffic="true">
-        android:theme="@style/Theme.PRM392_Assignment_Food">
         <activity
             android:name=".ui.cart.CartActivity"
             android:exported="false" />

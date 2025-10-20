@@ -1,6 +1,7 @@
 package com.example.prm392_assignment_food.ui.auth;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +32,31 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // --- Check for existing and valid token before setting the content view ---
+        SharedPreferences prefs = getSharedPreferences("FoodAppPrefs", MODE_PRIVATE);
+        String token = prefs.getString("AUTH_TOKEN", null);
+        long loginTimestamp = prefs.getLong("LOGIN_TIMESTAMP", 0);
+
+        long currentTime = System.currentTimeMillis();
+        long fiveMinutesInMillis = 5 * 60 * 1000;
+
+        if (token != null && (currentTime - loginTimestamp < fiveMinutesInMillis)) {
+            // Token exists and is not expired. Go straight to MainActivity.
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish(); // Finish LoginActivity so user can't go back to it
+            return; // Return to prevent the rest of the onCreate from executing
+        } else if (token != null) {
+            // Token exists but is expired. Clear it.
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.remove("AUTH_TOKEN");
+            editor.remove("USER_EMAIL");
+            editor.remove("LOGIN_TIMESTAMP");
+            editor.apply();
+        }
+
+        // If token is null or expired, proceed to show the login screen
         setContentView(R.layout.activity_login);
 
         etEmail = findViewById(R.id.etEmail);
@@ -82,21 +108,30 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
-                    if ("200".equals(loginResponse.getStatus())) {
-                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                    if (Integer.parseInt(loginResponse.getStatus()) == 200) { // More robust status check
+                        
+                        // --- Save the token, user data, and the current timestamp ---
+                        SharedPreferences prefs = getSharedPreferences("FoodAppPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("AUTH_TOKEN", loginResponse.getData());
+                        editor.putString("USER_EMAIL", email);
+                        editor.putLong("LOGIN_TIMESTAMP", System.currentTimeMillis()); // Save login time
+                        editor.apply();
+
+                        Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                     } else {
-                        // Handle other success statuses that are not "200"
                         Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    // Handle unsuccessful responses (like 401, 404, 500 etc.)
                     if (response.code() == 401) {
-                        Toast.makeText(LoginActivity.this, "Invalid email or password. Please try again.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Invalid email or password.", Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(LoginActivity.this, "An error occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
