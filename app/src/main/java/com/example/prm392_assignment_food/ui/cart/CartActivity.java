@@ -13,10 +13,6 @@ import com.example.prm392_assignment_food.R;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * CartActivity hiển thị giỏ hàng và xử lý các tương tác của người dùng.
- * Activity này implement OnCartChangeListener để lắng nghe các thay đổi từ Adapter.
- */
 public class CartActivity extends AppCompatActivity implements CartAdapter.OnCartChangeListener {
 
     private RecyclerView cartRecyclerView;

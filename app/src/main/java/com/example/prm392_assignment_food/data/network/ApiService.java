@@ -1,5 +1,7 @@
 package com.example.prm392_assignment_food.data.network;
 
+import com.example.prm392_assignment_food.data.model.CartItemRequest;
+import com.example.prm392_assignment_food.data.model.CartResponse;
 import com.example.prm392_assignment_food.data.model.ForgotPasswordRequest;
 import com.example.prm392_assignment_food.data.model.ForgotPasswordResponse;
 import com.example.prm392_assignment_food.data.model.LoginRequest;
@@ -13,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface ApiService {
     @POST("api/users/v1/login")
@@ -32,4 +35,15 @@ public interface ApiService {
 
     @GET("api/users/v1/check-admin-exists")
     Call<Boolean> checkAdminExists();
+
+    @POST("api/carts/{userId}/items")
+    Call<CartResponse> addItem(
+            @Path("userId") String userId,
+            @Body CartItemRequest cartItemRequest
+    );
+
+    @GET("api/carts/{userId}")
+    Call<CartResponse> getCart(@Path("userId") String userId);
+
+
 }
