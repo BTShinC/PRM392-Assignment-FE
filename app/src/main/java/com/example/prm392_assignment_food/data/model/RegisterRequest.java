@@ -24,6 +24,10 @@ public class RegisterRequest implements Serializable {
         this.otp = otp;
     }
 
+    public RegisterRequest() {
+        // No-argument constructor
+    }
+
     // Getters and setters for all fields
 
     public String getEmail() {

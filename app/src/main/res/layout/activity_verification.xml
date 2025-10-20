@@ -9,20 +9,21 @@
 
     <ImageButton
         android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_arrow_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/bg_back_button"
+        android:src="@drawable/ic_arrow_back_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="Back" />
 
     <TextView
         android:id="@+id/tvVerificationTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:text="Verification"
         android:textColor="@android:color/white"
         android:textSize="34sp"
@@ -33,105 +34,141 @@
 
     <TextView
         android:id="@+id/tvVerificationSubtitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:text="We have sent a code to your email example@gmail.com"
-        android:textAlignment="center"
-        android:textColor="@color/dark_gray"
+        android:text="We have sent a code to your email"
+        android:textColor="#B0B0B0"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVerificationTitle" />
 
     <TextView
-        android:id="@+id/tvCodeLabel"
+        android:id="@+id/tvEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:text="CODE"
-        android:textColor="@color/dark_gray"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvVerificationSubtitle" />
-
-    <TextView
-        android:id="@+id/tvResend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:text="Resend in 50sec"
-        android:textColor="@color/dark_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvCodeLabel" />
-
-    <LinearLayout
-        android:id="@+id/llCode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvCodeLabel">
-
-        <EditText
-            android:id="@+id/etCode1"
-            style="@style/VerificationCodeEditText"
-            android:layout_width="50dp"
-            android:layout_height="60dp" />
-
-        <EditText
-            android:id="@+id/etCode2"
-            style="@style/VerificationCodeEditText"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="8dp" />
-
-        <EditText
-            android:id="@+id/etCode3"
-            style="@style/VerificationCodeEditText"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="8dp" />
-
-        <EditText
-            android:id="@+id/etCode4"
-            style="@style/VerificationCodeEditText"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="8dp" />
-
-        <EditText
-            android:id="@+id/etCode5"
-            style="@style/VerificationCodeEditText"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="8dp" />
-
-        <EditText
-            android:id="@+id/etCode6"
-            style="@style/VerificationCodeEditText"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="8dp" />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnVerify"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="@color/orange"
-        android:text="VERIFY"
+        android:text="example@gmail.com"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/llCode" />
+        app:layout_constraintTop_toBottomOf="@+id/tvVerificationSubtitle" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/bg_verification_card"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvEmail">
+
+        <TextView
+            android:id="@+id/tvCodeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:text="CODE"
+            android:textColor="#8A8A8E"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvResend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:text="Resend in.50sec"
+            android:textColor="#3478F6"
+            android:textSize="14sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/tvCodeLabel"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/llCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvCodeLabel">
+
+            <EditText
+                android:id="@+id/etCode1"
+                style="@style/VerificationCodeEditText"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                tools:text="2" />
+
+            <EditText
+                android:id="@+id/etCode2"
+                style="@style/VerificationCodeEditText"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                tools:text="0" />
+
+            <EditText
+                android:id="@+id/etCode3"
+                style="@style/VerificationCodeEditText"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                tools:text="1" />
+
+            <EditText
+                android:id="@+id/etCode4"
+                style="@style/VerificationCodeEditText"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                tools:text="5" />
+             <EditText
+                android:id="@+id/etCode5"
+                style="@style/VerificationCodeEditText"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                tools:text="5" />
+             <EditText
+                android:id="@+id/etCode6"
+                style="@style/VerificationCodeEditText"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                tools:text="5" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnVerify"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:backgroundTint="#F57C00"
+            android:text="VERIFY"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:cornerRadius="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llCode" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

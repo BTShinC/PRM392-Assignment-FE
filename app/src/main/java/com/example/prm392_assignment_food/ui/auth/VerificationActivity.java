@@ -2,6 +2,7 @@ package com.example.prm392_assignment_food.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -28,9 +29,10 @@ public class VerificationActivity extends AppCompatActivity {
     private EditText etCode1, etCode2, etCode3, etCode4, etCode5, etCode6;
     private Button btnVerify;
     private ImageButton btnBack;
-    private TextView tvVerificationSubtitle;
+    private TextView tvEmail, tvResend;
     private ApiService apiService;
     private RegisterRequest registerRequest;
+    private CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,30 +47,67 @@ public class VerificationActivity extends AppCompatActivity {
         etCode6 = findViewById(R.id.etCode6);
         btnVerify = findViewById(R.id.btnVerify);
         btnBack = findViewById(R.id.btnBack);
-        tvVerificationSubtitle = findViewById(R.id.tvVerificationSubtitle);
+        tvEmail = findViewById(R.id.tvEmail);
+        tvResend = findViewById(R.id.tvResend);
 
         apiService = ApiClient.getClient().create(ApiService.class);
 
-        // Get the RegisterRequest object from the intent
         registerRequest = (RegisterRequest) getIntent().getSerializableExtra("register_request");
 
         if (registerRequest != null && registerRequest.getEmail() != null) {
-            tvVerificationSubtitle.setText("We have sent a code to your email " + registerRequest.getEmail());
+            tvEmail.setText(registerRequest.getEmail());
         }
 
         setupOtpInputs();
+        startResendTimer();
 
-        btnVerify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                verifyOtpAndRegister();
+        btnVerify.setOnClickListener(v -> verifyOtpAndRegister());
+        btnBack.setOnClickListener(v -> finish());
+        tvResend.setOnClickListener(v -> {
+            if (tvResend.getText().toString().equals("Resend")) {
+                resendOtp();
             }
         });
+    }
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
+    private void startResendTimer() {
+        tvResend.setClickable(false);
+        countDownTimer = new CountDownTimer(50000, 1000) {
             @Override
-            public void onClick(View v) {
-                finish(); // Go back to the previous activity (RegisterActivity)
+            public void onTick(long millisUntilFinished) {
+                tvResend.setText("Resend in." + (millisUntilFinished / 1000) + "sec");
+            }
+
+            @Override
+            public void onFinish() {
+                tvResend.setText("Resend");
+                tvResend.setClickable(true);
+            }
+        }.start();
+    }
+
+    private void resendOtp() {
+        if (registerRequest == null) {
+            Toast.makeText(this, "Registration data not found. Cannot resend OTP.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Use the original, complete registerRequest object to resend the OTP
+        Call<RegisterResponse> call = apiService.requestRegistrationOtp(registerRequest);
+        call.enqueue(new Callback<RegisterResponse>() {
+            @Override
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(VerificationActivity.this, "A new OTP has been sent.", Toast.LENGTH_SHORT).show();
+                    startResendTimer(); // Restart the timer
+                } else {
+                    Toast.makeText(VerificationActivity.this, "Failed to resend OTP.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                Toast.makeText(VerificationActivity.this, "An error occurred: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -79,16 +118,12 @@ public class VerificationActivity extends AppCompatActivity {
         etCode3.addTextChangedListener(new OtpTextWatcher(etCode3, etCode4));
         etCode4.addTextChangedListener(new OtpTextWatcher(etCode4, etCode5));
         etCode5.addTextChangedListener(new OtpTextWatcher(etCode5, etCode6));
-        etCode6.addTextChangedListener(new OtpTextWatcher(etCode6, null)); // No next view for the last one
+        etCode6.addTextChangedListener(new OtpTextWatcher(etCode6, null));
     }
 
     private void verifyOtpAndRegister() {
-        // Gracefully handle case where registration data was not passed correctly
         if (registerRequest == null) {
-            Toast.makeText(this, "An unexpected error occurred. Please try registering again.", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(VerificationActivity.this, RegisterActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            Toast.makeText(this, "An unexpected error occurred.", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -114,8 +149,7 @@ public class VerificationActivity extends AppCompatActivity {
             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     RegisterResponse registerResponse = response.body();
-                    // Check for "200" for consistency
-                    if ("200".equals(registerResponse.getStatus())) { 
+                    if ("200".equals(registerResponse.getStatus())) {
                         Toast.makeText(VerificationActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(VerificationActivity.this, LoginActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -134,6 +168,14 @@ public class VerificationActivity extends AppCompatActivity {
                 Toast.makeText(VerificationActivity.this, "An error occurred: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 
     private class OtpTextWatcher implements TextWatcher {
