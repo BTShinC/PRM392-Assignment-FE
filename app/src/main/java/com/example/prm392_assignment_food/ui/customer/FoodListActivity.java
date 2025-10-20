@@ -143,8 +143,6 @@ public class FoodListActivity extends AppCompatActivity {
                 item.getName() != null ? item.getName() : "Unknown",
                 item.getFormattedPrice(),
                 item.getCategoryName() != null ? item.getCategoryName() : "",
-                item.getRating() != null ? item.getRating() : 0f,
-                item.getReviewCount() != null ? item.getReviewCount() : 0,
                 R.drawable.chicken_thai_biriyani, // Placeholder image
                 "Location",
                 new ArrayList<>(),

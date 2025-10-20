@@ -12,10 +12,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Repository layer - Quản lý data fetching từ API
- * Tách biệt business logic khỏi UI
- */
+
 public class FoodRepository {
     private static final String TAG = "FoodRepository";
     
@@ -91,6 +88,36 @@ public class FoodRepository {
 
             @Override
             public void onFailure(Call<PageResponse<MenuCategoryResponse>> call, Throwable t) {
+                String errorMsg = "Network error: " + t.getMessage();
+                Log.e(TAG, errorMsg, t);
+                callback.onError(errorMsg);
+            }
+        });
+    }
+
+    /**
+     * GET chi tiết menu item theo ID
+     */
+    public void getMenuItemById(String id, final RepositoryCallback<MenuItemResponse> callback) {
+        Log.d(TAG, "Fetching menu item by ID: " + id);
+        
+        Call<MenuItemResponse> call = apiService.getMenuItemById(id);
+        
+        call.enqueue(new Callback<MenuItemResponse>() {
+            @Override
+            public void onResponse(Call<MenuItemResponse> call, Response<MenuItemResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "Success: Menu item loaded");
+                    callback.onSuccess(response.body());
+                } else {
+                    String errorMsg = "Failed - Code: " + response.code();
+                    Log.e(TAG, errorMsg);
+                    callback.onError(errorMsg);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MenuItemResponse> call, Throwable t) {
                 String errorMsg = "Network error: " + t.getMessage();
                 Log.e(TAG, errorMsg, t);
                 callback.onError(errorMsg);

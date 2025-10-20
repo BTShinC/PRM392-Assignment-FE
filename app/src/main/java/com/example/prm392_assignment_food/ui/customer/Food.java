@@ -6,8 +6,6 @@ public class Food {
     private String name;
     private String price;
     private String category;
-    private float rating;
-    private int reviewCount;
     private int imageResource;
     private String location;
     private List<String> ingredients;
@@ -15,13 +13,11 @@ public class Food {
     private String deliveryType;
 
     // Constructor
-    public Food(String name, String price, String category, float rating, int reviewCount, 
+    public Food(String name, String price, String category,
                 int imageResource, String location, List<String> ingredients, String description, String deliveryType) {
         this.name = name;
         this.price = price;
         this.category = category;
-        this.rating = rating;
-        this.reviewCount = reviewCount;
         this.imageResource = imageResource;
         this.location = location;
         this.ingredients = ingredients;
@@ -38,12 +34,6 @@ public class Food {
 
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
-
-    public float getRating() { return rating; }
-    public void setRating(float rating) { this.rating = rating; }
-
-    public int getReviewCount() { return reviewCount; }
-    public void setReviewCount(int reviewCount) { this.reviewCount = reviewCount; }
 
     public int getImageResource() { return imageResource; }
     public void setImageResource(int imageResource) { this.imageResource = imageResource; }

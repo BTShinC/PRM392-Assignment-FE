@@ -40,8 +40,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.tvFoodName.setText(food.getName());
         holder.tvCategory.setText(food.getCategory());
         holder.tvPrice.setText(food.getPrice());
-        holder.tvRating.setText(String.valueOf(food.getRating()));
-        holder.tvReviews.setText("(" + food.getReviewCount() + " Review)");
         holder.imgFood.setImageResource(food.getImageResource());
         
         // Set click listener for the entire item
@@ -50,8 +48,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             intent.putExtra("food_name", food.getName());
             intent.putExtra("food_price", food.getPrice());
             intent.putExtra("food_category", food.getCategory());
-            intent.putExtra("food_rating", food.getRating());
-            intent.putExtra("food_reviews", food.getReviewCount());
             intent.putExtra("food_image", food.getImageResource());
             intent.putExtra("food_location", food.getLocation());
             intent.putExtra("food_description", food.getDescription());
