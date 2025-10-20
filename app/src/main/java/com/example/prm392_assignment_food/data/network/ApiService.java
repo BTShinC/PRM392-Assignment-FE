@@ -11,6 +11,7 @@ import com.example.prm392_assignment_food.data.model.ResetPasswordResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface ApiService {
@@ -28,4 +29,7 @@ public interface ApiService {
 
     @POST("otp/verify-reset-password")
     Call<ResetPasswordResponse> resetPassword(@Body ResetPasswordRequest resetPasswordRequest);
+
+    @GET("api/users/v1/check-admin-exists")
+    Call<Boolean> checkAdminExists();
 }
