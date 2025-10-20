@@ -8,11 +8,16 @@ import com.example.prm392_assignment_food.data.model.RegisterRequest;
 import com.example.prm392_assignment_food.data.model.RegisterResponse;
 import com.example.prm392_assignment_food.data.model.ResetPasswordRequest;
 import com.example.prm392_assignment_food.data.model.ResetPasswordResponse;
+import com.example.prm392_assignment_food.data.model.MenuItemResponse;
+import com.example.prm392_assignment_food.data.model.MenuCategoryResponse;
+import com.example.prm392_assignment_food.data.model.PageResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     @POST("api/users/v1/login")
@@ -32,4 +37,35 @@ public interface ApiService {
 
     @GET("api/users/v1/check-admin-exists")
     Call<Boolean> checkAdminExists();
+    
+    // ==================== FOOD APIs ====================
+    
+    /**
+     * GET danh sách menu items với pagination
+     */
+    @GET("api/menu-items")
+    Call<PageResponse<MenuItemResponse>> getMenuItems(
+            @Query("page") Integer page,
+            @Query("size") Integer size,
+            @Query("sort") String sort,
+            @Query("search") String search,
+            @Query("categoryId") String categoryId
+    );
+    
+    /**
+     * GET menu item theo ID
+     */
+    @GET("api/menu-items/{id}")
+    Call<MenuItemResponse> getMenuItemById(@Path("id") String id);
+    
+    /**
+     * GET danh sách categories với pagination
+     */
+    @GET("api/menu-categories")
+    Call<PageResponse<MenuCategoryResponse>> getMenuCategories(
+            @Query("page") Integer page,
+            @Query("size") Integer size,
+            @Query("sort") String sort,
+            @Query("search") String search
+    );
 }
