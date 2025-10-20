@@ -30,6 +30,4 @@ public interface ApiService {
     @POST("otp/verify-reset-password")
     Call<ResetPasswordResponse> resetPassword(@Body ResetPasswordRequest resetPasswordRequest);
 
-    @GET("api/users/v1/check-admin-exists")
-    Call<Boolean> checkAdminExists();
 }

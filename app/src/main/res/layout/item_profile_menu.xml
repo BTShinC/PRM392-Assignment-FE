@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
@@ -43,7 +43,8 @@
         android:id="@+id/iv_arrow"
         android:layout_width="26dp"
         android:layout_height="26dp"
-        android:src="@drawable/ic_arrow_forward_ios"
+        android:src="@drawable/ic_arrow_forward"
+        app:tint="#8A8A8E"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
