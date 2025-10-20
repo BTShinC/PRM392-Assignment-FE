@@ -5,8 +5,11 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.prm392_assignment_food.R;
+import com.example.prm392_assignment_food.data.model.MenuItemResponse;
+import com.example.prm392_assignment_food.data.repository.FoodRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,16 +21,18 @@ public class FoodDetailActivity extends AppCompatActivity {
     private TextView tvLocationDetail, tvRatingDetail, tvReviewsDetail, tvDescription;
     private TextView btnEdit;
     private LinearLayout ingredientsContainer;
+    
+    private FoodRepository foodRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_detail);
         
+        foodRepository = new FoodRepository();
         initViews();
         loadDataFromIntent();
         setupClickListeners();
-        setupIngredients();
     }
     
     private void initViews() {
@@ -46,7 +51,48 @@ public class FoodDetailActivity extends AppCompatActivity {
     }
     
     private void loadDataFromIntent() {
-        // Get data from intent extras
+        // Get menu item ID from intent
+        String menuItemId = getIntent().getStringExtra("menu_item_id");
+        
+        if (menuItemId != null && !menuItemId.isEmpty()) {
+            loadMenuItemFromApi(menuItemId);
+        } else {
+            loadDataFromIntentExtras();
+        }
+    }
+    
+    private void loadMenuItemFromApi(String menuItemId) {
+        foodRepository.getMenuItemById(menuItemId, new FoodRepository.RepositoryCallback<MenuItemResponse>() {
+            @Override
+            public void onSuccess(MenuItemResponse menuItem) {
+                runOnUiThread(() -> {
+                    if (menuItem.getName() != null) tvFoodNameDetail.setText(menuItem.getName());
+                    if (menuItem.getPrice() != null) tvPriceDetail.setText("$" + menuItem.getPrice());
+                    if (menuItem.getCategoryId() != null) tvCategoryDetail.setText(menuItem.getCategoryName());
+                    if (menuItem.getDescription() != null) tvDescription.setText(menuItem.getDescription());
+                    
+
+                    tvLocationDetail.setText("Restaurant Location");
+                    tvDeliveryType.setText("Delivery Available");
+                    tvRatingDetail.setText("4.5");
+                    tvReviewsDetail.setText("(120 Reviews)");
+                    imgFoodDetail.setImageResource(R.drawable.onboarding1);
+
+                    setupIngredients();
+                });
+            }
+            
+            @Override
+            public void onError(String errorMessage) {
+                runOnUiThread(() -> {
+                    Toast.makeText(FoodDetailActivity.this, "Error loading food details: " + errorMessage, Toast.LENGTH_SHORT).show();
+                    loadDataFromIntentExtras();
+                });
+            }
+        });
+    }
+    
+    private void loadDataFromIntentExtras() {
         String foodName = getIntent().getStringExtra("food_name");
         String foodPrice = getIntent().getStringExtra("food_price");
         String foodCategory = getIntent().getStringExtra("food_category");
@@ -57,7 +103,6 @@ public class FoodDetailActivity extends AppCompatActivity {
         String foodDescription = getIntent().getStringExtra("food_description");
         String deliveryType = getIntent().getStringExtra("food_delivery_type");
         
-        // Set data to views
         if (foodName != null) tvFoodNameDetail.setText(foodName);
         if (foodPrice != null) tvPriceDetail.setText(foodPrice);
         if (foodCategory != null) tvCategoryDetail.setText(foodCategory);
@@ -68,14 +113,15 @@ public class FoodDetailActivity extends AppCompatActivity {
         tvRatingDetail.setText(String.valueOf(foodRating));
         tvReviewsDetail.setText("(" + foodReviews + " Reviews)");
         imgFoodDetail.setImageResource(foodImage);
+        
+        // Setup ingredients after data is loaded
+        setupIngredients();
     }
     
     private void setupClickListeners() {
         btnBack.setOnClickListener(v -> finish());
         
         btnEdit.setOnClickListener(v -> {
-            // Handle edit action - could open edit screen or show edit dialog
-            // For now, just show a toast or log
         });
     }
     

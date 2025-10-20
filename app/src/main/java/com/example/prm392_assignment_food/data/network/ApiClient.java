@@ -15,23 +15,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Retrofit API Client với JWT token authentication support
  */
 public class ApiClient {
-    // Tag cho logging
+
     private static final String TAG = "ApiClient";
     
-    // Base URL của backend API
+
     private static final String BASE_URL = "https://prm392.nguyenhoangan.site/";
-    
-    // Singleton Retrofit instance
+
     private static Retrofit retrofit = null;
     
-    // Application context để access TokenManager
+
     private static Context appContext = null;
 
-        /**
-         * Initialize ApiClient với application context
-         * NÊN gọi một lần trong Application class hoặc activity đầu tiên
-         * @param context Application hoặc Activity context
-         */
+
         public static void init(Context context) {
             if (context != null) {
                 appContext = context.getApplicationContext();
@@ -41,11 +36,6 @@ public class ApiClient {
             }
         }
 
-    /**
-     * Get Retrofit client instance
-     * Tự động attach Bearer token vào Authorization header nếu có
-     * @return Retrofit instance
-     */
     public static Retrofit getClient() {
         if (retrofit == null) {
             Log.d(TAG, "Creating new Retrofit instance");
@@ -97,11 +87,7 @@ public class ApiClient {
         }
         return retrofit;
     }
-    
-    /**
-     * Reset Retrofit client
-     * Gọi sau khi login/logout để refresh token trong interceptor
-     */
+
     public static void resetClient() {
         retrofit = null;
         Log.d(TAG, "Retrofit client reset");

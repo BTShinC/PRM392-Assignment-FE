@@ -37,9 +37,7 @@ public interface ApiService {
 
     @GET("api/users/v1/check-admin-exists")
     Call<Boolean> checkAdminExists();
-    
-    // ==================== FOOD APIs ====================
-    
+
     /**
      * GET danh sách menu items với pagination
      */
