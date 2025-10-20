@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_gray">
 
-    <LinearLayout
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_gray"
+        android:layout_above="@+id/add_to_cart_bar"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"> <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,7 +23,6 @@
             android:padding="16dp"
             android:gravity="center_vertical"
             android:background="@color/white">
-
             <ImageView
                 android:id="@+id/btn_back"
                 android:layout_width="24dp"
@@ -46,15 +50,12 @@
                 android:textColor="@color/orange"
                 android:background="?attr/selectableItemBackground"
                 android:padding="8dp" />
-
         </LinearLayout>
 
-        <!-- Food Image with Indicators -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:background="@color/white">
-
             <ImageView
                 android:id="@+id/img_food_detail"
                 android:layout_width="match_parent"
@@ -63,7 +64,6 @@
                 android:src="@drawable/onboarding1"
                 android:layout_margin="16dp" />
 
-            <!-- Category and Delivery Tags -->
             <TextView
                 android:id="@+id/tv_category_detail"
                 android:layout_width="wrap_content"
@@ -94,7 +94,6 @@
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="32dp" />
 
-            <!-- Indicator Dots -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -119,20 +118,15 @@
                     android:layout_width="8dp"
                     android:layout_height="8dp"
                     android:background="@color/light_gray" />
-
             </LinearLayout>
-
         </RelativeLayout>
 
-        <!-- Food Info Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/white"
             android:padding="16dp">
-
-            <!-- Food Name and Price -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -157,10 +151,8 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/black" />
-
             </LinearLayout>
 
-            <!-- Location and Rating -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -205,12 +197,9 @@
                     android:textSize="14sp"
                     android:textColor="@color/medium_gray"
                     android:layout_marginStart="4dp" />
-
             </LinearLayout>
-
         </LinearLayout>
 
-        <!-- Ingredients Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -218,7 +207,6 @@
             android:background="@color/white"
             android:padding="16dp"
             android:layout_marginTop="8dp">
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -228,16 +216,13 @@
                 android:textColor="@color/black"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Dynamic Ingredients Container -->
             <LinearLayout
                 android:id="@+id/ingredients_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
-
         </LinearLayout>
 
-        <!-- Description Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -245,7 +230,6 @@
             android:background="@color/white"
             android:padding="16dp"
             android:layout_marginTop="8dp">
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -263,52 +247,90 @@
                 android:textSize="14sp"
                 android:textColor="@color/medium_gray"
                 android:lineSpacingExtra="4dp" />
-
-        </LinearLayout>
-
-        <!-- Bottom Navigation -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:orientation="horizontal"
-            android:background="@color/white"
-            android:gravity="center"
-            android:paddingVertical="12dp"
-            android:layout_marginTop="8dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_map"
-                android:layout_marginHorizontal="32dp" />
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_map"
-                android:layout_marginHorizontal="32dp" />
-
-            <!-- Center Add Button -->
-            <View
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:background="@drawable/round_button_background"
-                android:layout_marginHorizontal="32dp" />
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_map"
-                android:layout_marginHorizontal="32dp" />
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_map"
-                android:layout_marginHorizontal="32dp" />
-
         </LinearLayout>
 
     </LinearLayout>
 
-</ScrollView>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/add_to_cart_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/dark_gray"
+        android:padding="16dp"
+        android:layout_alignParentBottom="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_price_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$32"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+
+            <LinearLayout
+                android:id="@+id/quantity_selector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp">
+
+                <ImageView
+                    android:id="@+id/btn_decrease"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/bg_circle_dark"
+                    android:src="@drawable/ic_menu_remove"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:id="@+id/tv_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp" />
+
+                <ImageView
+                    android:id="@+id/btn_increase"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/bg_circle_dark"
+                    android:src="@android:drawable/ic_input_add"
+                    app:tint="@color/white" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_add_to_cart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ADD TO CART"
+            android:background="@drawable/background_orange_button"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:paddingVertical="16dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>
