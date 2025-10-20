@@ -59,6 +59,9 @@
             android:name=".ui.auth.ProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.profile.AdminProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true" />
         <activity

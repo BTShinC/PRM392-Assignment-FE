@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
 import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
 import com.example.prm392_assignment_food.ui.customer.FoodListActivity;
+import com.example.prm392_assignment_food.ui.profile.AdminProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, CartActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btnAdminProfile = findViewById(R.id.btnAdminProfile);
+        btnAdminProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AdminProfileActivity.class);
                 startActivity(intent);
             }
         });
