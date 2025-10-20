@@ -1,85 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="12dp"
-    android:gravity="center_vertical">
+    android:paddingStart="16dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="12dp">
+
+    <!-- CheckBox để chọn xóa, ẩn theo mặc định -->
+    <CheckBox
+        android:id="@+id/checkbox_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/imgFood"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:src="@drawable/pizza"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@drawable/bg_image_rounded"
         android:scaleType="centerCrop"
-        android:background="@drawable/bg_image_rounded" />
+        tools:src="@drawable/pizza" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginStart="12dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pizza Calzone European"
-            android:textColor="#FFF"
+            android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Pizza Calzone European" />
 
         <TextView
             android:id="@+id/tvPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$64"
-            android:textColor="#FF7A00"
+            android:layout_marginTop="4dp"
+            android:textColor="#FF9800"
             android:textSize="14sp"
-            android:layout_marginTop="4dp" />
+            tools:text="$64.00" />
 
-        <TextView
-            android:id="@+id/tvSize"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="14″"
-            android:textColor="#BBB"
-            android:textSize="12sp"
-            android:layout_marginTop="2dp" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:gravity="center"
+        android:id="@+id/quantity_selector"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btnMinus"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:backgroundTint="#2A2A4A"
-            android:background="@drawable/bg_circle_dark"
+            android:background="@drawable/background_circle_dark"
             android:src="@drawable/ic_menu_remove"
-            app:tint="#FFF" />
+            app:tint="@android:color/white" />
 
         <TextView
             android:id="@+id/tvQuantity"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:text="2"
-            android:textColor="#FFF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minWidth="32dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:paddingHorizontal="8dp" />
+            android:textStyle="bold"
+            tools:text="2" />
 
         <ImageButton
             android:id="@+id/btnPlus"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@drawable/bg_circle_dark"
-            android:src="@android:drawable/ic_input_add"
-            app:tint="#FFF" />
+            android:background="@drawable/background_circle_dark"
+            android:src="@drawable/ic_add_circle"
+            app:tint="@android:color/white" />
     </LinearLayout>
+
 </LinearLayout>
