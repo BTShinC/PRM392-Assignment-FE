@@ -33,26 +33,21 @@ public class FoodDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "FoodDetailActivity";
 
-    // Views cũ
+    // Views
     private ImageView imgFoodDetail, btnBack;
     private TextView tvFoodNameDetail, tvPriceDetail, tvCategoryDetail, tvDeliveryType;
     private TextView tvLocationDetail, tvRatingDetail, tvReviewsDetail, tvDescription;
-    private TextView btnEdit;
+    private TextView btnEdit, tvPriceBottom; // Thêm tvPriceBottom
     private LinearLayout ingredientsContainer;
-
-    // Thêm vào: Views cho chức năng giỏ hàng
     private Button btnAddToCart;
     private ImageView btnIncrease, btnDecrease;
     private TextView tvQuantity;
 
-    // Data & Repo cũ
+    // Data & API
     private FoodRepository foodRepository;
-
-    // Thêm vào: Các thành phần cho API và quản lý token
     private ApiService apiService;
     private TokenManager tokenManager;
 
-    // Thêm vào: Biến để lưu trạng thái
     private String currentMenuItemId;
     private int quantity = 1;
 
@@ -63,7 +58,6 @@ public class FoodDetailActivity extends AppCompatActivity {
 
         foodRepository = new FoodRepository();
 
-        // Thêm vào: Khởi tạo các thành phần API
         ApiClient.init(this);
         tokenManager = new TokenManager(this);
         apiService = ApiClient.getClient().create(ApiService.class);
@@ -86,20 +80,16 @@ public class FoodDetailActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tv_description);
         btnEdit = findViewById(R.id.btn_edit);
 
-        ingredientsContainer = findViewById(R.id.ingredients_container);
-
-        // Thêm vào: Ánh xạ các view của chức năng giỏ hàng
         btnAddToCart = findViewById(R.id.btn_add_to_cart);
         btnIncrease = findViewById(R.id.btn_increase);
         btnDecrease = findViewById(R.id.btn_decrease);
         tvQuantity = findViewById(R.id.tv_quantity);
+        tvPriceBottom = findViewById(R.id.tv_price_bottom); // Ánh xạ tv_price_bottom
 
-        // Thêm vào: Set số lượng ban đầu
         tvQuantity.setText(String.valueOf(quantity));
     }
 
     private void loadDataFromIntent() {
-        // Thêm vào: Lưu menuItemId vào biến thành viên
         this.currentMenuItemId = getIntent().getStringExtra("menu_item_id");
 
         if (currentMenuItemId != null && !currentMenuItemId.isEmpty()) {
@@ -115,15 +105,21 @@ public class FoodDetailActivity extends AppCompatActivity {
             public void onSuccess(MenuItemResponse menuItem) {
                 runOnUiThread(() -> {
                     if (menuItem.getName() != null) tvFoodNameDetail.setText(menuItem.getName());
-                    if (menuItem.getPrice() != null) tvPriceDetail.setText(menuItem.getFormattedPrice());
-                    if (menuItem.getCategoryId() != null) tvCategoryDetail.setText(menuItem.getCategoryName());
+                    if (menuItem.getPrice() != null) {
+                        String formattedPrice = "$" + menuItem.getPrice();
+                        tvPriceDetail.setText(formattedPrice);
+                        tvPriceBottom.setText(formattedPrice); // Cập nhật giá ở bottom bar
+                    }
+                    if (menuItem.getCategoryName() != null) tvCategoryDetail.setText(menuItem.getCategoryName());
                     if (menuItem.getDescription() != null) tvDescription.setText(menuItem.getDescription());
 
                     tvLocationDetail.setText("Restaurant Location");
                     tvDeliveryType.setText("Delivery Available");
-                    tvRatingDetail.setText("");
+                    tvRatingDetail.setText("4.5");
                     tvReviewsDetail.setText("(120 Reviews)");
                     imgFoodDetail.setImageResource(R.drawable.onboarding1);
+
+                    setupIngredients();
                 });
             }
 
@@ -144,28 +140,30 @@ public class FoodDetailActivity extends AppCompatActivity {
         String foodLocation = getIntent().getStringExtra("food_location");
         String foodDescription = getIntent().getStringExtra("food_description");
         String deliveryType = getIntent().getStringExtra("food_delivery_type");
+        float foodRating = getIntent().getFloatExtra("food_rating", 0.0f);
+        int foodReviews = getIntent().getIntExtra("food_reviews", 0);
 
         if (foodName != null) tvFoodNameDetail.setText(foodName);
-        if (foodPrice != null) tvPriceDetail.setText(foodPrice);
+        if (foodPrice != null) {
+            tvPriceDetail.setText(foodPrice);
+            tvPriceBottom.setText(foodPrice); // Cập nhật giá ở bottom bar
+        }
         if (foodCategory != null) tvCategoryDetail.setText(foodCategory);
         if (foodLocation != null) tvLocationDetail.setText(foodLocation);
         if (foodDescription != null) tvDescription.setText(foodDescription);
         if (deliveryType != null) tvDeliveryType.setText(deliveryType);
-
 
         tvRatingDetail.setText(String.valueOf(foodRating));
         tvReviewsDetail.setText("(" + foodReviews + " Reviews)");
         imgFoodDetail.setImageResource(foodImage);
 
         setupIngredients();
-
     }
 
     private void setupClickListeners() {
         btnBack.setOnClickListener(v -> finish());
         btnEdit.setOnClickListener(v -> {});
 
-        // Thêm vào: Các listener cho chức năng giỏ hàng
         btnIncrease.setOnClickListener(v -> {
             quantity++;
             tvQuantity.setText(String.valueOf(quantity));
@@ -181,8 +179,6 @@ public class FoodDetailActivity extends AppCompatActivity {
         btnAddToCart.setOnClickListener(v -> addItemToCart());
     }
 
-
-    // Thêm vào: Phương thức mới để gọi API thêm vào giỏ hàng
     private void addItemToCart() {
         String token = tokenManager.getToken();
         if (token == null || token.isEmpty()) {
