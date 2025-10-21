@@ -43,9 +43,6 @@ public interface ApiService {
     @GET("api/users/v1/check-admin-exists")
     Call<Boolean> checkAdminExists();
 
-    /**
-     * GET danh sách menu items với pagination
-     */
     @GET("api/menu-items")
     Call<PageResponse<MenuItemResponse>> getMenuItems(
             @Query("page") Integer page,
@@ -54,16 +51,10 @@ public interface ApiService {
             @Query("search") String search,
             @Query("categoryId") String categoryId
     );
-    
-    /**
-     * GET menu item theo ID
-     */
+
     @GET("api/menu-items/{id}")
     Call<MenuItemResponse> getMenuItemById(@Path("id") String id);
-    
-    /**
-     * GET danh sách categories với pagination
-     */
+
     @GET("api/menu-categories")
     Call<PageResponse<MenuCategoryResponse>> getMenuCategories(
             @Query("page") Integer page,

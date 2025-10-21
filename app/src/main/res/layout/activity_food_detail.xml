@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,6 +24,7 @@
             android:padding="16dp"
             android:gravity="center_vertical"
             android:background="@color/white">
+
             <ImageView
                 android:id="@+id/btn_back"
                 android:layout_width="24dp"
@@ -50,12 +52,15 @@
                 android:textColor="@color/orange"
                 android:background="?attr/selectableItemBackground"
                 android:padding="8dp" />
+
         </LinearLayout>
 
+        <!-- Food Image with Indicators -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:background="@color/white">
+
             <ImageView
                 android:id="@+id/img_food_detail"
                 android:layout_width="match_parent"
@@ -64,6 +69,7 @@
                 android:src="@drawable/onboarding1"
                 android:layout_margin="16dp" />
 
+            <!-- Category and Delivery Tags -->
             <TextView
                 android:id="@+id/tv_category_detail"
                 android:layout_width="wrap_content"
@@ -94,6 +100,7 @@
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="32dp" />
 
+            <!-- Indicator Dots -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -118,15 +125,20 @@
                     android:layout_width="8dp"
                     android:layout_height="8dp"
                     android:background="@color/light_gray" />
+
             </LinearLayout>
+
         </RelativeLayout>
 
+        <!-- Food Info Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/white"
             android:padding="16dp">
+
+            <!-- Food Name and Price -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -151,8 +163,10 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/black" />
+
             </LinearLayout>
 
+            <!-- Location and Rating -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -197,9 +211,12 @@
                     android:textSize="14sp"
                     android:textColor="@color/medium_gray"
                     android:layout_marginStart="4dp" />
+
             </LinearLayout>
+
         </LinearLayout>
 
+        <!-- Description Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -207,29 +224,7 @@
             android:background="@color/white"
             android:padding="16dp"
             android:layout_marginTop="8dp">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/ingredients"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="16dp" />
 
-            <LinearLayout
-                android:id="@+id/ingredients_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/white"
-            android:padding="16dp"
-            android:layout_marginTop="8dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -247,6 +242,7 @@
                 android:textSize="14sp"
                 android:textColor="@color/medium_gray"
                 android:lineSpacingExtra="4dp" />
+
         </LinearLayout>
 
     </LinearLayout>

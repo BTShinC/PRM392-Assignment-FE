@@ -45,13 +45,13 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         // Set click listener for the entire item
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, FoodDetailActivity.class);
+            intent.putExtra("menu_item_id", food.getId());
             intent.putExtra("food_name", food.getName());
             intent.putExtra("food_price", food.getPrice());
             intent.putExtra("food_category", food.getCategory());
             intent.putExtra("food_image", food.getImageResource());
             intent.putExtra("food_location", food.getLocation());
             intent.putExtra("food_description", food.getDescription());
-            intent.putExtra("food_delivery_type", food.getDeliveryType());
             context.startActivity(intent);
         });
         

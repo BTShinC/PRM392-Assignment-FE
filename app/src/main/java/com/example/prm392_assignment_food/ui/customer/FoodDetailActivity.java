@@ -85,6 +85,7 @@ public class FoodDetailActivity extends AppCompatActivity {
         tvReviewsDetail = findViewById(R.id.tv_reviews_detail);
         tvDescription = findViewById(R.id.tv_description);
         btnEdit = findViewById(R.id.btn_edit);
+
         ingredientsContainer = findViewById(R.id.ingredients_container);
 
         // Thêm vào: Ánh xạ các view của chức năng giỏ hàng
@@ -114,17 +115,15 @@ public class FoodDetailActivity extends AppCompatActivity {
             public void onSuccess(MenuItemResponse menuItem) {
                 runOnUiThread(() -> {
                     if (menuItem.getName() != null) tvFoodNameDetail.setText(menuItem.getName());
-                    if (menuItem.getPrice() != null) tvPriceDetail.setText("$" + menuItem.getPrice());
+                    if (menuItem.getPrice() != null) tvPriceDetail.setText(menuItem.getFormattedPrice());
                     if (menuItem.getCategoryId() != null) tvCategoryDetail.setText(menuItem.getCategoryName());
                     if (menuItem.getDescription() != null) tvDescription.setText(menuItem.getDescription());
 
                     tvLocationDetail.setText("Restaurant Location");
                     tvDeliveryType.setText("Delivery Available");
-                    tvRatingDetail.setText("4.5");
+                    tvRatingDetail.setText("");
                     tvReviewsDetail.setText("(120 Reviews)");
                     imgFoodDetail.setImageResource(R.drawable.onboarding1);
-
-                    setupIngredients();
                 });
             }
 
@@ -132,7 +131,6 @@ public class FoodDetailActivity extends AppCompatActivity {
             public void onError(String errorMessage) {
                 runOnUiThread(() -> {
                     Toast.makeText(FoodDetailActivity.this, "Error loading food details: " + errorMessage, Toast.LENGTH_SHORT).show();
-                    loadDataFromIntentExtras();
                 });
             }
         });
@@ -142,8 +140,6 @@ public class FoodDetailActivity extends AppCompatActivity {
         String foodName = getIntent().getStringExtra("food_name");
         String foodPrice = getIntent().getStringExtra("food_price");
         String foodCategory = getIntent().getStringExtra("food_category");
-        float foodRating = getIntent().getFloatExtra("food_rating", 0.0f);
-        int foodReviews = getIntent().getIntExtra("food_reviews", 0);
         int foodImage = getIntent().getIntExtra("food_image", R.drawable.onboarding1);
         String foodLocation = getIntent().getStringExtra("food_location");
         String foodDescription = getIntent().getStringExtra("food_description");
@@ -156,11 +152,13 @@ public class FoodDetailActivity extends AppCompatActivity {
         if (foodDescription != null) tvDescription.setText(foodDescription);
         if (deliveryType != null) tvDeliveryType.setText(deliveryType);
 
+
         tvRatingDetail.setText(String.valueOf(foodRating));
         tvReviewsDetail.setText("(" + foodReviews + " Reviews)");
         imgFoodDetail.setImageResource(foodImage);
 
         setupIngredients();
+
     }
 
     private void setupClickListeners() {
@@ -182,6 +180,7 @@ public class FoodDetailActivity extends AppCompatActivity {
 
         btnAddToCart.setOnClickListener(v -> addItemToCart());
     }
+
 
     // Thêm vào: Phương thức mới để gọi API thêm vào giỏ hàng
     private void addItemToCart() {
@@ -269,4 +268,5 @@ public class FoodDetailActivity extends AppCompatActivity {
 
         parent.addView(ingredientItem);
     }
+
 }

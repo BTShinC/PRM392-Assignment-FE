@@ -24,9 +24,13 @@ public class MenuItemResponse {
     
     @SerializedName("categoryName")
     private String categoryName;
-    
+
     @SerializedName("isAvailable")
     private Boolean available;
+    @SerializedName("rating")
+    private int rating;
+    @SerializedName("comment")
+    private String comment;
 
     public MenuItemResponse() {
     }
@@ -40,6 +44,9 @@ public class MenuItemResponse {
     public String getCategoryId() { return categoryId; }
     public String getCategoryName() { return categoryName; }
     public Boolean getAvailable() { return available; }
+    public String getComment() { return comment; }
+
+    public int getRating() { return rating; }
 
     // Setters
     public void setId(String id) { this.id = id; }
@@ -50,6 +57,11 @@ public class MenuItemResponse {
     public void setCategoryId(String categoryId) { this.categoryId = categoryId; }
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
     public void setAvailable(Boolean available) { this.available = available; }
+
+
+    public void setComment(String comment) { this.comment = comment; }
+
+    public void setRating(int rating) { this.rating = rating; }
 
     // Helper method
     public String getFormattedPrice() {
