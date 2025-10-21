@@ -21,6 +21,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class AdminDashboardFragment extends Fragment {
     private LineChart lineChart;
     private Spinner spinnerLocation, spinnerTimeRange;
     private RecyclerView rvPopularItems;
+    private MaterialCardView runningOrdersCard;
 
     @Nullable
     @Override
@@ -40,10 +42,16 @@ public class AdminDashboardFragment extends Fragment {
         spinnerLocation = view.findViewById(R.id.spinnerLocation);
         spinnerTimeRange = view.findViewById(R.id.spinnerTimeRange);
         rvPopularItems = view.findViewById(R.id.rvPopularItems);
+        runningOrdersCard = view.findViewById(R.id.running_orders_card);
 
         setupSpinners();
         setupLineChart();
         setupRecyclerView();
+
+        runningOrdersCard.setOnClickListener(v -> {
+            RunningOrdersBottomSheetFragment bottomSheet = RunningOrdersBottomSheetFragment.newInstance();
+            bottomSheet.show(getParentFragmentManager(), RunningOrdersBottomSheetFragment.TAG);
+        });
 
         return view;
     }
