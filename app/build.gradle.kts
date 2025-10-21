@@ -48,6 +48,7 @@ dependencies {
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
+    implementation("com.google.firebase:firebase-auth") // <-- ADDED THIS LINE
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-firestore")
 
