@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="8dp"
+    android:layout_margin="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/iv_dashboard"
+            android:layout_width="25dp"
+            android:layout_height="24dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="32dp"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_dashboard"
+            android:contentDescription="Dashboard" />
+
+        <ImageView
+            android:id="@+id/iv_list"
+            android:layout_width="25dp"
+            android:layout_height="24dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="25dp"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_list"
+            android:contentDescription="List" />
+
+        <ImageView
+            android:id="@+id/fab_add"
+            android:layout_width="48dp"
+            android:layout_height="59dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_add" />
+
+        <ImageView
+            android:id="@+id/iv_notification"
+            android:layout_width="25dp"
+            android:layout_height="24dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="25dp"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_notification"
+            android:contentDescription="Notifications" />
+
+        <ImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="25dp"
+            android:layout_height="29dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginRight="25dp"
+            android:src="@drawable/ic_profile"
+            android:contentDescription="Profile" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
