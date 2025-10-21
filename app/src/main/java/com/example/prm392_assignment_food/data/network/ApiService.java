@@ -1,5 +1,7 @@
 package com.example.prm392_assignment_food.data.network;
 
+import com.example.prm392_assignment_food.data.model.CartItemRequest;
+import com.example.prm392_assignment_food.data.model.CartResponse;
 import com.example.prm392_assignment_food.data.model.ForgotPasswordRequest;
 import com.example.prm392_assignment_food.data.model.ForgotPasswordResponse;
 import com.example.prm392_assignment_food.data.model.LoginRequest;
@@ -11,11 +13,14 @@ import com.example.prm392_assignment_food.data.model.ResetPasswordResponse;
 import com.example.prm392_assignment_food.data.model.MenuItemResponse;
 import com.example.prm392_assignment_food.data.model.MenuCategoryResponse;
 import com.example.prm392_assignment_food.data.model.PageResponse;
+import com.example.prm392_assignment_food.data.model.UpdateQuantityRequest;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -57,4 +62,19 @@ public interface ApiService {
             @Query("sort") String sort,
             @Query("search") String search
     );
+
+    @GET("api/carts/{userId}")
+    Call<CartResponse> getCart(@Path("userId") String userId);
+
+    @PUT("/{userId}/items/{menuItemId}")
+    Call<CartResponse> updateItem(@Path("userId") String userId, @Path("menuItemId") String menuItemId, @Body UpdateQuantityRequest request);
+
+    @DELETE("api/carts/{userId}/items/{menuItemId}")
+    Call<Void> removeCartItem(
+            @Path("userId") String userId,
+            @Path("menuItemId") String menuItemId
+    );
+
+    @POST("api/carts/{userId}/items")
+    Call<CartResponse> addItem(@Path("userId") String userId, @Body CartItemRequest request);
 }
