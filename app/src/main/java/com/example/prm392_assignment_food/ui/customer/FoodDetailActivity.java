@@ -47,7 +47,6 @@ public class FoodDetailActivity extends AppCompatActivity {
         tvReviewsDetail = findViewById(R.id.tv_reviews_detail);
         tvDescription = findViewById(R.id.tv_description);
         btnEdit = findViewById(R.id.btn_edit);
-        ingredientsContainer = findViewById(R.id.ingredients_container);
     }
     
     private void loadDataFromIntent() {
@@ -67,18 +66,16 @@ public class FoodDetailActivity extends AppCompatActivity {
             public void onSuccess(MenuItemResponse menuItem) {
                 runOnUiThread(() -> {
                     if (menuItem.getName() != null) tvFoodNameDetail.setText(menuItem.getName());
-                    if (menuItem.getPrice() != null) tvPriceDetail.setText("$" + menuItem.getPrice());
+                    if (menuItem.getPrice() != null) tvPriceDetail.setText(menuItem.getFormattedPrice());
                     if (menuItem.getCategoryId() != null) tvCategoryDetail.setText(menuItem.getCategoryName());
                     if (menuItem.getDescription() != null) tvDescription.setText(menuItem.getDescription());
                     
 
                     tvLocationDetail.setText("Restaurant Location");
                     tvDeliveryType.setText("Delivery Available");
-                    tvRatingDetail.setText("4.5");
+                    tvRatingDetail.setText("");
                     tvReviewsDetail.setText("(120 Reviews)");
                     imgFoodDetail.setImageResource(R.drawable.onboarding1);
-
-                    setupIngredients();
                 });
             }
             
@@ -86,7 +83,6 @@ public class FoodDetailActivity extends AppCompatActivity {
             public void onError(String errorMessage) {
                 runOnUiThread(() -> {
                     Toast.makeText(FoodDetailActivity.this, "Error loading food details: " + errorMessage, Toast.LENGTH_SHORT).show();
-                    loadDataFromIntentExtras();
                 });
             }
         });
@@ -96,8 +92,6 @@ public class FoodDetailActivity extends AppCompatActivity {
         String foodName = getIntent().getStringExtra("food_name");
         String foodPrice = getIntent().getStringExtra("food_price");
         String foodCategory = getIntent().getStringExtra("food_category");
-        float foodRating = getIntent().getFloatExtra("food_rating", 0.0f);
-        int foodReviews = getIntent().getIntExtra("food_reviews", 0);
         int foodImage = getIntent().getIntExtra("food_image", R.drawable.onboarding1);
         String foodLocation = getIntent().getStringExtra("food_location");
         String foodDescription = getIntent().getStringExtra("food_description");
@@ -109,13 +103,8 @@ public class FoodDetailActivity extends AppCompatActivity {
         if (foodLocation != null) tvLocationDetail.setText(foodLocation);
         if (foodDescription != null) tvDescription.setText(foodDescription);
         if (deliveryType != null) tvDeliveryType.setText(deliveryType);
-        
-        tvRatingDetail.setText(String.valueOf(foodRating));
-        tvReviewsDetail.setText("(" + foodReviews + " Reviews)");
+
         imgFoodDetail.setImageResource(foodImage);
-        
-        // Setup ingredients after data is loaded
-        setupIngredients();
     }
     
     private void setupClickListeners() {
@@ -123,55 +112,5 @@ public class FoodDetailActivity extends AppCompatActivity {
         
         btnEdit.setOnClickListener(v -> {
         });
-    }
-    
-    private void setupIngredients() {
-        // Get ingredients from intent or use default
-        List<String> ingredients = Arrays.asList("Salt", "Chicken", "Onion", "Garlic", "Pappers", "Ginger", "Broccoli", "Orange", "Walnut");
-        List<String> allergyIngredients = Arrays.asList("Onion", "Pappers");
-        
-        // Clear existing ingredients if any
-        if (ingredientsContainer != null) {
-            ingredientsContainer.removeAllViews();
-            
-            // Create rows of ingredients (5 per row)
-            LinearLayout currentRow = null;
-            for (int i = 0; i < ingredients.size(); i++) {
-                if (i % 5 == 0) {
-                    // Create new row
-                    currentRow = new LinearLayout(this);
-                    currentRow.setOrientation(LinearLayout.HORIZONTAL);
-                    currentRow.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    ));
-                    ingredientsContainer.addView(currentRow);
-                }
-                
-                // Create ingredient item
-                createIngredientItem(currentRow, ingredients.get(i), allergyIngredients.contains(ingredients.get(i)));
-            }
-        }
-    }
-    
-    private void createIngredientItem(LinearLayout parent, String ingredientName, boolean hasAllergy) {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        LinearLayout ingredientItem = (LinearLayout) inflater.inflate(R.layout.item_ingredient, parent, false);
-        
-        ImageView imgIngredient = ingredientItem.findViewById(R.id.img_ingredient);
-        TextView tvIngredientName = ingredientItem.findViewById(R.id.tv_ingredient_name);
-        TextView tvIngredientAllergy = ingredientItem.findViewById(R.id.tv_ingredient_allergy);
-        
-        // Set ingredient data
-        imgIngredient.setImageResource(IngredientHelper.getIngredientImage(ingredientName));
-        tvIngredientName.setText(ingredientName);
-        
-        if (hasAllergy) {
-            tvIngredientAllergy.setVisibility(TextView.VISIBLE);
-        } else {
-            tvIngredientAllergy.setVisibility(TextView.GONE);
-        }
-        
-        parent.addView(ingredientItem);
     }
 }
