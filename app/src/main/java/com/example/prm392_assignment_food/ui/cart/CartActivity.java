@@ -1,5 +1,6 @@
 package com.example.prm392_assignment_food.ui.cart;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.example.prm392_assignment_food.data.model.CartResponse;
 import com.example.prm392_assignment_food.data.model.UpdateQuantityRequest;
 import com.example.prm392_assignment_food.data.network.ApiClient;
 import com.example.prm392_assignment_food.data.network.ApiService;
+import com.example.prm392_assignment_food.ui.placeOrder.PlaceOrderActivity;
 import com.example.prm392_assignment_food.utils.JwtUtils;
 import com.example.prm392_assignment_food.utils.TokenManager;
 
@@ -30,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import retrofit2.Call;
@@ -96,6 +97,13 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnIte
         textViewEditAddress.setOnClickListener(v -> showEditAddressDialog());
         textViewEditItems.setOnClickListener(v -> toggleEditMode());
         buttonDeleteSelected.setOnClickListener(v -> deleteSelectedItems());
+
+        // --- THÊM VÀO ---
+        buttonPlaceOrder.setOnClickListener(v -> {
+            Intent intent = new Intent(CartActivity.this, PlaceOrderActivity.class);
+            startActivity(intent);
+        });
+        // --- KẾT THÚC THÊM ---
     }
 
     private void toggleEditMode() {
@@ -177,7 +185,6 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnIte
         }
     }
     
-    // ... (Các phương thức còn lại: loadInitialCartData, onIncreaseQuantity, ... giữ nguyên) ...
     private void showEditAddressDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Edit Delivery Address");
@@ -290,7 +297,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnIte
         textViewTotalPrice.setText(String.format(Locale.US, "$%.2f", totalPrice));
 
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
-            Toast.makeText(this, "Giỏ hàng của bạn đang trống", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CartActivity.this, "Giỏ hàng của bạn đang trống", Toast.LENGTH_SHORT).show();
         }
     }
 

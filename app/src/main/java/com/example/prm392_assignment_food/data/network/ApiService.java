@@ -2,6 +2,7 @@ package com.example.prm392_assignment_food.data.network;
 
 import com.example.prm392_assignment_food.data.model.CartItemRequest;
 import com.example.prm392_assignment_food.data.model.CartResponse;
+import com.example.prm392_assignment_food.data.model.CreateOrderRequest;
 import com.example.prm392_assignment_food.data.model.ForgotPasswordRequest;
 import com.example.prm392_assignment_food.data.model.ForgotPasswordResponse;
 import com.example.prm392_assignment_food.data.model.LoginRequest;
@@ -13,6 +14,7 @@ import com.example.prm392_assignment_food.data.model.ResetPasswordResponse;
 import com.example.prm392_assignment_food.data.model.MenuItemResponse;
 import com.example.prm392_assignment_food.data.model.MenuCategoryResponse;
 import com.example.prm392_assignment_food.data.model.PageResponse;
+import com.example.prm392_assignment_food.data.model.ResponseDto;
 import com.example.prm392_assignment_food.data.model.UpdateQuantityRequest;
 
 import retrofit2.Call;
@@ -77,4 +79,8 @@ public interface ApiService {
 
     @POST("api/carts/{userId}/items")
     Call<CartResponse> addItem(@Path("userId") String userId, @Body CartItemRequest request);
+
+    @POST("/api/orders")
+    ResponseDto<Object> createOrder(@Body CreateOrderRequest request);
+
 }
