@@ -83,4 +83,6 @@ public interface ApiService {
     @POST("/api/orders")
     ResponseDto<Object> createOrder(@Body CreateOrderRequest request);
 
+    @GET("/api/orders/users/{userId}")
+    ResponseDto<Object> getOrders(@Query("userId") String userId);
 }
