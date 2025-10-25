@@ -1,124 +1,315 @@
 package com.example.prm392_assignment_food.ui.cart;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_assignment_food.R;
-import java.util.List;
+import com.example.prm392_assignment_food.data.model.CartItemResponse;
+import com.example.prm392_assignment_food.data.model.CartResponse;
+import com.example.prm392_assignment_food.data.model.UpdateQuantityRequest;
+import com.example.prm392_assignment_food.data.network.ApiClient;
+import com.example.prm392_assignment_food.data.network.ApiService;
+import com.example.prm392_assignment_food.ui.placeOrder.PlaceOrderActivity;
+import com.example.prm392_assignment_food.utils.JwtUtils;
+import com.example.prm392_assignment_food.utils.TokenManager;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * CartActivity hiển thị giỏ hàng và xử lý các tương tác của người dùng.
- * Activity này implement OnCartChangeListener để lắng nghe các thay đổi từ Adapter.
- */
-public class CartActivity extends AppCompatActivity implements CartAdapter.OnCartChangeListener {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class CartActivity extends AppCompatActivity implements CartAdapter.OnItemInteractionListener {
+
+    private static final String TAG = "CartActivity";
+
+    // Views
     private RecyclerView cartRecyclerView;
+    private TextView textViewTotalPrice, textViewEditAddress, textViewAddress, textViewEditItems;
+    private ProgressBar progressBar;
+    private ImageView backButton;
+    private Button buttonPlaceOrder, buttonDeleteSelected;
+
+    // API & Data
+    private ApiService apiService;
+    private TokenManager tokenManager;
     private CartAdapter cartAdapter;
-    private List<Cart> cartItems;
-    private CartManager cartManager;
-    private TextView textViewTotalPrice;
-    private TextView textViewEditAddress;
-    private TextView textViewAddress;
+    private String currentUserId;
+    private boolean isInEditMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        // Lấy instance của CartManager để quản lý dữ liệu giỏ hàng
-        cartManager = CartManager.getInstance();
+        initViews();
+        initApi();
+        setupRecyclerView();
+        setupListeners();
+        loadInitialCartData();
+    }
 
-        // Ánh xạ các view từ layout XML
+    private void initViews() {
         cartRecyclerView = findViewById(R.id.cartRecyclerView);
-        textViewTotalPrice = findViewById(R.id.textViewTotalPrice); // ID cho tổng tiền
-        textViewEditAddress = findViewById(R.id.textViewEditAddress); // ID cho nút "EDIT" địa chỉ
-        textViewAddress = findViewById(R.id.textViewAddress); // ID cho TextView hiển thị địa chỉ
+        textViewTotalPrice = findViewById(R.id.textViewTotalPrice);
+        progressBar = findViewById(R.id.progressBar);
+        backButton = findViewById(R.id.backButton);
+        textViewEditAddress = findViewById(R.id.textViewEditAddress);
+        textViewAddress = findViewById(R.id.textViewAddress);
+        textViewEditItems = findViewById(R.id.textViewEditItems);
+        buttonPlaceOrder = findViewById(R.id.buttonPlaceOrder);
+        buttonDeleteSelected = findViewById(R.id.buttonDeleteSelected);
+    }
 
-        // ---- PHẦN NÀY DÙNG ĐỂ GIẢ LẬP VIỆC THÊM MÓN ĂN ----
-        // Trong ứng dụng thực tế, bạn sẽ thêm món ăn từ một màn hình khác.
-        if (cartManager.getCartItems().isEmpty()) {
-            addSampleItems();
-        }
-        // ---------------------------------------------------
+    private void initApi() {
+        ApiClient.init(this);
+        tokenManager = new TokenManager(this);
+        apiService = ApiClient.getClient().create(ApiService.class);
+    }
 
-        // Lấy danh sách sản phẩm từ CartManager
-        cartItems = cartManager.getCartItems();
-
-        // Cấu hình RecyclerView
+    private void setupRecyclerView() {
+        cartAdapter = new CartAdapter(new ArrayList<>(), this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // Khởi tạo Adapter, truyền "this" vì Activity này đã implement listener
-        cartAdapter = new CartAdapter(cartItems, this);
         cartRecyclerView.setAdapter(cartAdapter);
+    }
 
-        // Gán sự kiện click cho nút "EDIT" địa chỉ
+    private void setupListeners() {
+        backButton.setOnClickListener(v -> finish());
         textViewEditAddress.setOnClickListener(v -> showEditAddressDialog());
+        textViewEditItems.setOnClickListener(v -> toggleEditMode());
+        buttonDeleteSelected.setOnClickListener(v -> deleteSelectedItems());
 
-        // Cập nhật tổng tiền lần đầu khi mở màn hình
-        updateTotalPrice();
+        // --- THÊM VÀO ---
+        buttonPlaceOrder.setOnClickListener(v -> {
+            Intent intent = new Intent(CartActivity.this, PlaceOrderActivity.class);
+            startActivity(intent);
+        });
+        // --- KẾT THÚC THÊM ---
     }
 
-    /**
-     * Phương thức này được gọi lại từ Adapter mỗi khi giỏ hàng có thay đổi (tăng/giảm số lượng).
-     */
+    private void toggleEditMode() {
+        isInEditMode = !isInEditMode;
+        cartAdapter.setEditMode(isInEditMode);
+
+        if (isInEditMode) {
+            textViewEditItems.setText("CANCEL");
+            buttonPlaceOrder.setVisibility(View.GONE);
+            buttonDeleteSelected.setVisibility(View.VISIBLE);
+            onSelectionChanged(0); // Cập nhật text nút xóa lần đầu
+        } else {
+            textViewEditItems.setText("EDIT ITEMS");
+            buttonPlaceOrder.setVisibility(View.VISIBLE);
+            buttonDeleteSelected.setVisibility(View.GONE);
+        }
+    }
+
+    private void deleteSelectedItems() {
+        Set<CartItemResponse> selectedItems = cartAdapter.getSelectedItems();
+        if (currentUserId == null || selectedItems.isEmpty()) {
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc muốn xóa " + selectedItems.size() + " sản phẩm đã chọn?")
+                .setPositiveButton("Xóa", (dialog, which) -> {
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    final AtomicInteger successCount = new AtomicInteger(0);
+                    final int totalItems = selectedItems.size();
+
+                    for (CartItemResponse item : selectedItems) {
+                        apiService.removeCartItem(currentUserId, item.getMenuItemId().toString()).enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    Log.d(TAG, "Đã xóa thành công item: " + item.getMenuItemId());
+                                } else {
+                                    Log.e(TAG, "Lỗi xóa item: " + item.getMenuItemId() + " - Code: " + response.code());
+                                }
+                                // Kiểm tra nếu đã xử lý xong tất cả item
+                                if (successCount.incrementAndGet() == totalItems) {
+                                    runOnUiThread(() -> {
+                                        Toast.makeText(CartActivity.this, "Đã hoàn tất thao tác xóa.", Toast.LENGTH_SHORT).show();
+                                        toggleEditMode(); // Thoát chế độ edit
+                                        loadInitialCartData(); // Tải lại toàn bộ giỏ hàng
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Log.e(TAG, "Lỗi kết nối khi xóa item: " + item.getMenuItemId(), t);
+                                if (successCount.incrementAndGet() == totalItems) {
+                                    runOnUiThread(() -> {
+                                        Toast.makeText(CartActivity.this, "Đã có lỗi xảy ra trong quá trình xóa.", Toast.LENGTH_SHORT).show();
+                                        toggleEditMode();
+                                        loadInitialCartData();
+                                    });
+                                }
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
     @Override
-    public void onCartChanged() {
-        updateTotalPrice();
+    public void onSelectionChanged(int selectedSize) {
+        if (selectedSize > 0) {
+            buttonDeleteSelected.setText(String.format(Locale.US, "DELETE (%d)", selectedSize));
+            buttonDeleteSelected.setEnabled(true);
+        } else {
+            buttonDeleteSelected.setText("DELETE");
+            buttonDeleteSelected.setEnabled(false);
+        }
     }
-
-    /**
-     * Cập nhật hiển thị tổng tiền trên giao diện.
-     */
-    private void updateTotalPrice() {
-        int totalPrice = cartManager.calculateTotalPrice();
-        textViewTotalPrice.setText(String.format(Locale.US, "$%d", totalPrice));
-    }
-
-    /**
-     * Hiển thị một hộp thoại (AlertDialog) để người dùng nhập địa chỉ mới.
-     */
+    
     private void showEditAddressDialog() {
-        // Tạo một trình xây dựng Dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Edit Delivery Address");
-
-        // Tạo một EditText để người dùng nhập liệu
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        // Lấy địa chỉ hiện tại và điền sẵn vào EditText
         input.setText(textViewAddress.getText());
+        input.setPadding(50, 50, 50, 50);
         builder.setView(input);
-
-        // Thiết lập nút "OK"
         builder.setPositiveButton("OK", (dialog, which) -> {
             String newAddress = input.getText().toString().trim();
-            // Chỉ cập nhật nếu người dùng có nhập địa chỉ mới
             if (!newAddress.isEmpty()) {
                 textViewAddress.setText(newAddress);
             }
         });
-        // Thiết lập nút "Cancel"
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
-        // Hiển thị Dialog
         builder.show();
     }
 
-    /**
-     * Phương thức giả lập thêm sản phẩm vào giỏ để test.
-     */
-    private void addSampleItems() {
-        Cart item1 = new Cart("Pizza Calzone European", "14\"", 64, R.drawable.pizza, "10-20 min", 1);
-        cartManager.addItem(item1);
+    private void loadInitialCartData() {
+        String token = tokenManager.getToken();
+        if (token == null || token.isEmpty()) {
+            Toast.makeText(this, "Bạn chưa đăng nhập", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-        Cart item2 = new Cart("Pizza Pepperoni", "12\"", 32, R.drawable.pizza, "10-15 min", 1);
-        cartManager.addItem(item2);
+        this.currentUserId = JwtUtils.getUserId(token);
+        if (currentUserId == null || currentUserId.isEmpty()) {
+            Toast.makeText(this, "Token không hợp lệ, vui lòng đăng nhập lại", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+        cartRecyclerView.setVisibility(View.GONE);
+
+        apiService.getCart(currentUserId).enqueue(new Callback<CartResponse>() {
+            @Override
+            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    updateUiWithCartData(response.body());
+                } else {
+                    handleApiError("Lấy giỏ hàng thất bại", response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartResponse> call, Throwable t) {
+                handleApiFailure(t);
+            }
+        });
+    }
+
+    @Override
+    public void onIncreaseQuantity(CartItemResponse item) {
+        updateItemQuantity(item, item.getQuantity() + 1);
+    }
+
+    @Override
+    public void onDecreaseQuantity(CartItemResponse item) {
+        updateItemQuantity(item, item.getQuantity() - 1);
+    }
+
+    @Override
+    public void onRemoveItem(CartItemResponse item) {
+        updateItemQuantity(item, 0);
+    }
+
+    private void updateItemQuantity(CartItemResponse item, int newQuantity) {
+        if (currentUserId == null) {
+            Toast.makeText(this, "Không tìm thấy User ID. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        UUID menuItemId = item.getMenuItemId();
+        if (menuItemId == null) {
+            Toast.makeText(this, "Lỗi: Không tìm thấy ID của sản phẩm.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        UpdateQuantityRequest request = new UpdateQuantityRequest(newQuantity);
+
+        apiService.updateItem(currentUserId, menuItemId.toString(), request).enqueue(new Callback<CartResponse>() {
+            @Override
+            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(CartActivity.this, "Giỏ hàng đã được cập nhật", Toast.LENGTH_SHORT).show();
+                    updateUiWithCartData(response.body());
+                } else {
+                    handleApiError("Cập nhật thất bại", response.code());
+                    loadInitialCartData();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartResponse> call, Throwable t) {
+                handleApiFailure(t);
+                loadInitialCartData();
+            }
+        });
+    }
+
+    private void updateUiWithCartData(CartResponse cart) {
+        progressBar.setVisibility(View.GONE);
+        cartRecyclerView.setVisibility(View.VISIBLE);
+
+        cartAdapter.updateItems(cart.getItems());
+
+        BigDecimal totalPrice = cart.getTotalPrice() != null ? cart.getTotalPrice() : BigDecimal.ZERO;
+        textViewTotalPrice.setText(String.format(Locale.US, "$%.2f", totalPrice));
+
+        if (cart.getItems() == null || cart.getItems().isEmpty()) {
+            Toast.makeText(CartActivity.this, "Giỏ hàng của bạn đang trống", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handleApiError(String message, int code) {
+        progressBar.setVisibility(View.GONE);
+        Toast.makeText(this, message + ". Code: " + code, Toast.LENGTH_LONG).show();
+        Log.e(TAG, "API call failed with code: " + code);
+    }
+
+    private void handleApiFailure(Throwable t) {
+        progressBar.setVisibility(View.GONE);
+        Toast.makeText(this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_LONG).show();
+        Log.e(TAG, "API call failed on failure: ", t);
     }
 }
-
