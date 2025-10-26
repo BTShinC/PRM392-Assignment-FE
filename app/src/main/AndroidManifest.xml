@@ -20,7 +20,9 @@
         <activity
             android:name=".ui.admin.AdminActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".ui.admin.AdminAnalyticsActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.cart.CartActivity"
             android:exported="false" />

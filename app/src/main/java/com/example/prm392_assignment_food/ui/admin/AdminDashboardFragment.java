@@ -1,5 +1,6 @@
 package com.example.prm392_assignment_food.ui.admin;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +34,7 @@ public class AdminDashboardFragment extends Fragment {
     private Spinner spinnerLocation, spinnerTimeRange;
     private RecyclerView rvPopularItems;
     private MaterialCardView runningOrdersCard;
+    private TextView tvSeeDetails;
 
     @Nullable
     @Override
@@ -43,17 +46,26 @@ public class AdminDashboardFragment extends Fragment {
         spinnerTimeRange = view.findViewById(R.id.spinnerTimeRange);
         rvPopularItems = view.findViewById(R.id.rvPopularItems);
         runningOrdersCard = view.findViewById(R.id.running_orders_card);
+        tvSeeDetails = view.findViewById(R.id.tvSeeDetails);
 
         setupSpinners();
         setupLineChart();
         setupRecyclerView();
+        setupClickListeners();
 
+        return view;
+    }
+
+    private void setupClickListeners() {
         runningOrdersCard.setOnClickListener(v -> {
             RunningOrdersBottomSheetFragment bottomSheet = RunningOrdersBottomSheetFragment.newInstance();
             bottomSheet.show(getParentFragmentManager(), RunningOrdersBottomSheetFragment.TAG);
         });
 
-        return view;
+        tvSeeDetails.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), AdminAnalyticsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void setupSpinners() {

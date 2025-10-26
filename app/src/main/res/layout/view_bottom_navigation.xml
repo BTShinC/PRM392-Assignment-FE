@@ -67,7 +67,7 @@
             android:contentDescription="Add Item" />
     </FrameLayout>
 
-    <!-- Notification Item -->
+    <!-- Notification Item (Placeholder, assuming it exists) -->
     <FrameLayout
         android:id="@+id/notification_container"
         android:layout_width="0dp"
