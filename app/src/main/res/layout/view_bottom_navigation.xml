@@ -9,10 +9,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
         android:background="#FFFFFF"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:padding="12dp">
 
         <ImageView
@@ -20,26 +20,26 @@
             android:layout_width="25dp"
             android:layout_height="24dp"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="32dp"
             android:layout_alignParentTop="true"
-            android:src="@drawable/ic_dashboard"
-            android:contentDescription="Dashboard" />
+            android:layout_marginLeft="42dp"
+            android:contentDescription="Dashboard"
+            android:src="@drawable/ic_dashboard" />
 
         <ImageView
             android:id="@+id/iv_list"
             android:layout_width="25dp"
             android:layout_height="24dp"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="25dp"
             android:layout_alignParentTop="true"
-            android:src="@drawable/ic_list"
-            android:contentDescription="List" />
+            android:layout_marginLeft="30dp"
+            android:contentDescription="List"
+            android:src="@drawable/ic_list" />
 
         <ImageView
             android:id="@+id/fab_add"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="59dp"
-            android:layout_weight="1"
+            android:layout_weight="0"
             android:src="@drawable/ic_add" />
 
         <ImageView
@@ -47,19 +47,19 @@
             android:layout_width="25dp"
             android:layout_height="24dp"
             android:layout_alignParentLeft="true"
-            android:layout_marginRight="25dp"
             android:layout_alignParentTop="true"
-            android:src="@drawable/ic_notification"
-            android:contentDescription="Notifications" />
+            android:layout_marginRight="30dp"
+            android:contentDescription="Notifications"
+            android:src="@drawable/ic_notification" />
 
         <ImageView
             android:id="@+id/iv_profile"
             android:layout_width="25dp"
             android:layout_height="29dp"
+            android:layout_marginRight="32dp"
             android:layout_marginBottom="1dp"
-            android:layout_marginRight="25dp"
-            android:src="@drawable/ic_profile"
-            android:contentDescription="Profile" />
+            android:contentDescription="Profile"
+            android:src="@drawable/ic_profile" />
 
     </LinearLayout>
 
