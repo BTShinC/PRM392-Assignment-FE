@@ -1,43 +1,24 @@
 package com.example.prm392_assignment_food.data.model;
 
-import java.math.BigDecimal;
+import com.google.gson.annotations.SerializedName;
+import java.math.BigDecimal; // Sử dụng BigDecimal cho giá tiền để đảm bảo chính xác
 import java.util.UUID;
 
 public class OrderItemRequest {
+
+    @SerializedName("menuItemId")
     private UUID menuItemId;
 
-    private Integer quantity;
+    @SerializedName("quantity")
+    private int quantity;
 
+    @SerializedName("price")
     private BigDecimal price;
 
-    public OrderItemRequest(UUID menuItemId, Integer quantity, BigDecimal price) {
+
+    public OrderItemRequest(UUID menuItemId, int quantity, BigDecimal price) {
         this.menuItemId = menuItemId;
         this.quantity = quantity;
-        this.price = price;
-
-    }
-    // Getters and setters
-    public UUID getMenuItemId() {
-        return menuItemId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setMenuItemId(UUID menuItemId) {
-        this.menuItemId = menuItemId;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }

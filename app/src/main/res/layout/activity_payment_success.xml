@@ -23,7 +23,9 @@
             android:src="@drawable/ic_payment_success"
             android:contentDescription="Success" />
 
+        <!-- ID ĐÃ ĐƯỢC THÊM VÀO ĐÂY -->
         <TextView
+            android:id="@+id/tvPaymentStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Congratulations!"
@@ -34,7 +36,9 @@
             android:layout_marginTop="20dp"
             android:letterSpacing="0.02" />
 
+        <!-- ID ĐÃ ĐƯỢC THÊM VÀO ĐÂY -->
         <TextView
+            android:id="@+id/tvOrderId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="You successfully made a payment,\nenjoy our service!"
@@ -107,6 +111,22 @@
             android:textSize="16sp"
             android:letterSpacing="0.05"
             android:elevation="4dp" />
+
+        <!-- ID ĐÃ ĐƯỢC THÊM VÀO ĐÂY -->
+        <Button
+            android:id="@+id/btnBackToHome"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="GO HOME"
+            android:background="@drawable/bg_payment_unselected"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:letterSpacing="0.05"
+            android:elevation="4dp" />
+
+
     </LinearLayout>
 
 </LinearLayout>
