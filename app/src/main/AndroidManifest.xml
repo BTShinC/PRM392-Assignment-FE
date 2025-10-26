@@ -20,7 +20,7 @@
         <activity
             android:name=".ui.admin.AdminActivity"
             android:exported="false" />
-      
+
         <activity
             android:name=".ui.admin.AdminAnalyticsActivity"
             android:exported="false" />
@@ -112,6 +112,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.customer.FoodDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.customer.HomeActivity"
             android:exported="false" />
 
 

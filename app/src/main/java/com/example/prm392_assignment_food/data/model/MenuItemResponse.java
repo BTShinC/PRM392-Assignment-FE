@@ -1,6 +1,9 @@
 package com.example.prm392_assignment_food.data.model;
 
 import com.google.gson.annotations.SerializedName;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 
 public class MenuItemResponse {
@@ -65,7 +68,14 @@ public class MenuItemResponse {
 
     // Helper method
     public String getFormattedPrice() {
-        return price != null ? String.format("%.0f", price) + " VND" : "0 VND";
+        if (price == null) return "0 VND";
+        
+        // Tạo DecimalFormat với dấu chấm phân cách hàng nghìn
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setGroupingSeparator('.');
+        DecimalFormat formatter = new DecimalFormat("#,###", symbols);
+        
+        return formatter.format(price.longValue()) + " VND";
     }
 }
 

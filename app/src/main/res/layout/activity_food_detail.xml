@@ -159,7 +159,7 @@
                     android:id="@+id/tv_price_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$60"
+                    android:text="60.000 VND"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/black" />
@@ -267,7 +267,7 @@
                 android:id="@+id/tv_price_bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$32"
+                android:text="60.000 VND"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"

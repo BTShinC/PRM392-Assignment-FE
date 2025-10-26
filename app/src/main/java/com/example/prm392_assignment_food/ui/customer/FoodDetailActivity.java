@@ -106,7 +106,7 @@ public class FoodDetailActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if (menuItem.getName() != null) tvFoodNameDetail.setText(menuItem.getName());
                     if (menuItem.getPrice() != null) {
-                        String formattedPrice = "$" + menuItem.getPrice();
+                        String formattedPrice = menuItem.getFormattedPrice();
                         tvPriceDetail.setText(formattedPrice);
                         tvPriceBottom.setText(formattedPrice); // Cập nhật giá ở bottom bar
                     }
