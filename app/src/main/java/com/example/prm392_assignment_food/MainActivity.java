@@ -11,9 +11,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.prm392_assignment_food.ui.admin.AdminActivity;
+import com.example.prm392_assignment_food.ui.admin.AddItemActivity;
+import com.example.prm392_assignment_food.ui.auth.ProfileActivity;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
 import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
 import com.example.prm392_assignment_food.ui.customer.FoodListActivity;
+import com.example.prm392_assignment_food.ui.profile.AdminProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +55,33 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, CartActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btnTestProfile = findViewById(R.id.btnTestProfile);
+        btnTestProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btnTestAddItem = findViewById(R.id.btnTestAddItem);
+        btnTestAddItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btnTestAdmin = findViewById(R.id.btn_test_admin);
+        btnTestAdmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AdminActivity.class);
                 startActivity(intent);
             }
         });

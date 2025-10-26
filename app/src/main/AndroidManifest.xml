@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,6 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PRM392_Assignment_Food"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ui.admin.AdminActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.admin.AdminAnalyticsActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.placeOrder.PlaceOrderActivity"
             android:exported="false"
@@ -64,6 +72,9 @@
             android:name=".ui.auth.ProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.profile.AdminProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true" />
         <activity
@@ -105,6 +116,12 @@
         <activity
             android:name=".ui.customer.HomeActivity"
             android:exported="false" />
+
+
+        <activity
+            android:name=".ui.admin.AddItemActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

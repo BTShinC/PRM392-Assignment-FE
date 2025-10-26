@@ -1,4 +1,4 @@
-package com.example.prm392_assignment_food.data.model;
+package com.example.prm392_assignment_food.data.model.auth;
 
 public class ForgotPasswordRequest {
     private String email;
