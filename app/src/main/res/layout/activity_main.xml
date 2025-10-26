@@ -46,21 +46,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Cart Test"
-        app:layout_constraintBottom_toTopOf="@+id/btnAdminProfile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnFoodList" />
-
-    <Button
-        android:id="@+id/btnAdminProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Admin Profile"
         app:layout_constraintBottom_toTopOf="@+id/btnTestProfile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCartTest" />
+        app:layout_constraintTop_toBottomOf="@+id/btnFoodList" />
 
     <Button
         android:id="@+id/btnTestProfile"
@@ -71,7 +60,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btnTestAddItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAdminProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/btnCartTest" />
 
     <Button
         android:id="@+id/btnTestAddItem"

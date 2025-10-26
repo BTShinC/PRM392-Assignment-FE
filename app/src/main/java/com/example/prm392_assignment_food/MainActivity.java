@@ -59,15 +59,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button btnAdminProfile = findViewById(R.id.btnAdminProfile);
-        btnAdminProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AdminProfileActivity.class);
-                startActivity(intent);
-            }
-        });
-
         Button btnTestProfile = findViewById(R.id.btnTestProfile);
         btnTestProfile.setOnClickListener(new View.OnClickListener() {
             @Override
