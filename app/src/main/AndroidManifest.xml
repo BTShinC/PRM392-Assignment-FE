@@ -20,8 +20,16 @@
         <activity
             android:name=".ui.admin.AdminActivity"
             android:exported="false" />
+      
         <activity
             android:name=".ui.admin.AdminAnalyticsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.placeOrder.PlaceOrderActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PRM392_Assignment_Food" />
+        <activity
+            android:name=".ui.order.OrderActivity"
             android:exported="false" />
         <activity
             android:name=".ui.cart.CartActivity"
@@ -54,14 +62,12 @@
         <activity
             android:name=".ui.auth.VerificationActivity"
             android:exported="false" />
-
         <activity
             android:name=".ui.auth.ForgotPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".ui.auth.ResetPasswordActivity"
             android:exported="false" />
-
         <activity
             android:name=".ui.auth.ProfileActivity"
             android:exported="false" />
@@ -77,33 +83,26 @@
         <activity
             android:name=".ui.location.TrackOrderActivity"
             android:exported="false" />
-
         <activity
-
             android:name=".ui.chat.MessageListActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
         <activity
             android:name=".ui.chat.ChatActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
         <activity
             android:name=".ui.Billing.BillingActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".ui.Billing.CardListActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".ui.Billing.AddCardActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".ui.Billing.PaymentSuccessActivity"
             android:exported="false"
@@ -111,10 +110,10 @@
         <activity
             android:name=".ui.customer.FoodListActivity"
             android:exported="false" />
-
         <activity
             android:name=".ui.customer.FoodDetailActivity"
             android:exported="false" />
+
 
         <activity
             android:name=".ui.admin.AddItemActivity"
