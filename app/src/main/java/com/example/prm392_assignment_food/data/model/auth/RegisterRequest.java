@@ -1,4 +1,4 @@
-package com.example.prm392_assignment_food.data.model;
+package com.example.prm392_assignment_food.data.model.auth;
 
 import com.google.gson.annotations.SerializedName;
 
