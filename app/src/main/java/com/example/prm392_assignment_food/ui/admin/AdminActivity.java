@@ -13,12 +13,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.prm392_assignment_food.R;
+import com.example.prm392_assignment_food.ui.profile.AdminProfileActivity;
 
 public class AdminActivity extends AppCompatActivity {
 
     private ImageView ivDashboard;
     private ImageView ivList;
-    // fabAdd ImageView is inside a FrameLayout, but we might not need a direct reference if it's just for display
+    private ImageView ivProfile; // Added for color filtering
 
     private final Fragment dashboardFragment = new AdminDashboardFragment();
     private final Fragment foodListFragment = new MyFoodListFragment();
@@ -33,6 +34,8 @@ public class AdminActivity extends AppCompatActivity {
         // Still need references to ImageViews for color filtering
         ivDashboard = findViewById(R.id.iv_dashboard);
         ivList = findViewById(R.id.iv_list);
+        ivProfile = findViewById(R.id.iv_profile);
+
 
         setupBottomNavigation();
 
@@ -43,11 +46,21 @@ public class AdminActivity extends AppCompatActivity {
         updateIconColors();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Update colors when returning to this activity
+        // (e.g., after closing AdminProfileActivity)
+        updateIconColors();
+    }
+
     private void setupBottomNavigation() {
         // Get references to the containers for click listeners
         FrameLayout dashboardContainer = findViewById(R.id.dashboard_container);
         FrameLayout listContainer = findViewById(R.id.list_container);
         FrameLayout fabAddContainer = findViewById(R.id.fab_add_container);
+        FrameLayout profileContainer = findViewById(R.id.profile_container);
+
 
         dashboardContainer.setOnClickListener(v -> {
             if (active != dashboardFragment) {
@@ -69,14 +82,21 @@ public class AdminActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AddItemActivity.class);
             startActivity(intent);
         });
+
+        profileContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AdminProfileActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void updateIconColors() {
         int defaultColor = ContextCompat.getColor(this, R.color.medium_gray);
         ivDashboard.setColorFilter(defaultColor, PorterDuff.Mode.SRC_IN);
         ivList.setColorFilter(defaultColor, PorterDuff.Mode.SRC_IN);
+        ivProfile.setColorFilter(defaultColor, PorterDuff.Mode.SRC_IN); // Reset profile icon color
 
-        int activeColor = ContextCompat.getColor(this, R.color.orange);
+
+        int activeColor = ContextCompat.getColor(this, R.color.deep_orange);
         if (active == dashboardFragment) {
             ivDashboard.setColorFilter(activeColor, PorterDuff.Mode.SRC_IN);
         } else if (active == foodListFragment) {
