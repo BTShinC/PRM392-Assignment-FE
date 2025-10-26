@@ -102,6 +102,9 @@
         <activity
             android:name=".ui.customer.FoodDetailActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.customer.HomeActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

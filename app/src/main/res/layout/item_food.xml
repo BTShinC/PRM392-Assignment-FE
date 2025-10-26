@@ -123,26 +123,12 @@
                 android:id="@+id/tv_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$60"
+                android:text="60.000 VND"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp" />
-
-            <!-- Pick Up Button -->
-            <TextView
-                android:id="@+id/btn_pick_up"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/pick_up"
-                android:textSize="12sp"
-                android:textColor="@color/medium_gray"
-                android:background="@color/light_gray"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="6dp"
-                android:clickable="true"
-                android:focusable="true" />
 
         </LinearLayout>
 

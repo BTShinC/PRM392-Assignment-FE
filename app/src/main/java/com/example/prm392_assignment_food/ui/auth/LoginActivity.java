@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.prm392_assignment_food.MainActivity;
+import com.example.prm392_assignment_food.ui.customer.HomeActivity;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.LoginRequest;
 import com.example.prm392_assignment_food.data.model.LoginResponse;
@@ -43,8 +43,8 @@ public class LoginActivity extends AppCompatActivity {
         long fiveMinutesInMillis = 5 * 60 * 1000;
 
         if (token != null && (currentTime - loginTimestamp < fiveMinutesInMillis)) {
-            // Token exists and is not expired. Go straight to MainActivity.
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            // Token exists and is not expired. Go straight to HomeActivity.
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
             finish(); // Finish LoginActivity so user can't go back to it
             return; // Return to prevent the rest of the onCreate from executing
@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
