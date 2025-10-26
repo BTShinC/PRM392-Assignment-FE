@@ -15,8 +15,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.prm392_assignment_food.R;
-import com.example.prm392_assignment_food.data.model.RegisterRequest;
-import com.example.prm392_assignment_food.data.model.RegisterResponse;
+import com.example.prm392_assignment_food.data.model.auth.RegisterRequest;
+import com.example.prm392_assignment_food.data.model.auth.RegisterResponse;
 import com.example.prm392_assignment_food.data.network.ApiClient;
 import com.example.prm392_assignment_food.data.network.ApiService;
 

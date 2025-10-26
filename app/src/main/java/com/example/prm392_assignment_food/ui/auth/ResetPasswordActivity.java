@@ -11,8 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.prm392_assignment_food.R;
-import com.example.prm392_assignment_food.data.model.ResetPasswordRequest;
-import com.example.prm392_assignment_food.data.model.ResetPasswordResponse;
+import com.example.prm392_assignment_food.data.model.auth.ResetPasswordRequest;
+import com.example.prm392_assignment_food.data.model.auth.ResetPasswordResponse;
 import com.example.prm392_assignment_food.data.network.ApiClient;
 import com.example.prm392_assignment_food.data.network.ApiService;
 
