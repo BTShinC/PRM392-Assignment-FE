@@ -23,14 +23,14 @@ public class AdminProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_profile);
 
         // Setup Menu Items
-        setupMenuItem(R.id.item_personal_info, R.drawable.ic_personal_info, "Personal Info", null);
-        setupMenuItem(R.id.item_settings, R.drawable.ic_settings, "Settings", null);
-        setupMenuItem(R.id.item_withdrawal_history, R.drawable.ic_withdrawal_history, "Withdrawal History", null);
-        setupMenuItem(R.id.item_number_of_orders, R.drawable.ic_number_of_orders, "Number of Orders", "29K");
-        setupMenuItem(R.id.item_user_reviews, R.drawable.ic_user_reviews, "User Reviews", null);
+        setupMenuItem(R.id.item_personal_info, R.drawable.ic_personal_info, "Thông tin cá nhân", null);
+        setupMenuItem(R.id.item_settings, R.drawable.ic_settings, "Cài đặt", null);
+        setupMenuItem(R.id.item_withdrawal_history, R.drawable.ic_withdrawal_history, "Lịch sử rút tiền", null);
+        setupMenuItem(R.id.item_number_of_orders, R.drawable.ic_number_of_orders, "Số lượng đơn hàng", "29K");
+        setupMenuItem(R.id.item_user_reviews, R.drawable.ic_user_reviews, "Đánh giá của người dùng", null);
 
         LinearLayout logoutItem = findViewById(R.id.item_logout);
-        setupMenuItem(logoutItem, R.drawable.ic_logout, "Log Out", null);
+        setupMenuItem(logoutItem, R.drawable.ic_logout, "Đăng xuất", null);
 
         logoutItem.setOnClickListener(v -> logout());
 
@@ -63,7 +63,7 @@ public class AdminProfileActivity extends AppCompatActivity {
         // Since all new icons have their own colors, remove any tint to display them correctly.
         icon.setImageTintList(null);
 
-        if (title.equals("Log Out")) {
+        if (title.equals("Đăng xuất")) {
             // Special case for Log Out: set text color to red.
             tvTitle.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));
         }

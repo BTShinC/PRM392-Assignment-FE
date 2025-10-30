@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -93,12 +94,18 @@ public class AdminDashboardFragment extends Fragment {
         entries.add(new Entry(6, 7));
 
 
-        LineDataSet dataSet = new LineDataSet(entries, "Total Revenue");
-        dataSet.setColor(Color.parseColor("#FFA500"));
-        dataSet.setCircleColor(Color.parseColor("#FFA500"));
-        dataSet.setLineWidth(2f);
-        dataSet.setCircleRadius(4f);
-        dataSet.setDrawCircleHole(false);
+        LineDataSet dataSet = new LineDataSet(entries, "Tổng doanh thu");
+        
+        // --- CÁC THAY ĐỔI ĐỂ LÀM ĐẸP BIỂU ĐỒ ---
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); // Chuyển sang biểu đồ cong
+        dataSet.setCubicIntensity(0.2f); // Điều chỉnh độ cong
+        dataSet.setDrawFilled(true); // Bật tô màu nền
+        dataSet.setFillColor(ContextCompat.getColor(getContext(), R.color.orange_alpha)); // Set màu nền
+        dataSet.setDrawCircles(false); // Ẩn các điểm tròn trên đường
+        dataSet.setLineWidth(3f); // Tăng độ dày của đường
+        dataSet.setColor(ContextCompat.getColor(getContext(), R.color.orange)); // Set màu đường
+        // --- KẾT THÚC THAY ĐỔI ---
+        
         dataSet.setValueTextSize(10f);
         dataSet.setDrawValues(false);
 

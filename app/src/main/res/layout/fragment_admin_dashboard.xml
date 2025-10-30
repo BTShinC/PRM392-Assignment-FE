@@ -43,7 +43,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="LOCATION"
+                        android:text="VỊ TRÍ"
                         android:textColor="#FC6E2A"
                         android:textSize="12sp" />
 
@@ -60,7 +60,7 @@
                     android:layout_height="40dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:contentDescription="Profile"
+                    android:contentDescription="Hồ sơ"
                     android:src="@drawable/ic_profile" />
             </RelativeLayout>
 
@@ -103,7 +103,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="RUNNING ORDERS" />
+                            android:text="ĐƠN HÀNG ĐANG CHẠY"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_horizontal"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -133,7 +135,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ORDER REQUEST" />
+                            android:text="YÊU CẦU ĐẶT HÀNG"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_horizontal"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -159,7 +163,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Total Revenue"
+                            android:text="Tổng doanh thu"
                             android:textSize="18sp" />
 
                         <Spinner
@@ -175,7 +179,7 @@
                             android:layout_height="wrap_content"
 
                             android:layout_alignParentEnd="true"
-                            android:text="See Details"
+                            android:text="Xem chi tiết"
                             android:textColor="#FB6D3A" />
                     </RelativeLayout>
 
@@ -212,7 +216,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Reviews"
+                        android:text="Đánh giá"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -221,7 +225,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="See All Reviews"
+                        android:text="Xem tất cả đánh giá"
                         android:textColor="#FB6D3A" />
 
                     <RatingBar
@@ -241,7 +245,7 @@
                         android:layout_alignBottom="@id/ratingBar"
                         android:layout_marginStart="8dp"
                         android:layout_toEndOf="@id/ratingBar"
-                        android:text="Total 20 Reviews" />
+                        android:text="Tổng 20 đánh giá" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -259,7 +263,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Popular Items This Week"
+                        android:text="Món ăn phổ biến trong tuần"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -268,7 +272,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:text="See All"
+                        android:text="Xem tất cả"
                         android:textColor="#FB6D3A" />
                 </RelativeLayout>
 
