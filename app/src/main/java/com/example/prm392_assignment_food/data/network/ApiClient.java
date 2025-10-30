@@ -19,7 +19,9 @@ public class ApiClient {
     private static final String TAG = "ApiClient";
     
 
-    private static final String BASE_URL = "https://prm392.nguyenhoangan.site/";
+//    private static final String BASE_URL = "https://prm392.nguyenhoangan.site/";
+    private static final String BASE_URL = "http://10.0.2.2:8000/";
+
 
     private static Retrofit retrofit = null;
     
@@ -88,6 +90,9 @@ public class ApiClient {
         return retrofit;
     }
 
+    public static ApiService getApiService() {
+        return getClient().create(ApiService.class);
+    }
     public static void resetClient() {
         retrofit = null;
         Log.d(TAG, "Retrofit client reset");

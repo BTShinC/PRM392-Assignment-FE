@@ -16,11 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PRM392_Assignment_Food"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
         <activity
             android:name=".ui.admin.AdminActivity"
             android:exported="false" />
-      
+
         <activity
             android:name=".ui.admin.AdminAnalyticsActivity"
             android:exported="false" />

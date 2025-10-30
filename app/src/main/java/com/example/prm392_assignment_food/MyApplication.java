@@ -1,13 +1,14 @@
 package com.example.prm392_assignment_food;
 
 import android.app.Application;
-import com.google.firebase.FirebaseApp;
+
+import com.example.prm392_assignment_food.data.network.ApiClient;
 
 public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        // Initialize Firebase
-        FirebaseApp.initializeApp(this);
+        // Initialize ApiClient with application context
+        ApiClient.init(this);
     }
 }

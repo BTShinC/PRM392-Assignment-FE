@@ -1,6 +1,7 @@
 package com.example.prm392_assignment_food.data.network;
 
 
+import com.example.prm392_assignment_food.data.model.MenuItemRequest;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordRequest;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordResponse;
 import com.example.prm392_assignment_food.data.model.auth.LoginRequest;
@@ -91,4 +92,6 @@ public interface ApiService {
     @GET("/api/orders/users/{userId}")
     ResponseDto<Object> getOrders(@Query("userId") String userId);
 
+    @POST("/api/admins/menu-items")
+    Call<MenuItemResponse> addMenuItem(@Body MenuItemRequest menuItemRequest);
 }
