@@ -44,6 +44,10 @@ public class TokenManager {
         return token;
     }
 
+    public long getLoginTimestamp() {
+        return prefs.getLong(KEY_LOGIN_TIMESTAMP, 0);
+    }
+
     public boolean isTokenExpired() {
         long loginTimestamp = prefs.getLong(KEY_LOGIN_TIMESTAMP, 0);
         long currentTime = System.currentTimeMillis();

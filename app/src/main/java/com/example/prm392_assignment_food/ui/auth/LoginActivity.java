@@ -37,9 +37,13 @@ public class LoginActivity extends AppCompatActivity {
 
         tokenManager = new TokenManager(this);
 
+        // Khai báo và khởi tạo các biến còn thiếu
+        String token = tokenManager.getToken();
+        long loginTimestamp = tokenManager.getLoginTimestamp(); // Giả định phương thức này tồn tại
+        long currentTime = System.currentTimeMillis();
+        long fiveMinutesInMillis = 5 * 60 * 1000;
 
-
-        if (token != null && (currentTime - loginTimestamp < fiveMinutesInMillis)) {
+        if (token != null && !token.isEmpty() && (currentTime - loginTimestamp < fiveMinutesInMillis)) {
             // Token exists and is not expired. Go straight to HomeActivity.
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
 
