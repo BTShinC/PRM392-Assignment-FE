@@ -105,8 +105,23 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.Billing.PaymentSuccessActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:exported="true"
+            android:launchMode="singleTop"><!-- Đặt exported="true" để các app khác (như trình duyệt) có thể gọi -->
+
+            <!-- >>> THÊM CÁC DÒNG NÀY VÀO <<< -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Định nghĩa link mà ứng dụng sẽ "bắt" -->
+                <!-- Hỏi BE xem return URL cuối cùng là gì. Giả sử là "myapp://payment-return" -->
+                <data
+                    android:scheme="prm392food"
+                    android:host="payment"
+                    android:pathPrefix="/return" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.customer.FoodListActivity"
             android:exported="false" />

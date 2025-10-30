@@ -88,6 +88,10 @@ public class ApiClient {
         return retrofit;
     }
 
+    public static ApiService getApiService() {
+        return getClient().create(ApiService.class);
+    }
+
     public static void resetClient() {
         retrofit = null;
         Log.d(TAG, "Retrofit client reset");

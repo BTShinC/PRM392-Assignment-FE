@@ -1,5 +1,6 @@
 package com.example.prm392_assignment_food.data.network;
 
+import com.example.prm392_assignment_food.data.model.ApiResponse;
 
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordRequest;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordResponse;
@@ -14,11 +15,15 @@ import retrofit2.http.Body;
 import com.example.prm392_assignment_food.data.model.CartItemRequest;
 import com.example.prm392_assignment_food.data.model.CartResponse;
 import com.example.prm392_assignment_food.data.model.CreateOrderRequest;
+import com.example.prm392_assignment_food.data.model.CreateOrderResponse;
+
 import com.example.prm392_assignment_food.data.model.MenuItemResponse;
 import com.example.prm392_assignment_food.data.model.MenuCategoryResponse;
 import com.example.prm392_assignment_food.data.model.PageResponse;
 import com.example.prm392_assignment_food.data.model.ResponseDto;
 import com.example.prm392_assignment_food.data.model.UpdateQuantityRequest;
+import com.example.prm392_assignment_food.data.model.VnPayCreateRequest;
+import com.example.prm392_assignment_food.data.model.VnPayCreateResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -85,10 +90,15 @@ public interface ApiService {
     @POST("api/carts/{userId}/items")
     Call<CartResponse> addItem(@Path("userId") String userId, @Body CartItemRequest request);
 
-    @POST("/api/orders")
-    ResponseDto<Object> createOrder(@Body CreateOrderRequest request);
+    @POST("api/orders")
+    Call<ApiResponse<CreateOrderResponse>> createOrder(@Body CreateOrderRequest request);
 
     @GET("/api/orders/users/{userId}")
     ResponseDto<Object> getOrders(@Query("userId") String userId);
+
+    @POST("api/v1/payments/vnpay/create")
+    Call<VnPayCreateResponse> createVnPayPayment(@Body VnPayCreateRequest request);
+
+
 
 }
