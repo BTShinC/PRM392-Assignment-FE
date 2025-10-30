@@ -1,6 +1,7 @@
 package com.example.prm392_assignment_food.data.network;
 
 
+import com.example.prm392_assignment_food.data.model.MenuCategoryRequest;
 import com.example.prm392_assignment_food.data.model.MenuItemRequest;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordRequest;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordResponse;
@@ -21,13 +22,16 @@ import com.example.prm392_assignment_food.data.model.PageResponse;
 import com.example.prm392_assignment_food.data.model.ResponseDto;
 import com.example.prm392_assignment_food.data.model.UpdateQuantityRequest;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -92,6 +96,30 @@ public interface ApiService {
     @GET("/api/orders/users/{userId}")
     ResponseDto<Object> getOrders(@Query("userId") String userId);
 
+    @Multipart
     @POST("/api/admins/menu-items")
-    Call<MenuItemResponse> addMenuItem(@Body MenuItemRequest menuItemRequest);
+    Call<MenuItemResponse> addMenuItem(
+            @Part("request") RequestBody request,
+            @Part MultipartBody.Part file
+    );
+
+    @POST("/api/admins/menu-categories")
+    Call<MenuCategoryResponse> addMenuCategory(@Body MenuCategoryRequest menuCategoryRequest);
+
+    @PUT("/api/admins/menu-categories/{id}")
+    Call<MenuCategoryResponse> updateMenuCategory(@Path("id") String id, @Body MenuCategoryRequest menuCategoryRequest);
+
+    @DELETE("/api/admins/menu-categories/{id}")
+    Call<Void> deleteMenuCategory(@Path("id") String id);
+
+    @Multipart
+    @PUT("/api/admins/menu-items/{id}")
+    Call<MenuItemResponse> updateMenuItem(
+            @Path("id") String id,
+            @Part("request") RequestBody request,
+            @Part MultipartBody.Part file
+    );
+
+    @DELETE("/api/admins/menu-items/{id}")
+    Call<Void> deleteMenuItem(@Path("id") String id);
 }

@@ -120,6 +120,22 @@
             android:name=".ui.admin.AddItemActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.admin.ManageCategoriesActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.admin.UpdateCategoryActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name=".ui.admin.ManageItemsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.admin.UpdateItemActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

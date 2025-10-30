@@ -2,8 +2,10 @@ package com.example.prm392_assignment_food.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 
-public class MenuItemResponse {
+
+public class MenuItemResponse implements Serializable {
     @SerializedName("menuItemId")
     private String id;
     
@@ -68,4 +70,3 @@ public class MenuItemResponse {
         return price != null ? String.format("%.0f", price) + " VND" : "0 VND";
     }
 }
-

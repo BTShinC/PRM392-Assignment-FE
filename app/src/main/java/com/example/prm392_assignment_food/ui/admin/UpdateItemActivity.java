@@ -1,25 +1,22 @@
 package com.example.prm392_assignment_food.ui.admin;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.util.Log;
-import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+
+import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.MenuCategoryResponse;
 import com.example.prm392_assignment_food.data.model.MenuItemRequest;
@@ -28,6 +25,7 @@ import com.example.prm392_assignment_food.data.model.PageResponse;
 import com.example.prm392_assignment_food.data.network.ApiClient;
 import com.example.prm392_assignment_food.data.network.ApiService;
 import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,6 +33,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -42,49 +41,56 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AddItemActivity extends AppCompatActivity {
+public class UpdateItemActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
-    private static final String TAG = "AddItemActivity";
 
     private EditText etItemName, etPrice, etDescription;
     private ImageView ivMainImage;
-    private Button btnSaveItem;
-    private LinearLayout btnAddPhoto;
+    private Button btnSaveItem, btnChangeImage;
     private Spinner spinnerCategory;
     private SwitchCompat switchIsAvailable;
 
     private Uri imageUri;
     private ApiService apiService;
+    private MenuItemResponse item;
     private List<MenuCategoryResponse> categoryList = new ArrayList<>();
     private ArrayAdapter<String> categoryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_item);
+        setContentView(R.layout.activity_update_item);
 
         apiService = ApiClient.getApiService();
+        item = (MenuItemResponse) getIntent().getSerializableExtra("item");
 
         // Initialize views
-        etItemName = findViewById(R.id.et_item_name);
-        etPrice = findViewById(R.id.et_price);
-        etDescription = findViewById(R.id.et_description);
-        ivMainImage = findViewById(R.id.iv_main_image);
-        btnSaveItem = findViewById(R.id.btn_save_item);
-        btnAddPhoto = findViewById(R.id.btn_add_photo);
-        spinnerCategory = findViewById(R.id.spinner_category);
-        switchIsAvailable = findViewById(R.id.switch_is_available);
+        etItemName = findViewById(R.id.et_item_name_update);
+        etPrice = findViewById(R.id.et_item_price_update);
+        etDescription = findViewById(R.id.et_item_description_update);
+        ivMainImage = findViewById(R.id.iv_item_image_update);
+        btnSaveItem = findViewById(R.id.btn_save_item_update);
+        btnChangeImage = findViewById(R.id.btn_change_image);
+        spinnerCategory = findViewById(R.id.spinner_category_update);
+        switchIsAvailable = findViewById(R.id.switch_is_available_update);
 
         // Setup Spinner
         setupCategorySpinner();
 
         // Set listeners
-        btnAddPhoto.setOnClickListener(v -> openFileChooser());
+        btnChangeImage.setOnClickListener(v -> openFileChooser());
         btnSaveItem.setOnClickListener(v -> saveData());
 
         // Fetch categories from API
         fetchCategories();
+
+        // Set initial data
+        etItemName.setText(item.getName());
+        etPrice.setText(String.valueOf(item.getPrice()));
+        etDescription.setText(item.getDescription());
+        switchIsAvailable.setChecked(item.getAvailable());
+        Glide.with(this).load(item.getImageUrl()).into(ivMainImage);
     }
 
     private void setupCategorySpinner() {
@@ -100,20 +106,27 @@ public class AddItemActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     categoryList = response.body().getContent();
                     List<String> categoryNames = new ArrayList<>();
-                    for (MenuCategoryResponse category : categoryList) {
-                        categoryNames.add(category.getName());
+                    int selection = -1;
+                    for (int i = 0; i < categoryList.size(); i++) {
+                        categoryNames.add(categoryList.get(i).getName());
+                        if (categoryList.get(i).getCategoryId().equals(item.getCategoryId())) {
+                            selection = i;
+                        }
                     }
                     categoryAdapter.clear();
                     categoryAdapter.addAll(categoryNames);
                     categoryAdapter.notifyDataSetChanged();
+                    if (selection != -1) {
+                        spinnerCategory.setSelection(selection);
+                    }
                 } else {
-                    Toast.makeText(AddItemActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UpdateItemActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<PageResponse<MenuCategoryResponse>> call, Throwable t) {
-                Toast.makeText(AddItemActivity.this, "Error fetching categories: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(UpdateItemActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -135,11 +148,6 @@ public class AddItemActivity extends AppCompatActivity {
     }
 
     private void saveData() {
-        if (imageUri == null) {
-            Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         // Validate inputs
         String itemName = etItemName.getText().toString().trim();
         String priceStr = etPrice.getText().toString().trim();
@@ -168,44 +176,37 @@ public class AddItemActivity extends AppCompatActivity {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), menuItemRequestJson);
 
         // Create file part
-        File file = getFileFromUri(this, imageUri);
-        if (file == null) {
-             Toast.makeText(this, "Failed to get file from Uri", Toast.LENGTH_SHORT).show();
-             return;
+        MultipartBody.Part filePart = null;
+        if (imageUri != null) {
+            File file = getFileFromUri(this, imageUri);
+            if (file == null) {
+                Toast.makeText(this, "Failed to get file from Uri", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            RequestBody fileRequestBody = RequestBody.create(MediaType.parse(getContentResolver().getType(imageUri)), file);
+            filePart = MultipartBody.Part.createFormData("file", file.getName(), fileRequestBody);
         }
-        RequestBody fileRequestBody = RequestBody.create(MediaType.parse(getContentResolver().getType(imageUri)), file);
-        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), fileRequestBody);
-
 
         // Make API call
-        apiService.addMenuItem(requestBody, filePart).enqueue(new Callback<MenuItemResponse>() {
+        apiService.updateMenuItem(item.getId(), requestBody, filePart).enqueue(new Callback<MenuItemResponse>() {
             @Override
             public void onResponse(Call<MenuItemResponse> call, Response<MenuItemResponse> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(AddItemActivity.this, "Product added successfully!", Toast.LENGTH_SHORT).show();
-                    finish(); // Go back to the previous activity
+                    Toast.makeText(UpdateItemActivity.this, "Item updated successfully!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
-                    String errorMsg = "Failed to add product. Code: " + response.code();
-                    try {
-                        if (response.errorBody() != null) {
-                            errorMsg += ", " + response.errorBody().string();
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error parsing error body", e);
-                    }
-                    Toast.makeText(AddItemActivity.this, errorMsg, Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "API Error: " + errorMsg);
+                    Toast.makeText(UpdateItemActivity.this, "Failed to update item", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<MenuItemResponse> call, Throwable t) {
-                Log.e(TAG, "API Failure: ", t);
-                Toast.makeText(AddItemActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(UpdateItemActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-
+    
     public static File getFileFromUri(Context context, Uri uri) {
         if (uri == null) {
             return null;
@@ -221,7 +222,6 @@ public class AddItemActivity extends AppCompatActivity {
             }
             outputStream.flush();
         } catch (IOException e) {
-            Log.e(TAG, "Failed to copy file from Uri", e);
             return null;
         }
         return file;

@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.prm392_assignment_food.ui.admin.AdminActivity;
 import com.example.prm392_assignment_food.ui.admin.AddItemActivity;
+import com.example.prm392_assignment_food.ui.admin.ManageCategoriesActivity;
 import com.example.prm392_assignment_food.ui.auth.ProfileActivity;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
 import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
@@ -91,6 +92,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btnManageCategories = findViewById(R.id.btnManageCategories);
+        btnManageCategories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ManageCategoriesActivity.class);
                 startActivity(intent);
             }
         });

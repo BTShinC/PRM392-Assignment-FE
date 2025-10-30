@@ -16,22 +16,18 @@ public class MenuItemRequest {
     @SerializedName("price")
     private double price;
 
-    @SerializedName("imageUrl")
-    private String imageUrl;
-
     @SerializedName("isAvailable")
     private boolean isAvailable;
 
-    public MenuItemRequest(String categoryId, String name, String description, double price, String imageUrl, boolean isAvailable) {
+    public MenuItemRequest(String categoryId, String name, String description, double price, boolean isAvailable) {
         this.categoryId = categoryId;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.imageUrl = imageUrl;
         this.isAvailable = isAvailable;
     }
 
-    // Getters and setters remain the same
+    // Getters and setters
     public String getCategoryId() {
         return categoryId;
     }
@@ -62,16 +58,6 @@ public class MenuItemRequest {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public boolean isAvailable() {
