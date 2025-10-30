@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.prm392_assignment_food.MainActivity;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.MenuItemResponse;
 import com.example.prm392_assignment_food.data.model.PageResponse;
@@ -44,6 +46,7 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView btnCart;
     private FloatingActionButton fabMap;
     private ProgressBar progressBar;
+    private Button btnGoToMain;
 
     // Data
     private List<MenuItemResponse> menuItems;
@@ -92,6 +95,7 @@ public class HomeActivity extends AppCompatActivity {
         btnCart = findViewById(R.id.btn_cart);
         fabMap = findViewById(R.id.fab_map);
         progressBar = findViewById(R.id.progress_bar);
+        btnGoToMain = findViewById(R.id.btnGoToMain);
     }
 
     private void initData() {
@@ -128,6 +132,11 @@ public class HomeActivity extends AppCompatActivity {
         // Map FAB
         fabMap.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, AccessLocationActivity.class);
+            startActivity(intent);
+        });
+        
+        btnGoToMain.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
             startActivity(intent);
         });
     }

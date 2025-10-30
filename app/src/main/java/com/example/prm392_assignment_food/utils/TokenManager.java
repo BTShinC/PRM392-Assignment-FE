@@ -18,6 +18,9 @@ public class TokenManager {
     private static final String KEY_USER_EMAIL = "USER_EMAIL";
     private static final String KEY_LOGIN_TIMESTAMP = "LOGIN_TIMESTAMP";
 
+    // Changed expiration time to 3 minutes
+    private static final long EXPIRATION_TIME_IN_MILLIS = 3 * 60 * 1000;
+
 
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
@@ -44,11 +47,17 @@ public class TokenManager {
         return token;
     }
 
+    public long getLoginTimestamp() {
+        return prefs.getLong(KEY_LOGIN_TIMESTAMP, 0);
+    }
+
     public boolean isTokenExpired() {
         long loginTimestamp = prefs.getLong(KEY_LOGIN_TIMESTAMP, 0);
+        if (loginTimestamp == 0) {
+            return true; // No timestamp, assume expired
+        }
         long currentTime = System.currentTimeMillis();
-        long fiveMinutesInMillis = 5 * 60 * 1000; // 5 minutes for expiration
-        return (currentTime - loginTimestamp) > fiveMinutesInMillis;
+        return (currentTime - loginTimestamp) > EXPIRATION_TIME_IN_MILLIS;
     }
 
     public void clear() {

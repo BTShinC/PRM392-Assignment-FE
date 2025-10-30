@@ -37,9 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
         tokenManager = new TokenManager(this);
 
-
-
-        if (token != null && (currentTime - loginTimestamp < fiveMinutesInMillis)) {
+        if (tokenManager.getToken() != null && !tokenManager.isTokenExpired()) {
             // Token exists and is not expired. Go straight to HomeActivity.
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
 
