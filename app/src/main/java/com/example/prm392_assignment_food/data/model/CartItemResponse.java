@@ -15,6 +15,18 @@ public class CartItemResponse implements Serializable {
     private int quantity;
     private BigDecimal lineTotal;
 
+    private String imageUrl;
+
+    public String getImageUrl() { // Add this getter
+        return imageUrl;
+    }
+
+    // ... other setters
+
+    public void setImageUrl(String imageUrl) { // Add this setter
+        this.imageUrl = imageUrl;
+    }
+
     // Constructor rỗng cần thiết cho Gson
     public CartItemResponse() {
     }

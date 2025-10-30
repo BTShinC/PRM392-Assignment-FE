@@ -159,7 +159,7 @@
                     android:id="@+id/tv_price_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$60"
+                    android:text="60.000 VND"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/black" />
@@ -254,44 +254,66 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/dark_gray"
-        android:padding="16dp"
-        android:layout_alignParentBottom="true">
+        android:background="@color/white"
+        android:elevation="10dp"
+        android:paddingHorizontal="40dp"
+        android:paddingVertical="30dp"
+        android:layout_alignParentBottom="true"
+        android:dividerPadding="8dp">
 
-        <RelativeLayout
+        <!-- Price and Quantity Section -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:weightSum="2">
 
-            <TextView
-                android:id="@+id/tv_price_bottom"
-                android:layout_width="wrap_content"
+            <!-- Left: Price -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="$32"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true" />
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="start|center_vertical">
 
+                <TextView
+                    android:id="@+id/tv_price_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Price"
+                    android:textSize="12sp"
+                    android:textColor="@color/medium_gray" />
+
+                <TextView
+                    android:id="@+id/tv_price_bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="60.000 VND"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/orange"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <!-- Right: Quantity -->
             <LinearLayout
                 android:id="@+id/quantity_selector"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
+                android:layout_weight="1"
                 android:orientation="horizontal"
+                android:gravity="end|center_vertical"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="8dp">
 
                 <ImageView
                     android:id="@+id/btn_decrease"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/bg_circle_dark"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_circle_light"
                     android:src="@drawable/ic_menu_remove"
-                    app:tint="@color/white" />
+                    app:tint="@color/black" />
 
                 <TextView
                     android:id="@+id/tv_quantity"
@@ -299,34 +321,36 @@
                     android:layout_height="wrap_content"
                     android:text="1"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginHorizontal="16dp" />
 
                 <ImageView
                     android:id="@+id/btn_increase"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/bg_circle_dark"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_circle_light"
                     android:src="@android:drawable/ic_input_add"
-                    app:tint="@color/white" />
+                    app:tint="@color/black" />
             </LinearLayout>
+        </LinearLayout>
 
-        </RelativeLayout>
-
+        <!-- Button -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_add_to_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="ADD TO CART"
+            android:textAllCaps="true"
             android:background="@drawable/background_orange_button"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:paddingVertical="16dp" />
-
+            android:layout_marginTop="28dp"
+            android:paddingVertical="18dp"
+            android:elevation="6dp"
+            android:gravity="center" />
     </LinearLayout>
+
 
 </RelativeLayout>

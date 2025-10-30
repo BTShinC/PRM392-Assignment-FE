@@ -1,8 +1,9 @@
-package com.example.prm392_assignment_food.data.model;
+package com.example.prm392_assignment_food.data.model.auth;
 
-public class ForgotPasswordResponse {
+public class LoginResponse {
     private String status;
     private String message;
+    private String data; // Changed from User to String
 
     public String getStatus() {
         return status;
@@ -18,5 +19,13 @@ public class ForgotPasswordResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }

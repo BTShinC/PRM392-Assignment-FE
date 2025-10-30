@@ -24,6 +24,21 @@
     <string name="chicken_bhuna">Chicken Bhuna</string>
     <string name="mazalichiken_halim">Mazalichiken Halim</string>
     <string name="kentucky_location">Kentucky 39495</string>
+
+
+    <!-- Admin Dashboard -->
+    <string-array name="locations">
+        <item>Halal Lab office</item>
+        <item>Office 2</item>
+        <item>Office 3</item>
+    </string-array>
+
+    <string-array name="time_range">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+    </string-array>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -66,4 +81,5 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
 </resources>

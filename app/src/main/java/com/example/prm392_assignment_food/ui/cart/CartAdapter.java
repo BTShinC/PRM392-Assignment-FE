@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.CartItemResponse;
 
@@ -56,7 +57,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             holder.itemPrice.setText(String.format(Locale.US, "$%.2f", currentItem.getUnitPrice()));
         }
         holder.itemQuantity.setText(String.valueOf(currentItem.getQuantity()));
-        holder.itemImage.setImageResource(R.drawable.halim);
+
+        // Load image with Glide
+        Glide.with(holder.itemView.getContext())
+                .load(currentItem.getImageUrl()) // Get image URL from your data model
+                .placeholder(R.drawable.halim) // Optional: a placeholder image
+                .error(R.drawable.halim) // Optional: an image to show on error
+                .into(holder.itemImage);
 
         // Xử lý hiển thị dựa trên chế độ chỉnh sửa
         if (isEditMode) {
