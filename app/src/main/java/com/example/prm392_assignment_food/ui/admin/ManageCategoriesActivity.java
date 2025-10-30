@@ -86,13 +86,13 @@ public class ManageCategoriesActivity extends AppCompatActivity {
                     categoryList.addAll(response.body().getContent());
                     adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(ManageCategoriesActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageCategoriesActivity.this, "Tải danh mục thất bại", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<PageResponse<MenuCategoryResponse>> call, Throwable t) {
-                Toast.makeText(ManageCategoriesActivity.this, "Error fetching categories: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManageCategoriesActivity.this, "Lỗi khi tải danh mục: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -103,17 +103,17 @@ public class ManageCategoriesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ManageCategoriesActivity.this, "Category deleted successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageCategoriesActivity.this, "Xóa danh mục thành công", Toast.LENGTH_SHORT).show();
                     categoryList.remove(position);
                     adapter.notifyItemRemoved(position);
                 } else {
-                    Toast.makeText(ManageCategoriesActivity.this, "Failed to delete category", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageCategoriesActivity.this, "Xóa danh mục thất bại", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(ManageCategoriesActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManageCategoriesActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -127,17 +127,17 @@ public class ManageCategoriesActivity extends AppCompatActivity {
         final EditText etCategoryName = dialogView.findViewById(R.id.et_dialog_category_name);
         final EditText etCategoryDescription = dialogView.findViewById(R.id.et_dialog_category_description);
 
-        builder.setTitle("Add New Category");
-        builder.setPositiveButton("Add", (dialog, which) -> {
+        builder.setTitle("Thêm danh mục mới");
+        builder.setPositiveButton("Thêm", (dialog, which) -> {
             String name = etCategoryName.getText().toString().trim();
             String description = etCategoryDescription.getText().toString().trim();
             if (!name.isEmpty()) {
                 addCategory(name, description);
             } else {
-                Toast.makeText(this, "Category name cannot be empty", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Tên danh mục không được để trống", Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -149,16 +149,16 @@ public class ManageCategoriesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<MenuCategoryResponse> call, Response<MenuCategoryResponse> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ManageCategoriesActivity.this, "Category added successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageCategoriesActivity.this, "Thêm danh mục thành công", Toast.LENGTH_SHORT).show();
                     fetchCategories(); // Refresh the list
                 } else {
-                    Toast.makeText(ManageCategoriesActivity.this, "Failed to add category", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageCategoriesActivity.this, "Thêm danh mục thất bại", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<MenuCategoryResponse> call, Throwable t) {
-                Toast.makeText(ManageCategoriesActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManageCategoriesActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

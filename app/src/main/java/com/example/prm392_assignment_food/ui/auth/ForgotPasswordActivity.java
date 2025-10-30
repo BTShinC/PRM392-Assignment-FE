@@ -52,7 +52,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
 
         if (email.isEmpty()) {
-            Toast.makeText(this, "Please enter your email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng nhập email của bạn", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -64,7 +64,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             public void onResponse(Call<ForgotPasswordResponse> call, Response<ForgotPasswordResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if ("200".equals(response.body().getStatus())) {
-                        Toast.makeText(ForgotPasswordActivity.this, "OTP has been sent to your email.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ForgotPasswordActivity.this, "Mã OTP đã được gửi đến email của bạn.", Toast.LENGTH_LONG).show();
                         
                         // Corrected: Start ResetPasswordActivity and pass the email
                         Intent intent = new Intent(ForgotPasswordActivity.this, ResetPasswordActivity.class);
@@ -75,13 +75,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                         Toast.makeText(ForgotPasswordActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(ForgotPasswordActivity.this, "Failed to send request. Please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForgotPasswordActivity.this, "Gửi yêu cầu thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ForgotPasswordResponse> call, Throwable t) {
-                Toast.makeText(ForgotPasswordActivity.this, "An error occurred: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ForgotPasswordActivity.this, "Đã xảy ra lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

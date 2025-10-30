@@ -11,7 +11,7 @@
         android:id="@+id/et_category_name_update"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Category Name"
+        android:hint="Tên danh mục"
         android:inputType="text" />
 
     <EditText
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:hint="Description"
+        android:hint="Mô tả"
         android:inputType="textMultiLine" />
 
     <Button
@@ -27,6 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Save Changes" />
+        android:text="Lưu thay đổi" />
 
 </LinearLayout>

@@ -58,12 +58,12 @@ public class RegisterActivity extends AppCompatActivity {
         String retypePassword = etRetypePassword.getText().toString().trim();
 
         if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || address.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng điền đầy đủ các trường", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (!password.equals(retypePassword)) {
-            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -79,7 +79,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     RegisterResponse registerResponse = response.body();
                     if ("200".equals(registerResponse.getStatus())) {
-                        Toast.makeText(RegisterActivity.this, "OTP sent to your email!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Mã OTP đã được gửi đến email của bạn!", Toast.LENGTH_SHORT).show();
                         
                         Intent intent = new Intent(RegisterActivity.this, VerificationActivity.class);
                         intent.putExtra("register_request", registerRequest);
@@ -89,13 +89,13 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this, registerResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(RegisterActivity.this, "Failed to send OTP!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Gửi mã OTP thất bại!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<RegisterResponse> call, Throwable t) {
-                Toast.makeText(RegisterActivity.this, "An error occurred: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Đã xảy ra lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

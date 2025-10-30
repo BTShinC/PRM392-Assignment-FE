@@ -83,13 +83,13 @@ public class ManageItemsActivity extends AppCompatActivity {
                     itemList.addAll(response.body().getContent());
                     adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(ManageItemsActivity.this, "Failed to load items", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageItemsActivity.this, "Tải món ăn thất bại", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<PageResponse<MenuItemResponse>> call, Throwable t) {
-                Toast.makeText(ManageItemsActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManageItemsActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -100,17 +100,17 @@ public class ManageItemsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ManageItemsActivity.this, "Item deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageItemsActivity.this, "Xóa món ăn thành công", Toast.LENGTH_SHORT).show();
                     itemList.remove(position);
                     adapter.notifyItemRemoved(position);
                 } else {
-                    Toast.makeText(ManageItemsActivity.this, "Failed to delete", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageItemsActivity.this, "Xóa món ăn thất bại", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(ManageItemsActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManageItemsActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

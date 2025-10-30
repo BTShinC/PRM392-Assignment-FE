@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Add New Item"
+                android:text="Thêm món ăn mới"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="CATEGORY"
+            android:text="DANH MỤC"
             android:textColor="@color/dark_gray"
             android:textSize="12sp" />
 
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="ITEM NAME"
+            android:text="TÊN MÓN ĂN"
             android:textColor="@color/dark_gray"
             android:textSize="12sp" />
 
@@ -71,7 +71,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/edit_text_background"
-            android:hint="e.g., Cơm Tấm thịt bò"
+            android:hint="Ví dụ: Cơm Tấm thịt bò"
             android:inputType="textCapWords"
             android:paddingStart="16dp"
             android:paddingEnd="16dp" />
@@ -81,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="DESCRIPTION"
+            android:text="MÔ TẢ"
             android:textColor="@color/dark_gray"
             android:textSize="12sp" />
 
@@ -92,7 +92,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/edit_text_background"
             android:gravity="top"
-            android:hint="e.g., Cơm tấm nóng hổi với sườn, bì, chả..."
+            android:hint="Ví dụ: Cơm tấm nóng hổi với sườn, bì, chả..."
             android:inputType="textMultiLine"
             android:padding="16dp" />
 
@@ -101,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="PRICE (VND)"
+            android:text="GIÁ (VND)"
             android:textColor="@color/dark_gray"
             android:textSize="12sp" />
 
@@ -111,7 +111,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/edit_text_background"
-            android:hint="e.g., 70000"
+            android:hint="Ví dụ: 70000"
             android:inputType="number"
             android:paddingStart="16dp"
             android:paddingEnd="16dp" />
@@ -121,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="UPLOAD IMAGE"
+            android:text="TẢI ẢNH LÊN"
             android:textColor="@color/dark_gray"
             android:textSize="12sp" />
 
@@ -157,7 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Add Photo" />
+                    android:text="Thêm ảnh" />
             </LinearLayout>
         </LinearLayout>
 
@@ -167,7 +167,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Is Available"
+            android:text="Có sẵn"
             android:textSize="16sp"
             android:checked="true"
             android:textColor="@color/black"/>
@@ -185,7 +185,7 @@
             android:layout_height="60dp"
             android:layout_marginTop="32dp"
             android:backgroundTint="@color/orange"
-            android:text="SAVE ITEM"
+            android:text="LƯU MÓN ĂN"
             android:textColor="@color/white"
             app:cornerRadius="12dp" />
     </LinearLayout>

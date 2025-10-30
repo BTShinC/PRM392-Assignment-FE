@@ -107,13 +107,13 @@ public class AddItemActivity extends AppCompatActivity {
                     categoryAdapter.addAll(categoryNames);
                     categoryAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(AddItemActivity.this, "Failed to load categories", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddItemActivity.this, "Tải danh mục thất bại", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<PageResponse<MenuCategoryResponse>> call, Throwable t) {
-                Toast.makeText(AddItemActivity.this, "Error fetching categories: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddItemActivity.this, "Lỗi khi tải danh mục: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -136,7 +136,7 @@ public class AddItemActivity extends AppCompatActivity {
 
     private void saveData() {
         if (imageUri == null) {
-            Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng chọn một ảnh", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -147,12 +147,12 @@ public class AddItemActivity extends AppCompatActivity {
         int selectedCategoryPosition = spinnerCategory.getSelectedItemPosition();
 
         if (itemName.isEmpty() || priceStr.isEmpty() || description.isEmpty()) {
-            Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (selectedCategoryPosition < 0 || selectedCategoryPosition >= categoryList.size()) {
-            Toast.makeText(this, "Please select a valid category", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng chọn một danh mục hợp lệ", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -170,7 +170,7 @@ public class AddItemActivity extends AppCompatActivity {
         // Create file part
         File file = getFileFromUri(this, imageUri);
         if (file == null) {
-             Toast.makeText(this, "Failed to get file from Uri", Toast.LENGTH_SHORT).show();
+             Toast.makeText(this, "Lấy tệp từ Uri thất bại", Toast.LENGTH_SHORT).show();
              return;
         }
         RequestBody fileRequestBody = RequestBody.create(MediaType.parse(getContentResolver().getType(imageUri)), file);
@@ -182,26 +182,26 @@ public class AddItemActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<MenuItemResponse> call, Response<MenuItemResponse> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(AddItemActivity.this, "Product added successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddItemActivity.this, "Thêm sản phẩm thành công!", Toast.LENGTH_SHORT).show();
                     finish(); // Go back to the previous activity
                 } else {
-                    String errorMsg = "Failed to add product. Code: " + response.code();
+                    String errorMsg = "Thêm sản phẩm thất bại. Mã lỗi: " + response.code();
                     try {
                         if (response.errorBody() != null) {
                             errorMsg += ", " + response.errorBody().string();
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, "Error parsing error body", e);
+                        Log.e(TAG, "Lỗi khi phân tích nội dung lỗi", e);
                     }
                     Toast.makeText(AddItemActivity.this, errorMsg, Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "API Error: " + errorMsg);
+                    Log.e(TAG, "Lỗi API: " + errorMsg);
                 }
             }
 
             @Override
             public void onFailure(Call<MenuItemResponse> call, Throwable t) {
                 Log.e(TAG, "API Failure: ", t);
-                Toast.makeText(AddItemActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddItemActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -221,7 +221,7 @@ public class AddItemActivity extends AppCompatActivity {
             }
             outputStream.flush();
         } catch (IOException e) {
-            Log.e(TAG, "Failed to copy file from Uri", e);
+            Log.e(TAG, "Sao chép tệp từ Uri thất bại", e);
             return null;
         }
         return file;

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Options"
+        android:text="Tùy chọn"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Manage Items"
+            android:text="Quản lý món ăn"
             android:textColor="@color/black"
             android:textSize="16sp" />
     </LinearLayout>
@@ -75,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Manage Categories"
+            android:text="Quản lý danh mục"
             android:textColor="@color/black"
             android:textSize="16sp" />
     </LinearLayout>
@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:backgroundTint="#FF5722"
-        android:text="Cancel"
+        android:text="Hủy"
         android:textColor="@color/white"
         android:textStyle="bold" />
 
