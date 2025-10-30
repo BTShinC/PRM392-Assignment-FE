@@ -83,7 +83,7 @@ public interface ApiService {
     @GET("api/carts/{userId}")
     Call<CartResponse> getCart(@Path("userId") String userId);
 
-    @PUT("/{userId}/items/{menuItemId}")
+    @PUT("api/carts/{userId}/items/{menuItemId}")
     Call<CartResponse> updateItem(@Path("userId") String userId, @Path("menuItemId") String menuItemId, @Body UpdateQuantityRequest request);
 
     @DELETE("api/carts/{userId}/items/{menuItemId}")
