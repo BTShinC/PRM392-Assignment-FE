@@ -64,7 +64,7 @@ public class VerificationActivity extends AppCompatActivity {
         btnVerify.setOnClickListener(v -> verifyOtpAndRegister());
         btnBack.setOnClickListener(v -> finish());
         tvResend.setOnClickListener(v -> {
-            if (tvResend.getText().toString().equals("Resend")) {
+            if (tvResend.getText().toString().equals("Gửi lại")) {
                 resendOtp();
             }
         });
@@ -75,12 +75,12 @@ public class VerificationActivity extends AppCompatActivity {
         countDownTimer = new CountDownTimer(50000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                tvResend.setText("Resend in." + (millisUntilFinished / 1000) + "sec");
+                tvResend.setText("Gửi lại sau." + (millisUntilFinished / 1000) + " giây");
             }
 
             @Override
             public void onFinish() {
-                tvResend.setText("Resend");
+                tvResend.setText("Gửi lại");
                 tvResend.setClickable(true);
             }
         }.start();
@@ -88,7 +88,7 @@ public class VerificationActivity extends AppCompatActivity {
 
     private void resendOtp() {
         if (registerRequest == null) {
-            Toast.makeText(this, "Registration data not found. Cannot resend OTP.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Không tìm thấy dữ liệu đăng ký. Không thể gửi lại OTP.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -98,16 +98,16 @@ public class VerificationActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(VerificationActivity.this, "A new OTP has been sent.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VerificationActivity.this, "Một mã OTP mới đã được gửi.", Toast.LENGTH_SHORT).show();
                     startResendTimer(); // Restart the timer
                 } else {
-                    Toast.makeText(VerificationActivity.this, "Failed to resend OTP.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VerificationActivity.this, "Gửi lại OTP thất bại.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<RegisterResponse> call, Throwable t) {
-                Toast.makeText(VerificationActivity.this, "An error occurred: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(VerificationActivity.this, "Đã xảy ra lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -123,7 +123,7 @@ public class VerificationActivity extends AppCompatActivity {
 
     private void verifyOtpAndRegister() {
         if (registerRequest == null) {
-            Toast.makeText(this, "An unexpected error occurred.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Đã xảy ra lỗi không mong muốn.", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -136,7 +136,7 @@ public class VerificationActivity extends AppCompatActivity {
         String otp6 = etCode6.getText().toString();
 
         if (otp1.isEmpty() || otp2.isEmpty() || otp3.isEmpty() || otp4.isEmpty() || otp5.isEmpty() || otp6.isEmpty()) {
-            Toast.makeText(this, "Please enter the full 6-digit OTP", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng nhập đủ 6 chữ số OTP", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -150,7 +150,7 @@ public class VerificationActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     RegisterResponse registerResponse = response.body();
                     if ("200".equals(registerResponse.getStatus())) {
-                        Toast.makeText(VerificationActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(VerificationActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(VerificationActivity.this, LoginActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
@@ -159,13 +159,13 @@ public class VerificationActivity extends AppCompatActivity {
                         Toast.makeText(VerificationActivity.this, registerResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(VerificationActivity.this, "Verification failed! Please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VerificationActivity.this, "Xác thực thất bại! Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<RegisterResponse> call, Throwable t) {
-                Toast.makeText(VerificationActivity.this, "An error occurred: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(VerificationActivity.this, "Đã xảy ra lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

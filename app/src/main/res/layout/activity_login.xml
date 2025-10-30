@@ -40,7 +40,7 @@
         android:id="@+id/tvLoginTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Log In"
+        android:text="Đăng nhập"
         android:textColor="@android:color/white"
         android:textSize="34sp"
         android:textStyle="bold"
@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Please sign in to your existing account"
+        android:text="Vui lòng đăng nhập vào tài khoản của bạn"
         android:textColor="#A9A9A9"
         app:layout_constraintBottom_toBottomOf="@+id/viewHeaderBackground"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,7 +92,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/edit_text_background"
-                android:hint="example@gmail.com"
+                android:hint="vidu@gmail.com"
                 android:inputType="textEmailAddress"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
@@ -107,7 +107,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="PASSWORD"
+                android:text="MẬT KHẨU"
                 android:textColor="#8A8A8E"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -134,7 +134,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Remember me"
+                android:text="Ghi nhớ tôi"
                 android:textColor="#8A8A8E"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etPassword" />
@@ -143,7 +143,7 @@
                 android:id="@+id/tvForgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Forgot Password"
+                android:text="Quên mật khẩu"
                 android:textColor="@color/orange"
                 app:layout_constraintBottom_toBottomOf="@+id/cbRememberMe"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -155,7 +155,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="24dp"
                 android:backgroundTint="@color/orange"
-                android:text="LOG IN"
+                android:text="ĐĂNG NHẬP"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 app:cornerRadius="12dp"
@@ -176,14 +176,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Don\'t have an account? "
+                    android:text="Chưa có tài khoản? "
                     android:textColor="#8A8A8E" />
 
                 <TextView
                     android:id="@+id/tvSignUp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SIGN UP"
+                    android:text="ĐĂNG KÝ"
                     android:textColor="@color/orange" />
             </LinearLayout>
 
@@ -192,7 +192,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Or"
+                android:text="Hoặc"
                 android:textColor="#8A8A8E"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
