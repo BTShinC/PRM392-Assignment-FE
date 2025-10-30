@@ -55,11 +55,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             context.startActivity(intent);
         });
         
-        // Set click listener for pick up button
-        holder.btnPickUp.setOnClickListener(v -> {
-            // Handle pick up action
-        });
-        
         // Set click listener for more options
         holder.btnMore.setOnClickListener(v -> {
             // Handle more options action
@@ -73,7 +68,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
         ImageView imgFood, btnMore;
-        TextView tvFoodName, tvCategory, tvPrice, tvRating, tvReviews, btnPickUp;
+        TextView tvFoodName, tvCategory, tvPrice, tvRating, tvReviews;
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,7 +80,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             tvPrice = itemView.findViewById(R.id.tv_price);
             tvRating = itemView.findViewById(R.id.tv_rating);
             tvReviews = itemView.findViewById(R.id.tv_reviews);
-            btnPickUp = itemView.findViewById(R.id.btn_pick_up);
         }
     }
 }

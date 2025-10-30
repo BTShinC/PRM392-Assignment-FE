@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="2118 Thornridge Cir. Syracuse"
+                android:text="Số 1 Lưu Hữu Phước, Đông Hoà, Dĩ An, Thành phố Hồ Chí Minh, Vietnam"
                 android:textColor="#222222"
                 android:textSize="16sp"
                 android:textStyle="bold" />

@@ -26,13 +26,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Messages"
+            android:text="Notifications"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginStart="12dp" />
     </LinearLayout>
 
-    <!-- Tabs: Notifications / Messages -->
+    <!-- Tabs -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,41 +42,53 @@
 
         <TextView
             android:id="@+id/tabNotifications"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Notifications"
-            android:textColor="#999999"
             android:textSize="16sp"
-            android:layout_weight="1"
-            android:gravity="center" />
+            android:textStyle="bold"
+            android:textColor="#FF6F00"
+            android:gravity="center"
+            android:padding="12dp" />
 
         <TextView
             android:id="@+id/tabMessages"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Messages (3)"
-            android:textColor="#FF6F00"
-            android:textStyle="bold"
             android:textSize="16sp"
-            android:layout_weight="1"
-            android:gravity="center" />
+            android:textColor="#999999"
+            android:gravity="center"
+            android:padding="12dp" />
     </LinearLayout>
 
-    <!-- Đường gạch dưới tab -->
     <View
+        android:id="@+id/tabUnderline"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E0E0E0"
-        android:layout_marginTop="4dp" />
+        android:background="#E0E0E0" />
 
-    <!-- Danh sách tin nhắn -->
+    <!-- RecyclerView Notifications -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewNotifications"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingHorizontal="16dp"
+        android:overScrollMode="never" />
+
+    <!-- RecyclerView Messages -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMessages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:paddingHorizontal="16dp"
-        android:overScrollMode="never" />
+        android:overScrollMode="never"
+        android:visibility="gone" />
+
 
     <!-- Thanh navigation dưới -->
     <LinearLayout
