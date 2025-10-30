@@ -75,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<RegisterResponse>() {
             @Override
-_            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     RegisterResponse registerResponse = response.body();
                     if ("200".equals(registerResponse.getStatus())) {
