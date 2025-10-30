@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PRM392_Assignment_Food"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
         <activity
             android:name=".ui.admin.AdminActivity"
             android:exported="false" />
@@ -135,6 +136,22 @@
 
         <activity
             android:name=".ui.admin.AddItemActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.admin.ManageCategoriesActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.admin.UpdateCategoryActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name=".ui.admin.ManageItemsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.admin.UpdateItemActivity"
             android:exported="false" />
 
     </application>

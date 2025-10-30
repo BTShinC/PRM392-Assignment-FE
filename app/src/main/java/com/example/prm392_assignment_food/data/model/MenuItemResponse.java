@@ -5,8 +5,10 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
+import java.io.Serializable;
 
-public class MenuItemResponse {
+
+public class MenuItemResponse implements Serializable {
     @SerializedName("menuItemId")
     private String id;
     
@@ -78,4 +80,3 @@ public class MenuItemResponse {
         return formatter.format(price.longValue()) + " VND";
     }
 }
-

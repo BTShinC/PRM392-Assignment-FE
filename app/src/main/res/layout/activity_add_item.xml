@@ -32,27 +32,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Add New Items"
+                android:text="Add New Item"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/btn_reset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:text="RESET"
-                android:textColor="@color/orange"
-                android:textSize="16sp" />
         </RelativeLayout>
+
+        <!-- Category -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="CATEGORY"
+            android:textColor="@color/dark_gray"
+            android:textSize="12sp" />
+
+        <Spinner
+            android:id="@+id/spinner_category"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edit_text_background"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
 
         <!-- Item Name -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:text="ITEM NAME"
             android:textColor="@color/dark_gray"
             android:textSize="12sp" />
@@ -63,17 +71,57 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/edit_text_background"
-            android:hint="Mazalichiken Halim"
+            android:hint="e.g., Cơm Tấm thịt bò"
             android:inputType="textCapWords"
             android:paddingStart="16dp"
             android:paddingEnd="16dp" />
 
-        <!-- Upload Photo/Video -->
+        <!-- Description -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="UPLOAD PHOTO/VIDEO"
+            android:layout_marginTop="16dp"
+            android:text="DESCRIPTION"
+            android:textColor="@color/dark_gray"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/et_description"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edit_text_background"
+            android:gravity="top"
+            android:hint="e.g., Cơm tấm nóng hổi với sườn, bì, chả..."
+            android:inputType="textMultiLine"
+            android:padding="16dp" />
+
+        <!-- Price -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="PRICE (VND)"
+            android:textColor="@color/dark_gray"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/et_price"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edit_text_background"
+            android:hint="e.g., 70000"
+            android:inputType="number"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+
+        <!-- Upload Image -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="UPLOAD IMAGE"
             android:textColor="@color/dark_gray"
             android:textSize="12sp" />
 
@@ -88,10 +136,11 @@
                 android:layout_width="90dp"
                 android:layout_height="90dp"
                 android:background="@drawable/edit_text_background"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                 />
 
             <LinearLayout
-                android:id="@+id/btn_add_photo_1"
+                android:id="@+id/btn_add_photo"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
                 android:layout_marginStart="16dp"
@@ -108,132 +157,35 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Add" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/btn_add_photo_2"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:layout_marginStart="16dp"
-                android:background="@drawable/dashed_border"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_upload_cloud" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Add" />
+                    android:text="Add Photo" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Price and Delivery Options -->
-        <LinearLayout
+        <!-- Availability -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_is_available"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:text="Is Available"
+            android:textSize="16sp"
+            android:checked="true"
+            android:textColor="@color/black"/>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PRICE"
-                    android:textColor="@color/dark_gray"
-                    android:textSize="12sp" />
-
-                <EditText
-                    android:id="@+id/et_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/edit_text_background"
-                    android:hint="$50"
-                    android:inputType="numberDecimal"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginStart="16dp"
-                android:layout_weight="1.5"
-                android:orientation="horizontal">
-
-                <CheckBox
-                    android:id="@+id/cb_pickup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pick up" />
-
-                <CheckBox
-                    android:id="@+id/cb_delivery"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="Delivery" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Ingredients -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="INGRIDENTS"
-            android:textColor="@color/dark_gray"
-            android:textSize="12sp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_ingredients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            tools:itemCount="2"
-            tools:listitem="@layout/item_ingredient" />
-
-        <!-- Details -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="DETAILS"
-            android:textColor="@color/dark_gray"
-            android:textSize="12sp" />
-
-        <EditText
-            android:id="@+id/et_details"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/edit_text_background"
-            android:gravity="top"
-            android:hint="Lorem ipsum dolor sit amet..."
-            android:inputType="textMultiLine"
-            android:padding="16dp" />
+        <!-- Spacer -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <!-- Save Button -->
         <Button
-            android:id="@+id/btn_save_changes"
+            android:id="@+id/btn_save_item"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="32dp"
             android:backgroundTint="@color/orange"
-            android:text="SAVE CHANGES"
+            android:text="SAVE ITEM"
             android:textColor="@color/white"
             app:cornerRadius="12dp" />
     </LinearLayout>
