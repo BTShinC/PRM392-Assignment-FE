@@ -1,5 +1,6 @@
 package com.example.prm392_assignment_food.ui.admin;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,13 +34,36 @@ import retrofit2.Response;
 public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment implements RunningOrderAdapter.OnItemClickListener {
 
     public static final String TAG = "RunningOrdersBottomSheetFragment";
+    private static final String ARG_STATUS = "status";
+    public static final String REQUEST_KEY = "requestRefresh";
+
 
     private ApiService apiService;
     private List<RunningOrder> runningOrderList = new ArrayList<>();
     private RunningOrderAdapter adapter;
+    private String currentStatus;
 
-    public static RunningOrdersBottomSheetFragment newInstance() {
-        return new RunningOrdersBottomSheetFragment();
+    public static RunningOrdersBottomSheetFragment newInstance(String status) {
+        RunningOrdersBottomSheetFragment fragment = new RunningOrdersBottomSheetFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_STATUS, status);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        // Send a result back to the parent fragment so it can refresh the counts
+        getParentFragmentManager().setFragmentResult(REQUEST_KEY, new Bundle());
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            currentStatus = getArguments().getString(ARG_STATUS);
+        }
     }
 
     @Nullable
@@ -52,18 +76,19 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
         RecyclerView rvRunningOrders = view.findViewById(R.id.rv_running_orders);
         rvRunningOrders.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Pass context to adapter for Glide
         adapter = new RunningOrderAdapter(requireContext(), runningOrderList);
         adapter.setOnItemClickListener(this);
         rvRunningOrders.setAdapter(adapter);
 
-        fetchPaidOrders();
+        fetchOrdersByStatus();
 
         return view;
     }
 
-    private void fetchPaidOrders() {
-        apiService.getOrders(0, 50, Collections.singletonList("createdAt,DESC"), "PAID", null).enqueue(new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
+    private void fetchOrdersByStatus() {
+        if (currentStatus == null) return;
+
+        apiService.getOrders(0, 50, Collections.singletonList("createdAt,DESC"), currentStatus, null).enqueue(new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
             @Override
             public void onResponse(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Response<ApiResponseDto<PageResponse<OrderResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -71,10 +96,11 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                     if (pageResponse != null && pageResponse.getContent() != null && !pageResponse.getContent().isEmpty()) {
                         processOrders(pageResponse.getContent());
                     } else {
-                        Toast.makeText(getContext(), "No paid orders found.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "No orders found with status: " + currentStatus, Toast.LENGTH_SHORT).show();
+                        dismiss();
                     }
                 } else {
-                    Toast.makeText(getContext(), "Failed to fetch paid orders", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Failed to fetch orders", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -87,15 +113,11 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
 
     private void processOrders(List<OrderResponse> orderResponses) {
         runningOrderList.clear();
-        // Dùng AtomicInteger để đếm số lượng cuộc gọi API đã hoàn thành
         AtomicInteger counter = new AtomicInteger(orderResponses.size());
 
         for (OrderResponse orderResponse : orderResponses) {
-            // Chỉ lấy món ăn đầu tiên trong đơn hàng để hiển thị
             if (orderResponse.orderItems != null && !orderResponse.orderItems.isEmpty()) {
                 String menuItemId = orderResponse.orderItems.get(0).menuItemId;
-                
-                // Gọi API để lấy chi tiết món ăn
                 apiService.getMenuItemById(menuItemId).enqueue(new Callback<MenuItemResponse>() {
                     @Override
                     public void onResponse(Call<MenuItemResponse> call, Response<MenuItemResponse> response) {
@@ -109,33 +131,34 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                                     menuItem.getImageUrl()
                             ));
                         }
-                        
-                        // Khi một cuộc gọi hoàn tất, giảm bộ đếm
                         if (counter.decrementAndGet() == 0) {
-                            // Khi tất cả các cuộc gọi đã xong, cập nhật adapter
                             adapter.notifyDataSetChanged();
                         }
                     }
-
                     @Override
                     public void onFailure(Call<MenuItemResponse> call, Throwable t) {
-                         if (counter.decrementAndGet() == 0) {
+                        if (counter.decrementAndGet() == 0) {
                             adapter.notifyDataSetChanged();
                         }
                     }
                 });
             } else {
-                 if (counter.decrementAndGet() == 0) {
+                if (counter.decrementAndGet() == 0) {
                     adapter.notifyDataSetChanged();
                 }
             }
         }
     }
 
-
     @Override
     public void onDoneClick(RunningOrder order) {
-        updateStatus(order, "CONFIRMED");
+        String nextStatus = "";
+        if ("PAID".equals(currentStatus)) {
+            nextStatus = "CONFIRMED";
+        } else if ("CONFIRMED".equals(currentStatus)) {
+            nextStatus = "SHIPPING";
+        }
+        updateStatus(order, nextStatus);
     }
 
     @Override
@@ -144,14 +167,16 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
     }
 
     private void updateStatus(RunningOrder order, String status) {
+        if (status.isEmpty()) return;
+
         apiService.updateOrderStatus(order.getId(), status).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Order " + status, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Order status updated to " + status, Toast.LENGTH_SHORT).show();
                     int position = -1;
-                    for(int i=0; i< runningOrderList.size(); i++){
-                        if(runningOrderList.get(i).getId().equals(order.getId())){
+                    for (int i = 0; i < runningOrderList.size(); i++) {
+                        if (runningOrderList.get(i).getId().equals(order.getId())) {
                             position = i;
                             break;
                         }
@@ -159,6 +184,10 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                     if (position != -1) {
                         runningOrderList.remove(position);
                         adapter.notifyItemRemoved(position);
+                    }
+                     // If the list is empty after update, close the sheet
+                    if (runningOrderList.isEmpty()) {
+                        dismiss();
                     }
                 } else {
                     Toast.makeText(getContext(), "Failed to update order", Toast.LENGTH_SHORT).show();
