@@ -2,7 +2,6 @@ package com.example.prm392_assignment_food.ui.admin;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,7 +127,8 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                                     menuItem.getCategoryName(),
                                     menuItem.getName(),
                                     "$" + orderResponse.totalPrice,
-                                    menuItem.getImageUrl()
+                                    menuItem.getImageUrl(),
+                                    orderResponse.orderStatus
                             ));
                         }
                         if (counter.decrementAndGet() == 0) {
@@ -159,6 +159,11 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
             nextStatus = "SHIPPING";
         }
         updateStatus(order, nextStatus);
+    }
+
+    @Override
+    public void onCompleteClick(RunningOrder order) {
+        updateStatus(order, "COMPLETED");
     }
 
     @Override

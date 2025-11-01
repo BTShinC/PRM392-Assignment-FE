@@ -40,7 +40,6 @@ public class AdminOrdersActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rv_orders);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Pass context to adapter for Glide
         adapter = new RunningOrderAdapter(this, runningOrderList);
         recyclerView.setAdapter(adapter);
 
@@ -58,15 +57,14 @@ public class AdminOrdersActivity extends AppCompatActivity {
                         runningOrderList.clear();
                         for (OrderResponse orderResponse : orderResponses) {
                             if (orderResponse != null && orderResponse.orderItems != null && !orderResponse.orderItems.isEmpty()) {
-                                // For this activity, we don't need to fetch full item details yet.
-                                // We can enhance this later if needed.
                                 String name = orderResponse.orderItems.get(0).menuItemId; // Placeholder
                                 runningOrderList.add(new RunningOrder(
                                         orderResponse.orderId,
                                         "Category", // Placeholder
                                         name,
                                         "$" + orderResponse.totalPrice,
-                                        null // No image URL needed here for now
+                                        null, // No image URL needed here for now
+                                        orderResponse.orderStatus
                                 ));
                             }
                         }

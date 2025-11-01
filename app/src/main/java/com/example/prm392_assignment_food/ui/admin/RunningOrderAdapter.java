@@ -15,8 +15,6 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
-import com.example.prm392_assignment_food.ui.admin.RunningOrder;
-
 public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapter.ViewHolder> {
 
     private List<RunningOrder> runningOrderList;
@@ -25,6 +23,7 @@ public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapte
 
     public interface OnItemClickListener {
         void onDoneClick(RunningOrder order);
+        void onCompleteClick(RunningOrder order);
         void onCancelClick(RunningOrder order);
     }
 
@@ -51,17 +50,38 @@ public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapte
         holder.tvItemName.setText(order.getName());
         holder.tvPrice.setText(order.getPrice());
 
-        // Sử dụng Glide để tải ảnh
         Glide.with(context)
                 .load(order.getImageUrl())
-                .placeholder(R.drawable.chicken) // Ảnh mặc định
-                .error(R.drawable.background_red_button)       // Ảnh khi có lỗi
+                .placeholder(R.drawable.chicken)
+                .error(R.drawable.background_red_button)
                 .into(holder.ivFoodImage);
+
+        String status = order.getStatus();
+        if ("PAID".equals(status)) {
+            holder.btnDone.setVisibility(View.VISIBLE);
+            holder.btnCancel.setVisibility(View.VISIBLE);
+            holder.btnComplete.setVisibility(View.GONE);
+        } else if ("CONFIRMED".equals(status)) {
+            holder.btnDone.setVisibility(View.VISIBLE);
+            holder.btnCancel.setVisibility(View.GONE);
+            holder.btnComplete.setVisibility(View.VISIBLE);
+        } else {
+            // Default visibility if status is something else
+            holder.btnDone.setVisibility(View.GONE);
+            holder.btnCancel.setVisibility(View.GONE);
+            holder.btnComplete.setVisibility(View.GONE);
+        }
 
 
         holder.btnDone.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDoneClick(order);
+            }
+        });
+
+        holder.btnComplete.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCompleteClick(order);
             }
         });
 
@@ -83,6 +103,7 @@ public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapte
         TextView tvItemName;
         TextView tvPrice;
         MaterialButton btnDone;
+        MaterialButton btnComplete;
         MaterialButton btnCancel;
 
         public ViewHolder(@NonNull View itemView) {
@@ -92,6 +113,7 @@ public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapte
             tvItemName = itemView.findViewById(R.id.tv_item_name);
             tvPrice = itemView.findViewById(R.id.tv_price);
             btnDone = itemView.findViewById(R.id.btn_done);
+            btnComplete = itemView.findViewById(R.id.btn_complete);
             btnCancel = itemView.findViewById(R.id.btn_cancel);
         }
     }

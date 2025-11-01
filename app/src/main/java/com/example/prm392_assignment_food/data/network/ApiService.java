@@ -2,8 +2,8 @@ package com.example.prm392_assignment_food.data.network;
 
 import com.example.prm392_assignment_food.data.model.ApiResponse;
 import com.example.prm392_assignment_food.data.model.ApiResponseDto;
+import com.example.prm392_assignment_food.data.model.admin.DashboardResponse;
 import com.example.prm392_assignment_food.data.model.MenuCategoryRequest;
-import com.example.prm392_assignment_food.data.model.MenuItemRequest;
 import com.example.prm392_assignment_food.data.model.OrderResponse;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordRequest;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordResponse;
@@ -32,8 +32,6 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
@@ -146,4 +144,10 @@ public interface ApiService {
             @Query("status") String status,
             @Query("search") String search
     );
+
+    @GET("api/dashboard")
+    Call<DashboardResponse> getDashboardAll();
+
+    @GET("api/dashboard/{month}")
+    Call<DashboardResponse> getDashboardByMonth(@Path("month") int month);
 }

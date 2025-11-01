@@ -87,6 +87,19 @@
             app:cornerRadius="8dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_complete"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="99dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Hoàn thành"
+            android:textAllCaps="false"
+            android:textColor="#FB6D3A"
+            app:cornerRadius="8dp"
+            app:strokeColor="#FB6D3A"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cancel"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="99dp"
@@ -96,7 +109,8 @@
             android:textAllCaps="false"
             android:textColor="#FB6D3A"
             app:cornerRadius="8dp"
-            app:strokeColor="#FB6D3A" />
+            app:strokeColor="#FB6D3A"
+            android:visibility="gone" />
     </LinearLayout>
 
 </RelativeLayout>

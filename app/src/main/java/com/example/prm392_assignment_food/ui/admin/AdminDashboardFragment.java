@@ -1,5 +1,6 @@
 package com.example.prm392_assignment_food.ui.admin;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,10 +12,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.ApiResponseDto;
+import com.example.prm392_assignment_food.data.model.admin.DashboardResponse;
 import com.example.prm392_assignment_food.data.model.OrderResponse;
 import com.example.prm392_assignment_food.data.model.PageResponse;
 import com.example.prm392_assignment_food.data.network.ApiClient;
@@ -36,6 +37,7 @@ public class AdminDashboardFragment extends Fragment {
     private ApiService apiService;
     private TextView tvRunningOrders;
     private TextView tvOrderRequest;
+    private TextView tvTotalRevenue;
     private LineChart lineChart;
 
     @Override
@@ -61,10 +63,12 @@ public class AdminDashboardFragment extends Fragment {
         apiService = ApiClient.getApiService();
         tvRunningOrders = view.findViewById(R.id.tvRunningOrders);
         tvOrderRequest = view.findViewById(R.id.tvOrderRequest);
+        tvTotalRevenue = view.findViewById(R.id.tvTotalRevenue);
         lineChart = view.findViewById(R.id.lineChart);
 
         setupLineChart();
         updateOrderCounts();
+        updateDashboard();
 
         view.findViewById(R.id.running_orders_card).setOnClickListener(v -> {
             showOrdersBottomSheet("CONFIRMED");
@@ -73,12 +77,18 @@ public class AdminDashboardFragment extends Fragment {
         view.findViewById(R.id.order_request_card).setOnClickListener(v -> {
             showOrdersBottomSheet("PAID");
         });
+
+        view.findViewById(R.id.revenue_card).setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), AdminAnalyticsActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
         updateOrderCounts();
+        updateDashboard();
     }
     
     private void showOrdersBottomSheet(String status) {
@@ -89,6 +99,22 @@ public class AdminDashboardFragment extends Fragment {
     private void updateOrderCounts() {
         fetchOrderCountByStatus("PAID", tvOrderRequest);
         fetchOrderCountByStatus("CONFIRMED", tvRunningOrders);
+    }
+    
+    private void updateDashboard() {
+        apiService.getDashboardAll().enqueue(new Callback<DashboardResponse>() {
+            @Override
+            public void onResponse(Call<DashboardResponse> call, Response<DashboardResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    tvTotalRevenue.setText(String.format("$%.2f", response.body().data.total));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DashboardResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to load dashboard data", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void fetchOrderCountByStatus(String status, TextView textView) {
@@ -117,13 +143,9 @@ public class AdminDashboardFragment extends Fragment {
     private void setupLineChart() {
         // Chart setup remains the same
         ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(0, 4));
-        entries.add(new Entry(1, 8));
-        entries.add(new Entry(2, 6));
-        entries.add(new Entry(3, 2));
-        entries.add(new Entry(4, 7));
-        entries.add(new Entry(5, 8));
-        entries.add(new Entry(6, 5));
+        // Add some dummy data for now, we will replace it later
+        entries.add(new Entry(0, 0));
+       
 
         LineDataSet dataSet = new LineDataSet(entries, "Doanh thu");
         dataSet.setColor(Color.parseColor("#FB6D3A"));
