@@ -64,7 +64,7 @@ dependencies {
     implementation("com.github.bumptech.glide:okhttp3-integration:4.12.0")
 
 
-
+    implementation("com.github.bumptech.glide:okhttp3-integration:4.12.0")
     implementation("com.auth0:java-jwt:4.4.0")
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)

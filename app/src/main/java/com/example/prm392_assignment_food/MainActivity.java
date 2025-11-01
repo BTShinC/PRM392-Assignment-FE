@@ -18,6 +18,7 @@ import com.example.prm392_assignment_food.ui.auth.ProfileActivity;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
 import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
 import com.example.prm392_assignment_food.ui.customer.FoodListActivity;
+import com.example.prm392_assignment_food.ui.order.OrderActivity;
 import com.example.prm392_assignment_food.ui.profile.AdminProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -95,5 +96,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button btnMyOrder = findViewById(R.id.btn_my_order);
+        btnMyOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, OrderActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }

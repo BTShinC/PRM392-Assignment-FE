@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.example.prm392_assignment_food.utils.TokenManager;
 
+import java.util.concurrent.TimeUnit; // <<< THÊM IMPORT NÀY
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -14,8 +16,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static final String TAG = "ApiClient";
-//    private static final String BASE_URL = "https://prm392.nguyenhoangan.site/";
-    private static final String BASE_URL = "http://10.0.2.2:8000/";
+    private static final String BASE_URL = "https://prm392.nguyenhoangan.site/";
+//     private static final String BASE_URL = "http://10.0.2.2:8000/";
 
     private static Retrofit retrofit = null;
     private static OkHttpClient okHttpClient = null;
@@ -25,16 +27,25 @@ public class ApiClient {
         if (context != null) {
             appContext = context.getApplicationContext();
             Log.d(TAG, "ApiClient initialized with context");
+
+            // QUAN TRỌNG: Reset client để apply context mới
+
             resetClient();
         }
     }
 
     public static OkHttpClient getOkHttpClient() {
         if (okHttpClient == null) {
+
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
             OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
+                    // --- THÊM CẤU HÌNH TIMEOUT --- 
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    // -----------------------------
                     .addInterceptor(loggingInterceptor);
 
             if (appContext != null) {
@@ -50,6 +61,7 @@ public class ApiClient {
                     } else {
                         Log.w(TAG, "No token available - request will be unauthorized");
                     }
+
                     return chain.proceed(requestBuilder.build());
                 });
             } else {
@@ -68,6 +80,7 @@ public class ApiClient {
                     .client(getOkHttpClient())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
+
             Log.d(TAG, "Retrofit instance created successfully");
         }
         return retrofit;
@@ -82,4 +95,4 @@ public class ApiClient {
         okHttpClient = null;
         Log.d(TAG, "Retrofit client reset");
     }
-}
+
