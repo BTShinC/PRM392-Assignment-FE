@@ -31,8 +31,6 @@ import com.example.prm392_assignment_food.data.model.order.OrderDto;
 
 import java.util.List;
 
-import java.util.List;
-
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.DELETE;
@@ -138,7 +136,7 @@ public interface ApiService {
 
 
     @PUT("/api/admins/orders/status")
-    Call<Void> updateOrderStatus(@Query("orderId") String orderId, @Query("orderStatus") String orderStatus);
+    Call<Void> adminUpdateOrderStatus(@Query("orderId") String orderId, @Query("orderStatus") String orderStatus);
 
     @GET("/api/admins/orders")
     Call<ApiResponseDto<PageResponse<OrderResponse>>> getOrders(
@@ -154,7 +152,6 @@ public interface ApiService {
 
     @GET("api/dashboard/{month}")
     Call<DashboardResponse> getDashboardByMonth(@Path("month") int month);
-}
 
     @GET("/api/orders/status/{userId}")
     Call<ResponseDto<List<OrderDto>>> getOrdersByStatus(
@@ -168,4 +165,3 @@ public interface ApiService {
             @Query("orderStatus") String status
     );
 }
-
