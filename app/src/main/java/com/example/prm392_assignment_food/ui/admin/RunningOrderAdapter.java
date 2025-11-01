@@ -20,6 +20,7 @@ public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapte
     private List<RunningOrder> runningOrderList;
     private OnItemClickListener listener;
     private Context context;
+    private static final String BASE_URL = "http://10.0.2.2:8000/";
 
     public interface OnItemClickListener {
         void onDoneClick(RunningOrder order);
@@ -50,8 +51,15 @@ public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapte
         holder.tvItemName.setText(order.getName());
         holder.tvPrice.setText(order.getPrice());
 
+        String imageUrl = order.getImageUrl();
+        if (imageUrl != null && !imageUrl.startsWith("http")) {
+            // This is a temporary fix for local development.
+            // It's better to have the server return the full URL.
+            imageUrl = BASE_URL + "uploads/" + imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        }
+
         Glide.with(context)
-                .load(order.getImageUrl())
+                .load(imageUrl)
                 .placeholder(R.drawable.chicken)
                 .error(R.drawable.background_red_button)
                 .into(holder.ivFoodImage);
