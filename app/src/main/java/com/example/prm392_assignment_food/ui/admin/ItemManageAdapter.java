@@ -19,6 +19,8 @@ public class ItemManageAdapter extends RecyclerView.Adapter<ItemManageAdapter.It
     private List<MenuItemResponse> itemList;
     private OnItemClickListener listener;
     private Context context;
+    private static final String BASE_URL = "http://10.0.2.2:8000/";
+
 
     public interface OnItemClickListener {
         void onUpdateClick(int position);
@@ -46,10 +48,17 @@ public class ItemManageAdapter extends RecyclerView.Adapter<ItemManageAdapter.It
         MenuItemResponse currentItem = itemList.get(position);
         holder.tvItemName.setText(currentItem.getName());
         holder.tvItemPrice.setText(currentItem.getFormattedPrice());
+
+        String imageUrl = currentItem.getImageUrl();
+        if (imageUrl != null && !imageUrl.startsWith("http")) {
+            // This is a temporary fix for local development.
+            // It's better to have the server return the full URL.
+            imageUrl = BASE_URL + "uploads/" + imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        }
         
         // NÂNG CẤP LỆNH GỌI GLIDE
         Glide.with(context)
-                .load(currentItem.getImageUrl())
+                .load(imageUrl)
                 .placeholder(android.R.drawable.ic_menu_gallery) // Ảnh giữ chỗ
                 .error(android.R.drawable.ic_menu_report_image) // Ảnh báo lỗi
                 .into(holder.ivItemImage);

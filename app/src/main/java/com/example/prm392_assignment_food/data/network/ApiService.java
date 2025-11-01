@@ -1,9 +1,10 @@
 package com.example.prm392_assignment_food.data.network;
 
 import com.example.prm392_assignment_food.data.model.ApiResponse;
-
+import com.example.prm392_assignment_food.data.model.ApiResponseDto;
+import com.example.prm392_assignment_food.data.model.admin.DashboardResponse;
 import com.example.prm392_assignment_food.data.model.MenuCategoryRequest;
-import com.example.prm392_assignment_food.data.model.MenuItemRequest;
+import com.example.prm392_assignment_food.data.model.OrderResponse;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordRequest;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordResponse;
 import com.example.prm392_assignment_food.data.model.auth.LoginRequest;
@@ -30,10 +31,10 @@ import com.example.prm392_assignment_food.data.model.order.OrderDto;
 
 import java.util.List;
 
+import java.util.List;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
@@ -135,6 +136,26 @@ public interface ApiService {
     @POST("api/v1/payments/vnpay/create")
     Call<VnPayCreateResponse> createVnPayPayment(@Body VnPayCreateRequest request);
 
+
+    @PUT("/api/admins/orders/status")
+    Call<Void> updateOrderStatus(@Query("orderId") String orderId, @Query("orderStatus") String orderStatus);
+
+    @GET("/api/admins/orders")
+    Call<ApiResponseDto<PageResponse<OrderResponse>>> getOrders(
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("sort") List<String> sort,
+            @Query("status") String status,
+            @Query("search") String search
+    );
+
+    @GET("api/dashboard")
+    Call<DashboardResponse> getDashboardAll();
+
+    @GET("api/dashboard/{month}")
+    Call<DashboardResponse> getDashboardByMonth(@Path("month") int month);
+}
+
     @GET("/api/orders/status/{userId}")
     Call<ResponseDto<List<OrderDto>>> getOrdersByStatus(
             @Path("userId") String userId,
@@ -147,3 +168,4 @@ public interface ApiService {
             @Query("orderStatus") String status
     );
 }
+

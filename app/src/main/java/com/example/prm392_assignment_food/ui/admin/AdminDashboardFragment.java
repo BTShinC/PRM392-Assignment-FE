@@ -6,159 +6,161 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_assignment_food.R;
+import com.example.prm392_assignment_food.data.model.ApiResponseDto;
+import com.example.prm392_assignment_food.data.model.admin.DashboardResponse;
+import com.example.prm392_assignment_food.data.model.OrderResponse;
+import com.example.prm392_assignment_food.data.model.PageResponse;
+import com.example.prm392_assignment_food.data.network.ApiClient;
+import com.example.prm392_assignment_food.data.network.ApiService;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.google.android.material.card.MaterialCardView;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdminDashboardFragment extends Fragment {
 
+    private ApiService apiService;
+    private TextView tvRunningOrders;
+    private TextView tvOrderRequest;
+    private TextView tvTotalRevenue;
     private LineChart lineChart;
-    private Spinner spinnerLocation, spinnerTimeRange;
-    private RecyclerView rvPopularItems;
-    private MaterialCardView runningOrdersCard;
-    private TextView tvSeeDetails;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_admin_dashboard, container, false);
-
-        lineChart = view.findViewById(R.id.lineChart);
-        spinnerLocation = view.findViewById(R.id.spinnerLocation);
-        spinnerTimeRange = view.findViewById(R.id.spinnerTimeRange);
-        rvPopularItems = view.findViewById(R.id.rvPopularItems);
-        runningOrdersCard = view.findViewById(R.id.running_orders_card);
-        tvSeeDetails = view.findViewById(R.id.tvSeeDetails);
-
-        setupSpinners();
-        setupLineChart();
-        setupRecyclerView();
-        setupClickListeners();
-
-        return view;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Listen for results from the bottom sheet
+        getParentFragmentManager().setFragmentResultListener(RunningOrdersBottomSheetFragment.REQUEST_KEY, this, (requestKey, bundle) -> {
+            // The bottom sheet was dismissed, so we refresh the counts
+            updateOrderCounts();
+        });
     }
 
-    private void setupClickListeners() {
-        runningOrdersCard.setOnClickListener(v -> {
-            RunningOrdersBottomSheetFragment bottomSheet = RunningOrdersBottomSheetFragment.newInstance();
-            bottomSheet.show(getParentFragmentManager(), RunningOrdersBottomSheetFragment.TAG);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_admin_dashboard, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        apiService = ApiClient.getApiService();
+        tvRunningOrders = view.findViewById(R.id.tvRunningOrders);
+        tvOrderRequest = view.findViewById(R.id.tvOrderRequest);
+        tvTotalRevenue = view.findViewById(R.id.tvTotalRevenue);
+        lineChart = view.findViewById(R.id.lineChart);
+
+        setupLineChart();
+        updateOrderCounts();
+        updateDashboard();
+
+        view.findViewById(R.id.running_orders_card).setOnClickListener(v -> {
+            showOrdersBottomSheet("CONFIRMED");
         });
 
-        tvSeeDetails.setOnClickListener(v -> {
+        view.findViewById(R.id.order_request_card).setOnClickListener(v -> {
+            showOrdersBottomSheet("PAID");
+        });
+
+        view.findViewById(R.id.revenue_card).setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AdminAnalyticsActivity.class);
             startActivity(intent);
         });
     }
 
-    private void setupSpinners() {
-        // Location Spinner
-        ArrayAdapter<CharSequence> locationAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.locations, android.R.layout.simple_spinner_item);
-        locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerLocation.setAdapter(locationAdapter);
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateOrderCounts();
+        updateDashboard();
+    }
+    
+    private void showOrdersBottomSheet(String status) {
+        RunningOrdersBottomSheetFragment bottomSheet = RunningOrdersBottomSheetFragment.newInstance(status);
+        bottomSheet.show(getParentFragmentManager(), RunningOrdersBottomSheetFragment.TAG);
+    }
 
-        // Time Range Spinner
-        ArrayAdapter<CharSequence> timeRangeAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.time_range, android.R.layout.simple_spinner_item);
-        timeRangeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerTimeRange.setAdapter(timeRangeAdapter);
+    private void updateOrderCounts() {
+        fetchOrderCountByStatus("PAID", tvOrderRequest);
+        fetchOrderCountByStatus("CONFIRMED", tvRunningOrders);
+    }
+    
+    private void updateDashboard() {
+        apiService.getDashboardAll().enqueue(new Callback<DashboardResponse>() {
+            @Override
+            public void onResponse(Call<DashboardResponse> call, Response<DashboardResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    tvTotalRevenue.setText(String.format("$%.2f", response.body().data.total));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DashboardResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to load dashboard data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchOrderCountByStatus(String status, TextView textView) {
+        apiService.getOrders(0, 1, null, status, null).enqueue(new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
+            @Override
+            public void onResponse(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Response<ApiResponseDto<PageResponse<OrderResponse>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    PageResponse<OrderResponse> pageResponse = response.body().getData();
+                    if (pageResponse != null) {
+                        textView.setText(String.valueOf(pageResponse.getTotalElements()));
+                    } else {
+                        textView.setText("0");
+                    }
+                } else {
+                    textView.setText("0");
+}
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Throwable t) {
+                textView.setText("0");
+            }
+        });
     }
 
     private void setupLineChart() {
-        List<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(0, 4));
-        entries.add(new Entry(1, 8));
-        entries.add(new Entry(2, 6));
-        entries.add(new Entry(3, 2));
-        entries.add(new Entry(4, 5));
-        entries.add(new Entry(5, 4));
-        entries.add(new Entry(6, 7));
+        // Chart setup remains the same
+        ArrayList<Entry> entries = new ArrayList<>();
+        // Add some dummy data for now, we will replace it later
+        entries.add(new Entry(0, 0));
+       
 
-
-        LineDataSet dataSet = new LineDataSet(entries, "Tổng doanh thu");
-        
-        // --- CÁC THAY ĐỔI ĐỂ LÀM ĐẸP BIỂU ĐỒ ---
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); // Chuyển sang biểu đồ cong
-        dataSet.setCubicIntensity(0.2f); // Điều chỉnh độ cong
-        dataSet.setDrawFilled(true); // Bật tô màu nền
-        dataSet.setFillColor(ContextCompat.getColor(getContext(), R.color.orange_alpha)); // Set màu nền
-        dataSet.setDrawCircles(false); // Ẩn các điểm tròn trên đường
-        dataSet.setLineWidth(3f); // Tăng độ dày của đường
-        dataSet.setColor(ContextCompat.getColor(getContext(), R.color.orange)); // Set màu đường
-        // --- KẾT THÚC THAY ĐỔI ---
-        
-        dataSet.setValueTextSize(10f);
+        LineDataSet dataSet = new LineDataSet(entries, "Doanh thu");
+        dataSet.setColor(Color.parseColor("#FB6D3A"));
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setCircleColor(Color.parseColor("#FB6D3A"));
+        dataSet.setDrawCircles(true);
         dataSet.setDrawValues(false);
 
-        LineData lineData = new LineData(dataSet);
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(dataSet);
+
+        LineData lineData = new LineData(dataSets);
         lineChart.setData(lineData);
         lineChart.getDescription().setEnabled(false);
         lineChart.getLegend().setEnabled(false);
-
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-        final String[] quarters = new String[]{"10AM", "11AM", "12PM", "01PM", "02PM", "03PM", "04PM"};
-        xAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return quarters[(int) value];
-            }
-        });
-
-        lineChart.getAxisLeft().setDrawGridLines(false);
-        lineChart.getAxisRight().setEnabled(false);
-
-        lineChart.invalidate(); // refresh
-    }
-
-    private void setupRecyclerView() {
-        rvPopularItems.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        rvPopularItems.setAdapter(new PopularItemsAdapter());
-    }
-
-    private class PopularItemsAdapter extends RecyclerView.Adapter<PopularItemsAdapter.ViewHolder> {
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_popular_food, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            // Bind data here
-        }
-
-        @Override
-        public int getItemCount() {
-            return 5; // Sample count
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            ViewHolder(View itemView) {
-                super(itemView);
-            }
-        }
+        lineChart.invalidate(); 
     }
 }

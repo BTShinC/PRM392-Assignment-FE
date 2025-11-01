@@ -154,6 +154,7 @@
             android:name=".ui.admin.UpdateItemActivity"
             android:exported="false" />
 
+
     </application>
 
 </manifest>
