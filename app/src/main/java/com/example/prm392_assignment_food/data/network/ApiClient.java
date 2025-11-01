@@ -95,4 +95,5 @@ public class ApiClient {
         okHttpClient = null;
         Log.d(TAG, "Retrofit client reset");
     }
+}
 

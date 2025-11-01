@@ -174,7 +174,7 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
     private void updateStatus(RunningOrder order, String status) {
         if (status.isEmpty()) return;
 
-        apiService.updateOrderStatus(order.getId(), status).enqueue(new Callback<Void>() {
+        apiService.adminUpdateOrderStatus(order.getId(), status).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
