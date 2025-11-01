@@ -12,4 +12,9 @@
     <color name="medium_gray">#9E9E9E</color>
     <color name="red_star">#FF5722</color>
     <color name="background_gray">#F8F8F8</color>
+    <color name="tab_text_default">#757575</color> <!-- xám nhạt -->
+    <color name="tab_text_selected">#FFFFFF</color> <!-- trắng -->
+    <color name="tab_bg_default">#E0E0E0</color> <!-- xám nền -->
+    <color name="tab_bg_selected">#FF5722</color> <!-- cam nổi bật -->
+
 </resources>

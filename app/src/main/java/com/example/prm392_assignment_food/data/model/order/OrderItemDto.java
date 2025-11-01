@@ -13,6 +13,44 @@ public class OrderItemDto {
 
     private BigDecimal price;
 
-    private LocalDateTime createdAt;
+    private String createdAt;
 
+    public UUID getOrderItemId() {
+        return orderItemId;
+    }
+
+    public void setOrderItemId(UUID orderItemId) {
+        this.orderItemId = orderItemId;
+    }
+
+    public UUID getMenuItemId() {
+        return menuItemId;
+    }
+
+    public void setMenuItemId(UUID menuItemId) {
+        this.menuItemId = menuItemId;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 }

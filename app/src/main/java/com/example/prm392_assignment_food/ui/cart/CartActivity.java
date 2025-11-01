@@ -294,7 +294,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnIte
         cartAdapter.updateItems(cart.getItems());
 
         BigDecimal totalPrice = cart.getTotalPrice() != null ? cart.getTotalPrice() : BigDecimal.ZERO;
-        textViewTotalPrice.setText(String.format(Locale.US, "$%.2f", totalPrice));
+        textViewTotalPrice.setText(String.format(Locale.US, "%.2f VND", totalPrice));
 
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
             Toast.makeText(CartActivity.this, "Giỏ hàng của bạn đang trống", Toast.LENGTH_SHORT).show();
