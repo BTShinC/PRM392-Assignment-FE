@@ -40,7 +40,7 @@ public class PlaceOrderAdapter extends RecyclerView.Adapter<PlaceOrderAdapter.Vi
 
         if (item.getUnitPrice() != null) {
             double totalPrice = item.getUnitPrice().doubleValue() * item.getQuantity();
-            holder.tvPrice.setText(String.format(Locale.US, "$%.2f", totalPrice));
+            holder.tvPrice.setText(String.format(Locale.US, "%.2f VND", totalPrice));
         }
 
         holder.imgFood.setImageResource(R.drawable.halim);

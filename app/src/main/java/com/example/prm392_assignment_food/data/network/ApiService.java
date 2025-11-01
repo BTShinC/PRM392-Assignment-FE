@@ -26,6 +26,9 @@ import com.example.prm392_assignment_food.data.model.ResponseDto;
 import com.example.prm392_assignment_food.data.model.UpdateQuantityRequest;
 import com.example.prm392_assignment_food.data.model.VnPayCreateRequest;
 import com.example.prm392_assignment_food.data.model.VnPayCreateResponse;
+import com.example.prm392_assignment_food.data.model.order.OrderDto;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -132,5 +135,15 @@ public interface ApiService {
     @POST("api/v1/payments/vnpay/create")
     Call<VnPayCreateResponse> createVnPayPayment(@Body VnPayCreateRequest request);
 
+    @GET("/api/orders/status/{userId}")
+    Call<ResponseDto<List<OrderDto>>> getOrdersByStatus(
+            @Path("userId") String userId,
+            @Query("orderStatus") String status
+    );
 
+    @PUT("/api/orders")
+    Call<ResponseDto> updateOrderStatus(
+            @Query("orderId") String orderId,
+            @Query("orderStatus") String status
+    );
 }
