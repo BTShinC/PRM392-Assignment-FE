@@ -85,9 +85,14 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             orderHolder.tvTotalAmount.setText(String.format(Locale.getDefault(), "$%.2f", order.getTotalPrice()));
 
+            // Trong file OrderAdapter.java, phương thức onBindViewHolder            orderHolder.tvTotalAmount.setText(String.format(Locale.getDefault(), "$%.2f", order.getTotalPrice()));
+
+            // THÊM DÒNG NÀY ĐỂ DEBUG
+            android.util.Log.d("OrderAdapterStatus", "ID: " + order.getOrderId().toString().substring(0,4) + ", Trạng thái: '" + order.getStatus() + "'");
+
             Button btnCancel = orderHolder.itemView.findViewById(R.id.btn_cancel_order);
 
-            if ("AWAITING_PAYMENT".equals(order.getStatus())) {
+            if ("AWAITING_PAYMENT".equals(order.getStatus().name())) {
                 btnCancel.setVisibility(View.VISIBLE);
             } else {
                 btnCancel.setVisibility(View.GONE);
