@@ -62,7 +62,7 @@ public class AdminOrdersActivity extends AppCompatActivity {
                                         orderResponse.orderId,
                                         "Category", // Placeholder
                                         name,
-                                        "$" + orderResponse.totalPrice,
+                                        orderResponse.totalPrice,
                                         null, // No image URL needed here for now
                                         orderResponse.orderStatus
                                 ));

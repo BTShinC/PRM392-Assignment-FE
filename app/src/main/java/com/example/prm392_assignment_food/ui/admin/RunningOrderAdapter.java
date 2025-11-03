@@ -1,6 +1,7 @@
 package com.example.prm392_assignment_food.ui.admin;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,9 @@ import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 import com.google.android.material.button.MaterialButton;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapter.ViewHolder> {
 
@@ -49,12 +52,12 @@ public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapte
         RunningOrder order = runningOrderList.get(position);
         holder.tvCategory.setText("#" + order.getCategory());
         holder.tvItemName.setText(order.getName());
-        holder.tvPrice.setText(order.getPrice());
+
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        holder.tvPrice.setText(currencyFormatter.format(order.getPrice()));
 
         String imageUrl = order.getImageUrl();
         if (imageUrl != null && !imageUrl.startsWith("http")) {
-            // This is a temporary fix for local development.
-            // It's better to have the server return the full URL.
             imageUrl = BASE_URL + "uploads/" + imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
         }
 
@@ -65,19 +68,22 @@ public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapte
                 .into(holder.ivFoodImage);
 
         String status = order.getStatus();
-        if ("PAID".equals(status)) {
+
+        // Reset visibility and background
+        holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        holder.btnDone.setVisibility(View.GONE);
+        holder.btnCancel.setVisibility(View.GONE);
+        holder.btnComplete.setVisibility(View.GONE);
+
+        // Set visibility based on status
+        if ("PAID".equals(status) || "AWAITING_PAYMENT".equals(status)) {
             holder.btnDone.setVisibility(View.VISIBLE);
             holder.btnCancel.setVisibility(View.VISIBLE);
-            holder.btnComplete.setVisibility(View.GONE);
         } else if ("CONFIRMED".equals(status)) {
             holder.btnDone.setVisibility(View.VISIBLE);
-            holder.btnCancel.setVisibility(View.GONE);
+        } else if ("SHIPPING".equals(status)) {
+            holder.itemView.setBackgroundColor(Color.parseColor("#E0E0E0"));
             holder.btnComplete.setVisibility(View.VISIBLE);
-        } else {
-            // Default visibility if status is something else
-            holder.btnDone.setVisibility(View.GONE);
-            holder.btnCancel.setVisibility(View.GONE);
-            holder.btnComplete.setVisibility(View.GONE);
         }
 
 
