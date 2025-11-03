@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -108,9 +109,66 @@ public class AdminDashboardFragment extends Fragment {
     }
 
     private void updateOrderCounts() {
-        fetchOrderCountByStatus("PAID", tvOrderRequest);
-        fetchOrderCountByStatus("CONFIRMED", tvRunningOrders);
+        fetchCombinedOrderRequestCount();
+        fetchCombinedRunningOrdersCount();
     }
+    
+    private void fetchCombinedOrderRequestCount() {
+        final AtomicInteger totalCount = new AtomicInteger(0);
+        final AtomicInteger callCounter = new AtomicInteger(2);
+
+        Callback<ApiResponseDto<PageResponse<OrderResponse>>> callback = new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
+            @Override
+            public void onResponse(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Response<ApiResponseDto<PageResponse<OrderResponse>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    // CORRECTED TYPE CONVERSION
+                    totalCount.addAndGet(response.body().getData().getTotalElements().intValue());
+                }
+                if (callCounter.decrementAndGet() == 0) {
+                    tvOrderRequest.setText(String.valueOf(totalCount.get()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Throwable t) {
+                if (callCounter.decrementAndGet() == 0) {
+                    tvOrderRequest.setText(String.valueOf(totalCount.get()));
+                }
+            }
+        };
+
+        apiService.getOrders(0, 1, null, "PAID", null).enqueue(callback);
+        apiService.getOrders(0, 1, null, "AWAITING_PAYMENT", null).enqueue(callback);
+    }
+    
+    private void fetchCombinedRunningOrdersCount() {
+         final AtomicInteger totalCount = new AtomicInteger(0);
+        final AtomicInteger callCounter = new AtomicInteger(2);
+
+        Callback<ApiResponseDto<PageResponse<OrderResponse>>> callback = new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
+            @Override
+            public void onResponse(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Response<ApiResponseDto<PageResponse<OrderResponse>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    // CORRECTED TYPE CONVERSION
+                    totalCount.addAndGet(response.body().getData().getTotalElements().intValue());
+                }
+                if (callCounter.decrementAndGet() == 0) {
+                    tvRunningOrders.setText(String.valueOf(totalCount.get()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Throwable t) {
+                if (callCounter.decrementAndGet() == 0) {
+                    tvRunningOrders.setText(String.valueOf(totalCount.get()));
+                }
+            }
+        };
+
+        apiService.getOrders(0, 1, null, "CONFIRMED", null).enqueue(callback);
+        apiService.getOrders(0, 1, null, "SHIPPING", null).enqueue(callback);
+    }
+
 
     private void loadAndProcessChartData() {
         apiService.getMenuItems(0, 1000, "name,asc", null, null).enqueue(new Callback<PageResponse<MenuItemResponse>>() {
@@ -187,25 +245,6 @@ public class AdminDashboardFragment extends Fragment {
         popularItemList.clear();
         popularItemList.addAll(sortedItems);
         popularItemAdapter.notifyDataSetChanged();
-    }
-
-    private void fetchOrderCountByStatus(String status, TextView textView) {
-        apiService.getOrders(0, 1, null, status, null).enqueue(new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
-            @Override
-            public void onResponse(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Response<ApiResponseDto<PageResponse<OrderResponse>>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    PageResponse<OrderResponse> pageResponse = response.body().getData();
-                    textView.setText(String.valueOf(pageResponse.getTotalElements()));
-                } else {
-                    textView.setText("0");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Throwable t) {
-                textView.setText("0");
-            }
-        });
     }
 
     private void setupPieChart(Map<String, Double> revenueByCategory) {

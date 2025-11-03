@@ -86,11 +86,12 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
     private void fetchOrdersByStatus() {
         if (currentStatus == null) return;
 
-        // "Running Orders" card will now fetch both CONFIRMED and SHIPPING
         if ("CONFIRMED".equals(currentStatus)) {
             fetchConfirmedAndShippingOrders();
-        } else {
-            // For other statuses like "PAID", fetch normally
+        } else if ("PAID".equals(currentStatus)) {
+            fetchPaidAndAwaitingPaymentOrders();
+        }
+        else {
             apiService.getOrders(0, 50, Collections.singletonList("createdAt,DESC"), currentStatus, null).enqueue(new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
                 @Override
                 public void onResponse(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Response<ApiResponseDto<PageResponse<OrderResponse>>> response) {
@@ -113,9 +114,46 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
         }
     }
 
+    private void fetchPaidAndAwaitingPaymentOrders() {
+        final List<OrderResponse> combinedOrders = new ArrayList<>();
+        final AtomicInteger callCounter = new AtomicInteger(2);
+
+        Callback<ApiResponseDto<PageResponse<OrderResponse>>> callback = new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
+            @Override
+            public void onResponse(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Response<ApiResponseDto<PageResponse<OrderResponse>>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    combinedOrders.addAll(response.body().getData().getContent());
+                }
+                if (callCounter.decrementAndGet() == 0) {
+                    if (combinedOrders.isEmpty()) {
+                        Toast.makeText(getContext(), "No order requests found", Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    } else {
+                        processOrders(combinedOrders);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Throwable t) {
+                if (callCounter.decrementAndGet() == 0) {
+                     if (combinedOrders.isEmpty()) {
+                        Toast.makeText(getContext(), "Error fetching some orders", Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    } else {
+                        processOrders(combinedOrders);
+                    }
+                }
+            }
+        };
+
+        apiService.getOrders(0, 25, Collections.singletonList("createdAt,DESC"), "PAID", null).enqueue(callback);
+        apiService.getOrders(0, 25, Collections.singletonList("createdAt,DESC"), "AWAITING_PAYMENT", null).enqueue(callback);
+    }
+
+
     private void fetchConfirmedAndShippingOrders() {
         final List<OrderResponse> combinedOrders = new ArrayList<>();
-        final AtomicInteger callCounter = new AtomicInteger(2); // We are making 2 API calls
+        final AtomicInteger callCounter = new AtomicInteger(2);
 
         Callback<ApiResponseDto<PageResponse<OrderResponse>>> callback = new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
             @Override
@@ -193,7 +231,7 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
     @Override
     public void onDoneClick(RunningOrder order) {
         String nextStatus = "";
-        if ("PAID".equals(order.getStatus())) {
+        if ("PAID".equals(order.getStatus()) || "AWAITING_PAYMENT".equals(order.getStatus())) {
             nextStatus = "CONFIRMED";
         } else if ("CONFIRMED".equals(order.getStatus())) {
             nextStatus = "SHIPPING";

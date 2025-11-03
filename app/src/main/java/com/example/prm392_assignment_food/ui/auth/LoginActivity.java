@@ -3,7 +3,7 @@ package com.example.prm392_assignment_food.ui.auth;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -12,12 +12,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.prm392_assignment_food.ui.customer.HomeActivity;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.auth.LoginRequest;
 import com.example.prm392_assignment_food.data.model.auth.LoginResponse;
 import com.example.prm392_assignment_food.data.network.ApiClient;
 import com.example.prm392_assignment_food.data.network.ApiService;
+import com.example.prm392_assignment_food.ui.admin.AdminActivity;
+import com.example.prm392_assignment_food.ui.customer.HomeActivity;
 import com.example.prm392_assignment_food.utils.TokenManager;
 
 import retrofit2.Call;
@@ -25,6 +28,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "LoginActivity";
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
@@ -47,13 +52,11 @@ public class LoginActivity extends AppCompatActivity {
         tokenManager = new TokenManager(this);
         sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
-        if (tokenManager.getToken() != null && !tokenManager.isTokenExpired()) {
-            // Token exists and is not expired. Go straight to HomeActivity.
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(intent);
-            finish();
+        String token = tokenManager.getToken();
+        if (token != null && !tokenManager.isTokenExpired()) {
+            redirectToDashboard(token);
             return;
-        } else if (tokenManager.getToken() != null) {
+        } else if (token != null) {
             tokenManager.clear();
         }
 
@@ -116,33 +119,22 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         LoginRequest loginRequest = new LoginRequest(email, password);
-        Call<LoginResponse> call = apiService.login(loginRequest);
-
-        call.enqueue(new Callback<LoginResponse>() {
+        apiService.login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
                     if (Integer.parseInt(loginResponse.getStatus()) == 200) {
-
-                        tokenManager.saveToken(loginResponse.getData(), email);
+                        String token = loginResponse.getData();
+                        tokenManager.saveToken(token, email);
                         saveOrClearCredentials(email, password);
-
                         Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
-
-                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
+                        redirectToDashboard(token);
                     } else {
                         Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    if (response.code() == 401) {
-                        Toast.makeText(LoginActivity.this, "Email hoặc mật khẩu không hợp lệ.", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(LoginActivity.this, "Email hoặc mật khẩu không hợp lệ.", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -151,5 +143,31 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void redirectToDashboard(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            String role = jwt.getClaim("role").asString();
+
+            // DIAGNOSTIC LOG
+            Log.d(TAG, "Decoded role: " + role);
+
+            Intent intent;
+            if ("ROLE_ADMIN".equals(role)) {
+                Log.d(TAG, "Redirecting to AdminActivity");
+                intent = new Intent(LoginActivity.this, AdminActivity.class);
+            } else {
+                Log.d(TAG, "Redirecting to HomeActivity");
+                intent = new Intent(LoginActivity.this, HomeActivity.class);
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to decode JWT or redirect", e);
+            Toast.makeText(this, "Lỗi token không hợp lệ.", Toast.LENGTH_SHORT).show();
+            tokenManager.clear();
+        }
     }
 }

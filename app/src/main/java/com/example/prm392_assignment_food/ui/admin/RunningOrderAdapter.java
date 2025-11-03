@@ -76,13 +76,13 @@ public class RunningOrderAdapter extends RecyclerView.Adapter<RunningOrderAdapte
         holder.btnComplete.setVisibility(View.GONE);
 
         // Set visibility based on status
-        if ("PAID".equals(status)) {
+        if ("PAID".equals(status) || "AWAITING_PAYMENT".equals(status)) {
             holder.btnDone.setVisibility(View.VISIBLE);
             holder.btnCancel.setVisibility(View.VISIBLE);
         } else if ("CONFIRMED".equals(status)) {
             holder.btnDone.setVisibility(View.VISIBLE);
         } else if ("SHIPPING".equals(status)) {
-            holder.itemView.setBackgroundColor(Color.parseColor("#E0E0E0")); // Darker grey for shipping
+            holder.itemView.setBackgroundColor(Color.parseColor("#E0E0E0"));
             holder.btnComplete.setVisibility(View.VISIBLE);
         }
 
