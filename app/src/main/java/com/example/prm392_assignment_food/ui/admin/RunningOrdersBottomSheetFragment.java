@@ -53,7 +53,6 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        // Send a result back to the parent fragment so it can refresh the counts
         getParentFragmentManager().setFragmentResult(REQUEST_KEY, new Bundle());
     }
 
@@ -87,28 +86,69 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
     private void fetchOrdersByStatus() {
         if (currentStatus == null) return;
 
-        apiService.getOrders(0, 50, Collections.singletonList("createdAt,DESC"), currentStatus, null).enqueue(new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
+        // "Running Orders" card will now fetch both CONFIRMED and SHIPPING
+        if ("CONFIRMED".equals(currentStatus)) {
+            fetchConfirmedAndShippingOrders();
+        } else {
+            // For other statuses like "PAID", fetch normally
+            apiService.getOrders(0, 50, Collections.singletonList("createdAt,DESC"), currentStatus, null).enqueue(new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
+                @Override
+                public void onResponse(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Response<ApiResponseDto<PageResponse<OrderResponse>>> response) {
+                    if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                        if (response.body().getData().getContent().isEmpty()) {
+                            Toast.makeText(getContext(), "No orders found with status: " + currentStatus, Toast.LENGTH_SHORT).show();
+                            dismiss();
+                        } else {
+                            processOrders(response.body().getData().getContent());
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Failed to fetch orders", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Throwable t) {
+                    Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void fetchConfirmedAndShippingOrders() {
+        final List<OrderResponse> combinedOrders = new ArrayList<>();
+        final AtomicInteger callCounter = new AtomicInteger(2); // We are making 2 API calls
+
+        Callback<ApiResponseDto<PageResponse<OrderResponse>>> callback = new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
             @Override
             public void onResponse(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Response<ApiResponseDto<PageResponse<OrderResponse>>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    PageResponse<OrderResponse> pageResponse = response.body().getData();
-                    if (pageResponse != null && pageResponse.getContent() != null && !pageResponse.getContent().isEmpty()) {
-                        processOrders(pageResponse.getContent());
-                    } else {
-                        Toast.makeText(getContext(), "No orders found with status: " + currentStatus, Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    combinedOrders.addAll(response.body().getData().getContent());
+                }
+                if (callCounter.decrementAndGet() == 0) {
+                    if (combinedOrders.isEmpty()) {
+                        Toast.makeText(getContext(), "No running orders found", Toast.LENGTH_SHORT).show();
                         dismiss();
+                    } else {
+                        processOrders(combinedOrders);
                     }
-                } else {
-                    Toast.makeText(getContext(), "Failed to fetch orders", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Throwable t) {
-                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                if (callCounter.decrementAndGet() == 0) {
+                    if (combinedOrders.isEmpty()) {
+                        Toast.makeText(getContext(), "Error fetching some orders", Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    } else {
+                        processOrders(combinedOrders);
+                    }
+                }
             }
-        });
+        };
+
+        apiService.getOrders(0, 25, Collections.singletonList("createdAt,DESC"), "CONFIRMED", null).enqueue(callback);
+        apiService.getOrders(0, 25, Collections.singletonList("createdAt,DESC"), "SHIPPING", null).enqueue(callback);
     }
+
 
     private void processOrders(List<OrderResponse> orderResponses) {
         runningOrderList.clear();
@@ -126,7 +166,7 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                                     orderResponse.orderId,
                                     menuItem.getCategoryName(),
                                     menuItem.getName(),
-                                    "$" + orderResponse.totalPrice,
+                                    orderResponse.totalPrice,
                                     menuItem.getImageUrl(),
                                     orderResponse.orderStatus
                             ));
@@ -153,9 +193,9 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
     @Override
     public void onDoneClick(RunningOrder order) {
         String nextStatus = "";
-        if ("PAID".equals(currentStatus)) {
+        if ("PAID".equals(order.getStatus())) {
             nextStatus = "CONFIRMED";
-        } else if ("CONFIRMED".equals(currentStatus)) {
+        } else if ("CONFIRMED".equals(order.getStatus())) {
             nextStatus = "SHIPPING";
         }
         updateStatus(order, nextStatus);
@@ -171,14 +211,15 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
         updateStatus(order, "CANCELLED");
     }
 
-    private void updateStatus(RunningOrder order, String status) {
-        if (status.isEmpty()) return;
+    private void updateStatus(RunningOrder order, String newStatus) {
+        if (newStatus.isEmpty()) return;
 
-        apiService.adminUpdateOrderStatus(order.getId(), status).enqueue(new Callback<Void>() {
+        apiService.adminUpdateOrderStatus(order.getId(), newStatus).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Order status updated to " + status, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Order status updated to " + newStatus, Toast.LENGTH_SHORT).show();
+
                     int position = -1;
                     for (int i = 0; i < runningOrderList.size(); i++) {
                         if (runningOrderList.get(i).getId().equals(order.getId())) {
@@ -186,11 +227,17 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                             break;
                         }
                     }
-                    if (position != -1) {
+
+                    if (position == -1) return;
+
+                    if ("COMPLETED".equals(newStatus) || "CANCELLED".equals(newStatus)) {
                         runningOrderList.remove(position);
                         adapter.notifyItemRemoved(position);
+                    } else {
+                        runningOrderList.get(position).setStatus(newStatus);
+                        adapter.notifyItemChanged(position);
                     }
-                     // If the list is empty after update, close the sheet
+                    
                     if (runningOrderList.isEmpty()) {
                         dismiss();
                     }

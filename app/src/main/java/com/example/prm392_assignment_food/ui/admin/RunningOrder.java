@@ -4,11 +4,11 @@ public class RunningOrder {
     private String id; // Order ID
     private String category;
     private String name;
-    private String price;
+    private double price;
     private String imageUrl;
     private String status;
 
-    public RunningOrder(String id, String category, String name, String price, String imageUrl, String status) {
+    public RunningOrder(String id, String category, String name, double price, String imageUrl, String status) {
         this.id = id;
         this.category = category;
         this.name = name;
@@ -20,7 +20,8 @@ public class RunningOrder {
     public String getId() { return id; }
     public String getCategory() { return category; }
     public String getName() { return name; }
-    public String getPrice() { return price; }
+    public double getPrice() { return price; }
     public String getImageUrl() { return imageUrl; }
     public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; } // Add setter for status
 }

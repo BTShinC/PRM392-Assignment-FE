@@ -9,26 +9,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#FFFFFF">
+
 
         <ImageView
             android:id="@+id/ivFoodImage"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            android:background="@android:color/darker_gray" />
+            android:background="@android:color/darker_gray"
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/tvFoodName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="4dp"
-            android:text="Food Name"
-            android:textStyle="bold"
+            android:ellipsize="end"
             android:maxLines="1"
-            android:ellipsize="end"/>
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:text="Food Name"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvQuantitySold"
@@ -37,7 +39,7 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:paddingBottom="8dp"
-            android:text="Sold: 0"/>
+            android:text="Sold: 0" />
 
     </LinearLayout>
 
