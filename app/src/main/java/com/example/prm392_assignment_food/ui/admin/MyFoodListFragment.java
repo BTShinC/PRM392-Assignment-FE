@@ -42,8 +42,8 @@ public class MyFoodListFragment extends Fragment {
     private ApiService apiService;
     private TabLayout tabLayout;
     private TextView tvTotalItems;
-    // This map will store the category name (e.g., "Bữa sáng") and its corresponding ID from the API.
     private final Map<String, String> categoryNameToIdMap = new HashMap<>();
+    private boolean isTabListenerSetup = false; // Flag to prevent setting listener multiple times
 
     @Nullable
     @Override
@@ -61,8 +61,13 @@ public class MyFoodListFragment extends Fragment {
         apiService = ApiClient.getApiService();
 
         setupRecyclerView();
-        // First, fetch the categories from the API to build our name-to-ID map.
-        fetchCategoriesAndSetupTabs();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Fetch fresh data every time the fragment becomes visible.
+        fetchCategoriesAndRefreshData();
     }
 
     private void setupRecyclerView() {
@@ -71,23 +76,23 @@ public class MyFoodListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private void fetchCategoriesAndSetupTabs() {
+    private void fetchCategoriesAndRefreshData() {
         apiService.getMenuCategories(0, 100, "name,asc", null).enqueue(new Callback<PageResponse<MenuCategoryResponse>>() {
             @Override
             public void onResponse(Call<PageResponse<MenuCategoryResponse>> call, Response<PageResponse<MenuCategoryResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     categoryNameToIdMap.clear();
-                    // Populate the map with data from the API.
                     for (MenuCategoryResponse category : response.body().getContent()) {
-                        // Use a consistent key, e.g., lowercase, to avoid matching issues.
                         categoryNameToIdMap.put(category.getName().toLowerCase(), category.getCategoryId());
                     }
                     Log.d(TAG, "Categories loaded: " + categoryNameToIdMap.keySet());
 
-                    // Now that we have the categories, set up the tab listener.
-                    setupTabListener();
-                    // And fetch the initial list for the "All" tab.
-                    fetchMenuItems(null);
+                    if (!isTabListenerSetup) {
+                        setupTabListener();
+                        isTabListenerSetup = true;
+                    }
+                    // After categories are loaded, refresh the list based on the currently selected tab.
+                    refreshListBasedOnCurrentTab();
                 } else {
                     Toast.makeText(getContext(), "Failed to load categories.", Toast.LENGTH_SHORT).show();
                 }
@@ -101,29 +106,40 @@ public class MyFoodListFragment extends Fragment {
         });
     }
 
+    private void refreshListBasedOnCurrentTab() {
+        TabLayout.Tab selectedTab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
+        if (selectedTab != null) {
+            handleTabSelection(selectedTab);
+        } else {
+            // Default to fetching all items if no tab is selected for some reason
+            fetchMenuItems(null);
+        }
+    }
+
+    private void handleTabSelection(TabLayout.Tab tab) {
+        String selectedTabText = tab.getText().toString();
+        Log.d(TAG, "Handling selection for tab: " + selectedTabText);
+
+        if ("Tất cả".equalsIgnoreCase(selectedTabText)) {
+            fetchMenuItems(null);
+        } else {
+            String categoryId = categoryNameToIdMap.get(selectedTabText.toLowerCase());
+            if (categoryId != null) {
+                fetchMenuItems(categoryId);
+            } else {
+                Log.w(TAG, "No category ID found for tab: " + selectedTabText);
+                Toast.makeText(getContext(), "Không tìm thấy danh mục: " + selectedTabText, Toast.LENGTH_SHORT).show();
+                adapter.updateData(new ArrayList<>());
+                tvTotalItems.setText("Tổng 00 món");
+            }
+        }
+    }
+
     private void setupTabListener() {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                String selectedTabText = tab.getText().toString();
-                Log.d(TAG, "Tab selected: " + selectedTabText);
-
-                if ("Tất cả".equalsIgnoreCase(selectedTabText)) {
-                    fetchMenuItems(null); // Pass null to fetch all items.
-                } else {
-                    // Find the ID from our map using the tab's text.
-                    String categoryId = categoryNameToIdMap.get(selectedTabText.toLowerCase());
-                    if (categoryId != null) {
-                        fetchMenuItems(categoryId);
-                    } else {
-                        // This case handles if the tab text doesn't match any category from the API.
-                        Log.w(TAG, "No category ID found for tab: " + selectedTabText);
-                        Toast.makeText(getContext(), "Không tìm thấy danh mục: " + selectedTabText, Toast.LENGTH_SHORT).show();
-                        // Optionally, clear the list or show all items.
-                        adapter.updateData(new ArrayList<>());
-                        tvTotalItems.setText("Tổng 00 món");
-                    }
-                }
+                handleTabSelection(tab);
             }
 
             @Override
