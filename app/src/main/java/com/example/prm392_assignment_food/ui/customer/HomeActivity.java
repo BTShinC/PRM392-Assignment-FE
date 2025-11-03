@@ -3,7 +3,10 @@ package com.example.prm392_assignment_food.ui.customer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textfield.TextInputEditText;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.prm392_assignment_food.MainActivity;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.MenuItemResponse;
+import com.example.prm392_assignment_food.data.model.MenuCategoryResponse;
 import com.example.prm392_assignment_food.data.model.PageResponse;
 import com.example.prm392_assignment_food.data.repository.FoodRepository;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
@@ -47,12 +51,15 @@ public class HomeActivity extends AppCompatActivity {
     private FloatingActionButton fabMap;
     private ProgressBar progressBar;
     private Button btnGoToMain;
+    private TextInputLayout tilSearch;
+    private TextInputEditText etSearch;
 
     // Data
     private List<MenuItemResponse> menuItems;
     private FoodRepository repository;
     private int currentPage = 0;
     private String currentCategoryId = null;
+    private String currentSearch = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +85,7 @@ public class HomeActivity extends AppCompatActivity {
         setupToolbar();
         setupRecyclerView();
         setupTabListeners();
+        loadCategories();
         setupClickListeners();
 
         // Load data từ API
@@ -96,6 +104,8 @@ public class HomeActivity extends AppCompatActivity {
         fabMap = findViewById(R.id.fab_map);
         progressBar = findViewById(R.id.progress_bar);
         btnGoToMain = findViewById(R.id.btnGoToMain);
+        tilSearch = findViewById(R.id.til_search);
+        etSearch = findViewById(R.id.et_search);
     }
 
     private void initData() {
@@ -117,9 +127,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupTabListeners() {
         tabAll.setOnClickListener(v -> selectTab(tabAll, null));
-        tabBreakfast.setOnClickListener(v -> selectTab(tabBreakfast, "Breakfast"));
-        tabLunch.setOnClickListener(v -> selectTab(tabLunch, "Lunch"));
-        tabDinner.setOnClickListener(v -> selectTab(tabDinner, "Dinner"));
+        tabBreakfast.setOnClickListener(v -> selectTab(tabBreakfast, null));
+        tabLunch.setOnClickListener(v -> selectTab(tabLunch, null));
+        tabDinner.setOnClickListener(v -> selectTab(tabDinner, null));
     }
 
     private void setupClickListeners() {
@@ -134,6 +144,16 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, AccessLocationActivity.class);
             startActivity(intent);
         });
+        // Search end icon click
+        if (tilSearch != null) {
+            tilSearch.setEndIconOnClickListener(v -> {
+                currentSearch = etSearch != null && etSearch.getText() != null
+                        ? etSearch.getText().toString().trim() : null;
+                currentPage = 0;
+                loadMenuItems();
+            });
+        }
+
         
         btnGoToMain.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, MainActivity.class);
@@ -141,23 +161,35 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void selectTab(TextView selectedTab, String category) {
+    private void selectTab(TextView selectedTab, String categoryId) {
         resetAllTabs();
 
         selectedTab.setBackgroundResource(R.drawable.tab_selected_background);
         selectedTab.setTextColor(getResources().getColor(R.color.white));
 
-        // TODO: Map category name → ID (cần load categories trước)
-        currentCategoryId = null; // Tạm thời set null
+        currentCategoryId = categoryId;
         currentPage = 0;
         loadMenuItems();
     }
 
     private void resetAllTabs() {
+        // Reset các tab tĩnh
         TextView[] tabs = {tabAll, tabBreakfast, tabLunch, tabDinner};
         for (TextView tab : tabs) {
+            if (tab == null) continue;
             tab.setBackgroundResource(R.drawable.tab_unselected_background);
             tab.setTextColor(getResources().getColor(R.color.medium_gray));
+        }
+        // Reset các tab được build động từ API
+        android.widget.LinearLayout container = findViewById(R.id.layout_categories);
+        if (container != null) {
+            for (int i = 0; i < container.getChildCount(); i++) {
+                View child = container.getChildAt(i);
+                if (child instanceof TextView && child.getId() != R.id.tab_all) {
+                    ((TextView) child).setBackgroundResource(R.drawable.tab_unselected_background);
+                    ((TextView) child).setTextColor(getResources().getColor(R.color.medium_gray));
+                }
+            }
         }
     }
 
@@ -167,7 +199,7 @@ public class HomeActivity extends AppCompatActivity {
     private void loadMenuItems() {
         showLoading();
 
-        repository.getMenuItems(currentPage, PAGE_SIZE, "name", null, currentCategoryId,
+        repository.getMenuItems(currentPage, PAGE_SIZE, "name", currentSearch, currentCategoryId,
                 new FoodRepository.RepositoryCallback<PageResponse<MenuItemResponse>>() {
                     @Override
                     public void onSuccess(PageResponse<MenuItemResponse> data) {
@@ -235,10 +267,86 @@ public class HomeActivity extends AppCompatActivity {
         tvTotalItems.setText(totalText);
     }
 
+    private void loadCategories() {
+        repository.getMenuCategories(0, 20, "name", null,
+                new FoodRepository.RepositoryCallback<PageResponse<MenuCategoryResponse>>() {
+                    @Override
+                    public void onSuccess(PageResponse<MenuCategoryResponse> data) {
+                        runOnUiThread(() -> buildCategoryTabs(data.getContent()));
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e(TAG, "Load categories error: " + errorMessage);
+                    }
+                });
+    }
+
+    private void buildCategoryTabs(List<MenuCategoryResponse> categories) {
+        android.widget.LinearLayout container = findViewById(R.id.layout_categories);
+        if (container == null) return;
+
+        // Keep the first tab (All), remove the rest
+        while (container.getChildCount() > 1) {
+            container.removeViewAt(1);
+        }
+
+        final float density = getResources().getDisplayMetrics().density;
+        int padH = (int) (20 * density);
+        int padV = (int) (8 * density);
+        int marginEnd = (int) (8 * density);
+
+        // Sắp xếp: Bữa Sáng -> Bữa Trưa -> Bữa Tối -> Others
+        java.util.List<MenuCategoryResponse> ordered = new java.util.ArrayList<>();
+        for (MenuCategoryResponse c : categories) {
+            String n = c.getName() != null ? c.getName() : "";
+            if (n.toLowerCase().contains("sáng")) ordered.add(c);
+        }
+        for (MenuCategoryResponse c : categories) {
+            String n = c.getName() != null ? c.getName() : "";
+            if (n.toLowerCase().contains("trưa")) ordered.add(c);
+        }
+        for (MenuCategoryResponse c : categories) {
+            String n = c.getName() != null ? c.getName() : "";
+            if (n.toLowerCase().contains("tối") || n.toLowerCase().contains("toi")) ordered.add(c);
+        }
+        for (MenuCategoryResponse c : categories) {
+            if (!ordered.contains(c)) ordered.add(c);
+        }
+
+        for (MenuCategoryResponse cat : ordered) {
+            TextView tab = new TextView(this);
+            tab.setText(cat.getName());
+            tab.setTextSize(14);
+            tab.setTextColor(getResources().getColor(R.color.medium_gray));
+            tab.setBackgroundResource(R.drawable.tab_unselected_background);
+            tab.setPadding(padH, padV, padH, padV);
+            android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+                    android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                    android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(0, 0, marginEnd, 0);
+            tab.setLayoutParams(lp);
+            tab.setClickable(true);
+            tab.setFocusable(true);
+            final String id = cat.getCategoryId();
+            tab.setOnClickListener(v -> selectTab(tab, id));
+            container.addView(tab);
+        }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            // Handle menu icon click if needed
+            return true;
+        }
+        if (item.getItemId() == R.id.action_profile) {
+            Intent intent = new Intent(this, com.example.prm392_assignment_food.ui.auth.ProfileActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
