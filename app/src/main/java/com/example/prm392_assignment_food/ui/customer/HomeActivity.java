@@ -28,16 +28,11 @@ import com.example.prm392_assignment_food.data.repository.FoodRepository;
 import com.example.prm392_assignment_food.ui.auth.BaseActivity;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
 import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * HomeActivity - Trang chủ giống GrabFood
- * Hiển thị danh sách món ăn với search và filter theo category
- */
-public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivity
+public class HomeActivity extends BaseActivity {
     private static final String TAG = "HomeActivity";
     private static final int PAGE_SIZE = 10;
 
@@ -48,9 +43,8 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
     private TextView tvTotalItems;
     private TextView tabAll, tabBreakfast, tabLunch, tabDinner;
     private ImageView btnCart;
-    private FloatingActionButton fabMap;
     private ProgressBar progressBar;
-    private Button btnGoToMain;
+    // private Button btnGoToMain; // ĐÃ XÓA
     private TextInputLayout tilSearch;
     private TextInputEditText etSearch;
 
@@ -63,13 +57,11 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState); // Gọi super.onCreate()
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // QUAN TRỌNG: Init ApiClient để attach token
         com.example.prm392_assignment_food.data.network.ApiClient.init(this);
 
-        // DEBUG: Check token có tồn tại không
         com.example.prm392_assignment_food.utils.TokenManager tokenManager =
                 new com.example.prm392_assignment_food.utils.TokenManager(this);
         String token = tokenManager.getToken();
@@ -88,7 +80,6 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
         loadCategories();
         setupClickListeners();
 
-        // Load data từ API
         loadMenuItems();
     }
 
@@ -101,9 +92,8 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
         tabLunch = findViewById(R.id.tab_lunch);
         tabDinner = findViewById(R.id.tab_dinner);
         btnCart = findViewById(R.id.btn_cart);
-        fabMap = findViewById(R.id.fab_map);
         progressBar = findViewById(R.id.progress_bar);
-        btnGoToMain = findViewById(R.id.btnGoToMain);
+        // btnGoToMain = findViewById(R.id.btnGoToMain); // ĐÃ XÓA
         tilSearch = findViewById(R.id.til_search);
         etSearch = findViewById(R.id.et_search);
     }
@@ -133,18 +123,11 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
     }
 
     private void setupClickListeners() {
-        // Cart button
         btnCart.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, CartActivity.class);
             startActivity(intent);
         });
 
-        // Map FAB
-        fabMap.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, AccessLocationActivity.class);
-            startActivity(intent);
-        });
-        // Search end icon click
         if (tilSearch != null) {
             tilSearch.setEndIconOnClickListener(v -> {
                 currentSearch = etSearch != null && etSearch.getText() != null
@@ -154,11 +137,10 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
             });
         }
 
-        
-        btnGoToMain.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
+        // btnGoToMain.setOnClickListener(v -> { // ĐÃ XÓA
+        //     Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+        //     startActivity(intent);
+        // });
     }
 
     private void selectTab(TextView selectedTab, String categoryId) {
@@ -173,14 +155,12 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
     }
 
     private void resetAllTabs() {
-        // Reset các tab tĩnh
         TextView[] tabs = {tabAll, tabBreakfast, tabLunch, tabDinner};
         for (TextView tab : tabs) {
             if (tab == null) continue;
             tab.setBackgroundResource(R.drawable.tab_unselected_background);
             tab.setTextColor(getResources().getColor(R.color.medium_gray));
         }
-        // Reset các tab được build động từ API
         android.widget.LinearLayout container = findViewById(R.id.layout_categories);
         if (container != null) {
             for (int i = 0; i < container.getChildCount(); i++) {
@@ -193,9 +173,6 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
         }
     }
 
-    /**
-     * Load menu items từ API
-     */
     private void loadMenuItems() {
         showLoading();
 
@@ -243,7 +220,6 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
     }
 
     private void updateUI() {
-        // Convert MenuItemResponse → Food để dùng adapter hiện tại
         List<Food> foodList = new ArrayList<>();
         for (MenuItemResponse item : menuItems) {
             Food food = new Food(
@@ -251,7 +227,7 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
                     item.getName() != null ? item.getName() : "Unknown",
                     item.getFormattedPrice(),
                     item.getCategoryName() != null ? item.getCategoryName() : "",
-                    item.getImageUrl(), // ĐÃ SỬA: Sử dụng imageUrl từ API
+                    item.getImageUrl(),
                     "Location",
                     item.getDescription() != null ? item.getDescription() : ""
             );
@@ -286,7 +262,6 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
         android.widget.LinearLayout container = findViewById(R.id.layout_categories);
         if (container == null) return;
 
-        // Keep the first tab (All), remove the rest
         while (container.getChildCount() > 1) {
             container.removeViewAt(1);
         }
@@ -296,7 +271,6 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
         int padV = (int) (8 * density);
         int marginEnd = (int) (8 * density);
 
-        // Sắp xếp: Bữa Sáng -> Bữa Trưa -> Bữa Tối -> Others
         java.util.List<MenuCategoryResponse> ordered = new java.util.ArrayList<>();
         for (MenuCategoryResponse c : categories) {
             String n = c.getName() != null ? c.getName() : "";

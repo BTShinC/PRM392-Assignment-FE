@@ -42,11 +42,11 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.tvCategory.setText(food.getCategory());
         holder.tvPrice.setText(food.getPrice());
 
-        // SỬA LỖI: Dùng Glide để load ảnh từ URL
+        // Dùng Glide để load ảnh từ URL
         Glide.with(context)
                 .load(food.getImageUrl())
-                .placeholder(R.drawable.ic_image_placeholder) // Ảnh hiển thị trong khi chờ load
-                .error(R.drawable.ic_image_error)       // Ảnh hiển thị nếu load lỗi
+                .placeholder(R.drawable.ic_image_placeholder)
+                .error(R.drawable.ic_image_error)
                 .into(holder.imgFood);
 
         // Set click listener for the entire item
@@ -56,7 +56,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             intent.putExtra("food_name", food.getName());
             intent.putExtra("food_price", food.getPrice());
             intent.putExtra("food_category", food.getCategory());
-            intent.putExtra("food_image_url", food.getImageUrl()); // Sửa: gửi URL
+            intent.putExtra("food_image_url", food.getImageUrl());
             intent.putExtra("food_location", food.getLocation());
             intent.putExtra("food_description", food.getDescription());
             context.startActivity(intent);
@@ -75,7 +75,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
         ImageView imgFood, btnMore;
-        TextView tvFoodName, tvCategory, tvPrice, tvRating, tvReviews;
+        TextView tvFoodName, tvCategory, tvPrice; // Đã xóa tvRating và tvReviews
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,8 +85,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             tvFoodName = itemView.findViewById(R.id.tv_food_name);
             tvCategory = itemView.findViewById(R.id.tv_category);
             tvPrice = itemView.findViewById(R.id.tv_price);
-            tvRating = itemView.findViewById(R.id.tv_rating);
-            tvReviews = itemView.findViewById(R.id.tv_reviews);
+            // ĐÃ XÓA: Các dòng code tìm tv_rating và tv_reviews đã được loại bỏ
         }
     }
 }
