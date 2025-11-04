@@ -34,11 +34,6 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.Fo
         MenuItemResponse menuItem = menuItems.get(position);
         holder.foodName.setText(menuItem.getName());
         holder.category.setText(menuItem.getCategoryName());
-
-        // Hide rating and reviews as they are not available in the API response
-        holder.rating.setVisibility(View.GONE);
-        holder.reviews.setVisibility(View.GONE);
-
         // Format price to VND
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         holder.price.setText(currencyFormatter.format(menuItem.getPrice()));
@@ -54,7 +49,7 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.Fo
     public int getItemCount() {
         return menuItems.size();
     }
-    
+
     public void updateData(List<MenuItemResponse> newItems) {
         menuItems.clear();
         menuItems.addAll(newItems);
@@ -63,15 +58,13 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.Fo
 
     static class FoodViewHolder extends RecyclerView.ViewHolder {
         ImageView foodImage;
-        TextView foodName, category, rating, reviews, price;
+        TextView foodName, category, price;
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
             foodImage = itemView.findViewById(R.id.img_food);
             foodName = itemView.findViewById(R.id.tv_food_name);
             category = itemView.findViewById(R.id.tv_category);
-            rating = itemView.findViewById(R.id.tv_rating);
-            reviews = itemView.findViewById(R.id.tv_reviews);
             price = itemView.findViewById(R.id.tv_price);
         }
     }
