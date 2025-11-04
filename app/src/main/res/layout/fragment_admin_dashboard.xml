@@ -143,7 +143,7 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- Total Revenue -->
+            <!-- Total Revenue Pie Chart -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/revenue_card"
                 android:layout_width="match_parent"
@@ -165,7 +165,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tổng doanh thu"
+                            android:text="Tỷ lệ doanh thu"
                             android:textSize="18sp" />
 
                         <Spinner
@@ -179,7 +179,6 @@
                             android:id="@+id/tvSeeDetails"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-
                             android:layout_alignParentEnd="true"
                             android:text="Xem chi tiết"
                             android:textColor="#FB6D3A" />
@@ -189,19 +188,17 @@
                         android:id="@+id/tvTotalRevenue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="$2,241"
+                        android:text="$0.00"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/lineChart"
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_marginTop="16dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <!-- Reviews section removed as per requirement -->
 
             <!-- Popular Items -->
             <LinearLayout

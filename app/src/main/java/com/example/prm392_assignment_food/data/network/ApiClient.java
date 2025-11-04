@@ -94,6 +94,8 @@ public class ApiClient {
         retrofit = null;
         okHttpClient = null;
         Log.d(TAG, "Retrofit client reset");
+
     }
 }
+
 

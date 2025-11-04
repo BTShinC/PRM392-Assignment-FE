@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +24,7 @@ import com.example.prm392_assignment_food.data.model.MenuItemResponse;
 import com.example.prm392_assignment_food.data.model.MenuCategoryResponse;
 import com.example.prm392_assignment_food.data.model.PageResponse;
 import com.example.prm392_assignment_food.data.repository.FoodRepository;
+import com.example.prm392_assignment_food.ui.auth.BaseActivity;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
 import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
 import com.example.prm392_assignment_food.ui.chat.MessageListActivity;
@@ -37,7 +37,7 @@ import java.util.List;
  * HomeActivity - Trang chủ giống GrabFood
  * Hiển thị danh sách món ăn với search và filter theo category
  */
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivity
     private static final String TAG = "HomeActivity";
     private static final int PAGE_SIZE = 10;
 
@@ -61,7 +61,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState); // Gọi super.onCreate()
         setContentView(R.layout.activity_home);
 
         // QUAN TRỌNG: Init ApiClient để attach token

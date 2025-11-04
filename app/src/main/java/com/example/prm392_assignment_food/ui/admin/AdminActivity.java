@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -25,13 +24,14 @@ import com.example.prm392_assignment_food.data.model.MenuCategoryRequest;
 import com.example.prm392_assignment_food.data.model.MenuCategoryResponse;
 import com.example.prm392_assignment_food.data.network.ApiClient;
 import com.example.prm392_assignment_food.data.network.ApiService;
+import com.example.prm392_assignment_food.ui.auth.BaseActivity;
 import com.example.prm392_assignment_food.ui.profile.AdminProfileActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AdminActivity extends AppCompatActivity {
+public class AdminActivity extends BaseActivity { // Kế thừa từ BaseActivity
 
     private ImageView ivDashboard;
     private ImageView ivList;
@@ -46,7 +46,7 @@ public class AdminActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState); // Gọi super.onCreate()
         setContentView(R.layout.activity_admin);
 
         apiService = ApiClient.getApiService();
@@ -65,7 +65,7 @@ public class AdminActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
+        super.onResume(); // Gọi super.onResume()
         updateIconColors();
     }
 
@@ -160,6 +160,7 @@ public class AdminActivity extends AppCompatActivity {
         MenuCategoryRequest request = new MenuCategoryRequest(name, description);
         apiService.addMenuCategory(request).enqueue(new Callback<MenuCategoryResponse>() {
             @Override
+
             public void onResponse(Call<MenuCategoryResponse> call, Response<MenuCategoryResponse> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(AdminActivity.this, "Category added successfully", Toast.LENGTH_SHORT).show();

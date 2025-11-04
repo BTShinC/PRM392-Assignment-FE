@@ -7,17 +7,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
-import com.example.prm392_assignment_food.data.model.admin.FoodItem;
+import com.example.prm392_assignment_food.data.model.MenuItemResponse;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
 public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.FoodViewHolder> {
 
-    private final List<FoodItem> foodItems;
+    private final List<MenuItemResponse> menuItems;
 
-    public MyFoodListAdapter(List<FoodItem> foodItems) {
-        this.foodItems = foodItems;
+    public MyFoodListAdapter(List<MenuItemResponse> menuItems) {
+        this.menuItems = menuItems;
     }
 
     @NonNull
@@ -29,17 +31,29 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.Fo
 
     @Override
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
-        FoodItem foodItem = foodItems.get(position);
-        holder.foodName.setText(foodItem.getName());
-        holder.category.setText(foodItem.getCategory());
-        // Rating & reviews removed per requirement
-        holder.price.setText(String.format(Locale.US, "$%.0f", foodItem.getPrice()));
-        holder.foodImage.setImageResource(foodItem.getImageResId());
+        MenuItemResponse menuItem = menuItems.get(position);
+        holder.foodName.setText(menuItem.getName());
+        holder.category.setText(menuItem.getCategoryName());
+        // Format price to VND
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        holder.price.setText(currencyFormatter.format(menuItem.getPrice()));
+
+        // Load image using Glide
+        Glide.with(holder.itemView.getContext())
+                .load(menuItem.getImageUrl())
+                .placeholder(R.drawable.onboarding1) // Optional placeholder
+                .into(holder.foodImage);
     }
 
     @Override
     public int getItemCount() {
-        return foodItems.size();
+        return menuItems.size();
+    }
+
+    public void updateData(List<MenuItemResponse> newItems) {
+        menuItems.clear();
+        menuItems.addAll(newItems);
+        notifyDataSetChanged();
     }
 
     static class FoodViewHolder extends RecyclerView.ViewHolder {

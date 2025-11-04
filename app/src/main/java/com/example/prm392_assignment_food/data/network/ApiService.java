@@ -164,4 +164,9 @@ public interface ApiService {
             @Query("orderId") String orderId,
             @Query("orderStatus") String status
     );
+
+
+    @GET("/api/admin/wallet")
+    Call<Double> getAdminWallet();
+
 }
