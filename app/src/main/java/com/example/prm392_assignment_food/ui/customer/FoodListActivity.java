@@ -144,7 +144,6 @@ public class FoodListActivity extends AppCompatActivity {
                     item.getFormattedPrice(),
                     item.getCategoryName() != null ? item.getCategoryName() : "",
                     item.getImageUrl(),
-                    "Location",
                     item.getDescription() != null ? item.getDescription() : ""
             );
             foodList.add(food);
