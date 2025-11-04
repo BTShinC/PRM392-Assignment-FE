@@ -50,35 +50,7 @@
                 android:textColor="@color/orange"
                 android:textSize="12sp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_star"
-                    app:tint="@color/orange" />
-
-                <TextView
-                    android:id="@+id/tv_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="4.9"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:id="@+id/tv_reviews"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="(10 Review)"
-                    android:textColor="@color/medium_gray" />
-            </LinearLayout>
+            <!-- Rating & Reviews removed as per requirement -->
         </LinearLayout>
 
         <LinearLayout

@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,7 +27,8 @@ import com.example.prm392_assignment_food.data.repository.FoodRepository;
 import com.example.prm392_assignment_food.ui.auth.BaseActivity;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
 import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.prm392_assignment_food.ui.chat.MessageListActivity;
+import com.example.prm392_assignment_food.ui.order.OrderActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +48,7 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
     private TextView tvTotalItems;
     private TextView tabAll, tabBreakfast, tabLunch, tabDinner;
     private ImageView btnCart;
-    private FloatingActionButton fabMap;
     private ProgressBar progressBar;
-    private Button btnGoToMain;
     private TextInputLayout tilSearch;
     private TextInputEditText etSearch;
 
@@ -101,9 +99,7 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
         tabLunch = findViewById(R.id.tab_lunch);
         tabDinner = findViewById(R.id.tab_dinner);
         btnCart = findViewById(R.id.btn_cart);
-        fabMap = findViewById(R.id.fab_map);
         progressBar = findViewById(R.id.progress_bar);
-        btnGoToMain = findViewById(R.id.btnGoToMain);
         tilSearch = findViewById(R.id.til_search);
         etSearch = findViewById(R.id.et_search);
     }
@@ -116,7 +112,7 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
     private void setupToolbar() {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Yummy Go");
+            getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
     }
@@ -139,11 +135,43 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
             startActivity(intent);
         });
 
-        // Map FAB
-        fabMap.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, AccessLocationActivity.class);
-            startActivity(intent);
-        });
+        // Bottom navigation actions
+        View dashboardContainer = findViewById(R.id.dashboard_container);
+        View listContainer = findViewById(R.id.list_container);
+        View homeContainer = findViewById(R.id.fab_add_container);
+        View notificationContainer = findViewById(R.id.notification_container);
+        View profileContainer = findViewById(R.id.profile_container);
+
+        if (dashboardContainer != null) {
+            dashboardContainer.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, OrderActivity.class);
+                startActivity(intent);
+            });
+        }
+        if (listContainer != null) {
+            listContainer.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, AccessLocationActivity.class);
+                startActivity(intent);
+            });
+        }
+        if (homeContainer != null) {
+            homeContainer.setOnClickListener(v -> {
+                // Đang ở Home: có thể refresh hoặc không làm gì
+                recyclerFoodList.smoothScrollToPosition(0);
+            });
+        }
+        if (notificationContainer != null) {
+            notificationContainer.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, MessageListActivity.class);
+                startActivity(intent);
+            });
+        }
+        if (profileContainer != null) {
+            profileContainer.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, com.example.prm392_assignment_food.ui.auth.ProfileActivity.class);
+                startActivity(intent);
+            });
+        }
         // Search end icon click
         if (tilSearch != null) {
             tilSearch.setEndIconOnClickListener(v -> {
@@ -154,11 +182,6 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
             });
         }
 
-        
-        btnGoToMain.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
     }
 
     private void selectTab(TextView selectedTab, String categoryId) {
@@ -210,8 +233,8 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
 
                         runOnUiThread(() -> {
                             hideLoading();
-                            updateUI();
-                            updateTotalItems((int) data.getTotalElements().longValue());
+                        updateUI();
+                        updateTotalItems(countAvailableItems());
                         });
                     }
 
@@ -243,23 +266,35 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
     }
 
     private void updateUI() {
-        // Convert MenuItemResponse → Food để dùng adapter hiện tại
+        // Convert MenuItemResponse → Food nhưng chỉ hiển thị item đang mở bán (isAvailable == true)
         List<Food> foodList = new ArrayList<>();
         for (MenuItemResponse item : menuItems) {
-            Food food = new Food(
-                    item.getId(),
-                    item.getName() != null ? item.getName() : "Unknown",
-                    item.getFormattedPrice(),
-                    item.getCategoryName() != null ? item.getCategoryName() : "",
-                    R.drawable.chicken_thai_biriyani,
-                    "Location",
-                    item.getDescription() != null ? item.getDescription() : ""
-            );
-            foodList.add(food);
+            if (Boolean.TRUE.equals(item.getAvailable())) {
+                Food food = new Food(
+                        item.getId(),
+                        item.getName() != null ? item.getName() : "Unknown",
+                        item.getFormattedPrice(),
+                        item.getCategoryName() != null ? item.getCategoryName() : "",
+                        R.drawable.chicken_thai_biriyani,
+                        item.getImageUrl(),
+                        item.getDescription() != null ? item.getDescription() : ""
+                );
+                foodList.add(food);
+            }
         }
 
         foodAdapter = new FoodAdapter(this, foodList);
         recyclerFoodList.setAdapter(foodAdapter);
+    }
+
+    private int countAvailableItems() {
+        int count = 0;
+        for (MenuItemResponse item : menuItems) {
+            if (Boolean.TRUE.equals(item.getAvailable())) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void updateTotalItems(int count) {
@@ -344,11 +379,7 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
         if (item.getItemId() == android.R.id.home) {
             return true;
         }
-        if (item.getItemId() == R.id.action_profile) {
-            Intent intent = new Intent(this, com.example.prm392_assignment_food.ui.auth.ProfileActivity.class);
-            startActivity(intent);
-            return true;
-        }
+        // No toolbar actions now
         return super.onOptionsItemSelected(item);
     }
 }
