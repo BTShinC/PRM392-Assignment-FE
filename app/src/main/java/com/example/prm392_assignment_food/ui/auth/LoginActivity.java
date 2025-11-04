@@ -43,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final String KEY_REMEMBER_ME = "KEY_REMEMBER_ME";
     private static final String KEY_SAVED_EMAIL = "KEY_SAVED_EMAIL";
     private static final String KEY_SAVED_PASSWORD = "KEY_SAVED_PASSWORD";
+    // Key to store login timestamp
+    private static final String KEY_LOGIN_TIMESTAMP = "KEY_LOGIN_TIMESTAMP";
 
 
     @Override
@@ -127,6 +129,13 @@ public class LoginActivity extends AppCompatActivity {
                     if (Integer.parseInt(loginResponse.getStatus()) == 200) {
                         String token = loginResponse.getData();
                         tokenManager.saveToken(token, email);
+
+                        // --- LƯU THỜI GIAN ĐĂNG NHẬP ---
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putLong(KEY_LOGIN_TIMESTAMP, System.currentTimeMillis());
+                        editor.apply();
+                        // ---------------------------------
+
                         saveOrClearCredentials(email, password);
                         Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         redirectToDashboard(token);
