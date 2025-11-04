@@ -50,7 +50,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             intent.putExtra("food_price", food.getPrice());
             intent.putExtra("food_category", food.getCategory());
             intent.putExtra("food_image", food.getImageResource());
-            intent.putExtra("food_location", food.getLocation());
             intent.putExtra("food_description", food.getDescription());
             context.startActivity(intent);
         });
@@ -68,7 +67,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
         ImageView imgFood, btnMore;
-        TextView tvFoodName, tvCategory, tvPrice, tvRating, tvReviews;
+        TextView tvFoodName, tvCategory, tvPrice;
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -78,8 +77,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             tvFoodName = itemView.findViewById(R.id.tv_food_name);
             tvCategory = itemView.findViewById(R.id.tv_category);
             tvPrice = itemView.findViewById(R.id.tv_price);
-            tvRating = itemView.findViewById(R.id.tv_rating);
-            tvReviews = itemView.findViewById(R.id.tv_reviews);
         }
     }
 }

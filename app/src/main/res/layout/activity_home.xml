@@ -15,17 +15,35 @@
         android:background="@color/white"
         app:elevation="4dp">
 
-        <!-- Toolbar -->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <!-- Custom Title for better aesthetics -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
-            app:title="Yummy Go"
-            app:titleTextColor="@color/black"
-            app:navigationIcon="@drawable/ic_menu"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:menu="@menu/menu_home" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yummy"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.03" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Go"
+                android:textColor="@color/orange"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.03" />
+        </LinearLayout>
 
         <!-- Search Bar -->
         <LinearLayout
@@ -46,7 +64,6 @@
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
-                app:startIconDrawable="@drawable/ic_search"
                 app:endIconMode="custom"
                 app:endIconDrawable="@drawable/ic_search"
                 app:boxStrokeColor="@color/orange">
@@ -220,25 +237,14 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Floating Action Button for Map -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_map"
-        android:layout_width="wrap_content"
+    <!-- Bottom navigation -->
+    <include
+        layout="@layout/view_bottom_navigation_home"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_map"
-        app:backgroundTint="@color/orange"
-        app:tint="@color/white" />
-
-    
-
-    <Button
-        android:id="@+id/btnGoToMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="16dp"
-        android:text="Go to Main" />
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

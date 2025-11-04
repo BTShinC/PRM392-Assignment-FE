@@ -201,55 +201,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Reviews -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                app:cardCornerRadius="8dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#FFFFFF"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Đánh giá"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvSeeAllReviews"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:text="Xem tất cả đánh giá"
-                        android:textColor="#FB6D3A" />
-
-                    <RatingBar
-                        android:id="@+id/ratingBar"
-                        style="?android:attr/ratingBarStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tvSeeAllReviews"
-                        android:layout_marginTop="8dp"
-                        android:numStars="5"
-                        android:rating="4.9" />
-
-                    <TextView
-                        android:id="@+id/tvTotalReviews"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/ratingBar"
-                        android:layout_marginStart="8dp"
-                        android:layout_toEndOf="@id/ratingBar"
-                        android:text="Tổng 20 đánh giá" />
-                </RelativeLayout>
-            </com.google.android.material.card.MaterialCardView>
+            <!-- Reviews section removed as per requirement -->
 
             <!-- Popular Items -->
             <LinearLayout

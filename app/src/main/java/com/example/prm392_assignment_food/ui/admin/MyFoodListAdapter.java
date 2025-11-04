@@ -32,8 +32,7 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.Fo
         FoodItem foodItem = foodItems.get(position);
         holder.foodName.setText(foodItem.getName());
         holder.category.setText(foodItem.getCategory());
-        holder.rating.setText(String.format(Locale.US, "%.1f", foodItem.getRating()));
-        holder.reviews.setText(String.format(Locale.US, "(%d Review)", foodItem.getReviews()));
+        // Rating & reviews removed per requirement
         holder.price.setText(String.format(Locale.US, "$%.0f", foodItem.getPrice()));
         holder.foodImage.setImageResource(foodItem.getImageResId());
     }
@@ -45,15 +44,13 @@ public class MyFoodListAdapter extends RecyclerView.Adapter<MyFoodListAdapter.Fo
 
     static class FoodViewHolder extends RecyclerView.ViewHolder {
         ImageView foodImage;
-        TextView foodName, category, rating, reviews, price;
+        TextView foodName, category, price;
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
             foodImage = itemView.findViewById(R.id.img_food);
             foodName = itemView.findViewById(R.id.tv_food_name);
             category = itemView.findViewById(R.id.tv_category);
-            rating = itemView.findViewById(R.id.tv_rating);
-            reviews = itemView.findViewById(R.id.tv_reviews);
             price = itemView.findViewById(R.id.tv_price);
         }
     }
