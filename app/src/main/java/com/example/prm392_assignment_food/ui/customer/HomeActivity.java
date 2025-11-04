@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,11 +27,17 @@ import com.example.prm392_assignment_food.data.repository.FoodRepository;
 import com.example.prm392_assignment_food.ui.auth.BaseActivity;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
 import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
+import com.example.prm392_assignment_food.ui.chat.MessageListActivity;
+import com.example.prm392_assignment_food.ui.order.OrderActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends BaseActivity {
+/**
+ * HomeActivity - Trang chủ giống GrabFood
+ * Hiển thị danh sách món ăn với search và filter theo category
+ */
+public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivity
     private static final String TAG = "HomeActivity";
     private static final int PAGE_SIZE = 10;
 
@@ -44,7 +49,6 @@ public class HomeActivity extends BaseActivity {
     private TextView tabAll, tabBreakfast, tabLunch, tabDinner;
     private ImageView btnCart;
     private ProgressBar progressBar;
-    // private Button btnGoToMain; // ĐÃ XÓA
     private TextInputLayout tilSearch;
     private TextInputEditText etSearch;
 
@@ -57,11 +61,13 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState); // Gọi super.onCreate()
         setContentView(R.layout.activity_home);
 
+        // QUAN TRỌNG: Init ApiClient để attach token
         com.example.prm392_assignment_food.data.network.ApiClient.init(this);
 
+        // DEBUG: Check token có tồn tại không
         com.example.prm392_assignment_food.utils.TokenManager tokenManager =
                 new com.example.prm392_assignment_food.utils.TokenManager(this);
         String token = tokenManager.getToken();
@@ -80,6 +86,7 @@ public class HomeActivity extends BaseActivity {
         loadCategories();
         setupClickListeners();
 
+        // Load data từ API
         loadMenuItems();
     }
 
@@ -93,7 +100,6 @@ public class HomeActivity extends BaseActivity {
         tabDinner = findViewById(R.id.tab_dinner);
         btnCart = findViewById(R.id.btn_cart);
         progressBar = findViewById(R.id.progress_bar);
-        // btnGoToMain = findViewById(R.id.btnGoToMain); // ĐÃ XÓA
         tilSearch = findViewById(R.id.til_search);
         etSearch = findViewById(R.id.et_search);
     }
@@ -106,7 +112,7 @@ public class HomeActivity extends BaseActivity {
     private void setupToolbar() {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Yummy Go");
+            getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
     }
@@ -123,11 +129,50 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void setupClickListeners() {
+        // Cart button
         btnCart.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, CartActivity.class);
             startActivity(intent);
         });
 
+        // Bottom navigation actions
+        View dashboardContainer = findViewById(R.id.dashboard_container);
+        View listContainer = findViewById(R.id.list_container);
+        View homeContainer = findViewById(R.id.fab_add_container);
+        View notificationContainer = findViewById(R.id.notification_container);
+        View profileContainer = findViewById(R.id.profile_container);
+
+        if (dashboardContainer != null) {
+            dashboardContainer.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, OrderActivity.class);
+                startActivity(intent);
+            });
+        }
+        if (listContainer != null) {
+            listContainer.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, AccessLocationActivity.class);
+                startActivity(intent);
+            });
+        }
+        if (homeContainer != null) {
+            homeContainer.setOnClickListener(v -> {
+                // Đang ở Home: có thể refresh hoặc không làm gì
+                recyclerFoodList.smoothScrollToPosition(0);
+            });
+        }
+        if (notificationContainer != null) {
+            notificationContainer.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, MessageListActivity.class);
+                startActivity(intent);
+            });
+        }
+        if (profileContainer != null) {
+            profileContainer.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, com.example.prm392_assignment_food.ui.auth.ProfileActivity.class);
+                startActivity(intent);
+            });
+        }
+        // Search end icon click
         if (tilSearch != null) {
             tilSearch.setEndIconOnClickListener(v -> {
                 currentSearch = etSearch != null && etSearch.getText() != null
@@ -137,10 +182,6 @@ public class HomeActivity extends BaseActivity {
             });
         }
 
-        // btnGoToMain.setOnClickListener(v -> { // ĐÃ XÓA
-        //     Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-        //     startActivity(intent);
-        // });
     }
 
     private void selectTab(TextView selectedTab, String categoryId) {
@@ -155,12 +196,14 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void resetAllTabs() {
+        // Reset các tab tĩnh
         TextView[] tabs = {tabAll, tabBreakfast, tabLunch, tabDinner};
         for (TextView tab : tabs) {
             if (tab == null) continue;
             tab.setBackgroundResource(R.drawable.tab_unselected_background);
             tab.setTextColor(getResources().getColor(R.color.medium_gray));
         }
+        // Reset các tab được build động từ API
         android.widget.LinearLayout container = findViewById(R.id.layout_categories);
         if (container != null) {
             for (int i = 0; i < container.getChildCount(); i++) {
@@ -173,6 +216,9 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Load menu items từ API
+     */
     private void loadMenuItems() {
         showLoading();
 
@@ -188,7 +234,7 @@ public class HomeActivity extends BaseActivity {
                         runOnUiThread(() -> {
                             hideLoading();
                             updateUI();
-                            updateTotalItems((int) data.getTotalElements().longValue());
+                            updateTotalItems(countAvailableItems());
                         });
                     }
 
@@ -220,22 +266,34 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void updateUI() {
+        // Convert MenuItemResponse → Food nhưng chỉ hiển thị item đang mở bán (isAvailable == true)
         List<Food> foodList = new ArrayList<>();
         for (MenuItemResponse item : menuItems) {
-            Food food = new Food(
-                    item.getId(),
-                    item.getName() != null ? item.getName() : "Unknown",
-                    item.getFormattedPrice(),
-                    item.getCategoryName() != null ? item.getCategoryName() : "",
-                    item.getImageUrl(),
-                    "Location",
-                    item.getDescription() != null ? item.getDescription() : ""
-            );
-            foodList.add(food);
+            if (Boolean.TRUE.equals(item.getAvailable())) {
+                Food food = new Food(
+                        item.getId(),
+                        item.getName() != null ? item.getName() : "Unknown",
+                        item.getFormattedPrice(),
+                        item.getCategoryName() != null ? item.getCategoryName() : "",
+                        item.getImageUrl(),
+                        item.getDescription() != null ? item.getDescription() : ""
+                );
+                foodList.add(food);
+            }
         }
 
         foodAdapter = new FoodAdapter(this, foodList);
         recyclerFoodList.setAdapter(foodAdapter);
+    }
+
+    private int countAvailableItems() {
+        int count = 0;
+        for (MenuItemResponse item : menuItems) {
+            if (Boolean.TRUE.equals(item.getAvailable())) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void updateTotalItems(int count) {
@@ -262,6 +320,7 @@ public class HomeActivity extends BaseActivity {
         android.widget.LinearLayout container = findViewById(R.id.layout_categories);
         if (container == null) return;
 
+        // Keep the first tab (All), remove the rest
         while (container.getChildCount() > 1) {
             container.removeViewAt(1);
         }
@@ -271,6 +330,7 @@ public class HomeActivity extends BaseActivity {
         int padV = (int) (8 * density);
         int marginEnd = (int) (8 * density);
 
+        // Sắp xếp: Bữa Sáng -> Bữa Trưa -> Bữa Tối -> Others
         java.util.List<MenuCategoryResponse> ordered = new java.util.ArrayList<>();
         for (MenuCategoryResponse c : categories) {
             String n = c.getName() != null ? c.getName() : "";
@@ -318,11 +378,7 @@ public class HomeActivity extends BaseActivity {
         if (item.getItemId() == android.R.id.home) {
             return true;
         }
-        if (item.getItemId() == R.id.action_profile) {
-            Intent intent = new Intent(this, com.example.prm392_assignment_food.ui.auth.ProfileActivity.class);
-            startActivity(intent);
-            return true;
-        }
+        // No toolbar actions now
         return super.onOptionsItemSelected(item);
     }
 }
