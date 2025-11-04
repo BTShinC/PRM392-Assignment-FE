@@ -251,7 +251,7 @@ public class HomeActivity extends BaseActivity { // Kế thừa từ BaseActivit
                     item.getName() != null ? item.getName() : "Unknown",
                     item.getFormattedPrice(),
                     item.getCategoryName() != null ? item.getCategoryName() : "",
-                    R.drawable.chicken_thai_biriyani,
+                    item.getImageUrl(), // ĐÃ SỬA: Sử dụng imageUrl từ API
                     "Location",
                     item.getDescription() != null ? item.getDescription() : ""
             );

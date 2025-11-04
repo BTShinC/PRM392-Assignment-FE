@@ -11,12 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 
 import java.util.List;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
-    
+
     private Context context;
     private List<Food> foodList;
 
@@ -35,13 +36,19 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     @Override
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
         Food food = foodList.get(position);
-        
+
         // Bind data to views
         holder.tvFoodName.setText(food.getName());
         holder.tvCategory.setText(food.getCategory());
         holder.tvPrice.setText(food.getPrice());
-        holder.imgFood.setImageResource(food.getImageResource());
-        
+
+        // SỬA LỖI: Dùng Glide để load ảnh từ URL
+        Glide.with(context)
+                .load(food.getImageUrl())
+                .placeholder(R.drawable.ic_image_placeholder) // Ảnh hiển thị trong khi chờ load
+                .error(R.drawable.ic_image_error)       // Ảnh hiển thị nếu load lỗi
+                .into(holder.imgFood);
+
         // Set click listener for the entire item
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, FoodDetailActivity.class);
@@ -49,12 +56,12 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             intent.putExtra("food_name", food.getName());
             intent.putExtra("food_price", food.getPrice());
             intent.putExtra("food_category", food.getCategory());
-            intent.putExtra("food_image", food.getImageResource());
+            intent.putExtra("food_image_url", food.getImageUrl()); // Sửa: gửi URL
             intent.putExtra("food_location", food.getLocation());
             intent.putExtra("food_description", food.getDescription());
             context.startActivity(intent);
         });
-        
+
         // Set click listener for more options
         holder.btnMore.setOnClickListener(v -> {
             // Handle more options action
@@ -72,7 +79,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
-            
+
             imgFood = itemView.findViewById(R.id.img_food);
             btnMore = itemView.findViewById(R.id.btn_more);
             tvFoodName = itemView.findViewById(R.id.tv_food_name);
