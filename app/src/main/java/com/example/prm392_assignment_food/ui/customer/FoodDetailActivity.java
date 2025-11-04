@@ -36,8 +36,8 @@ public class FoodDetailActivity extends AppCompatActivity {
     // Views
     private ImageView imgFoodDetail, btnBack;
     private TextView tvFoodNameDetail, tvPriceDetail, tvCategoryDetail, tvDeliveryType;
-    private TextView tvLocationDetail, tvRatingDetail, tvReviewsDetail, tvDescription;
-    private TextView btnEdit, tvPriceBottom; // Thêm tvPriceBottom
+    private TextView tvDescription;
+    private TextView tvPriceBottom; // Thêm tvPriceBottom
     private LinearLayout ingredientsContainer;
     private Button btnAddToCart;
     private ImageView btnIncrease, btnDecrease;
@@ -74,11 +74,7 @@ public class FoodDetailActivity extends AppCompatActivity {
         tvPriceDetail = findViewById(R.id.tv_price_detail);
         tvCategoryDetail = findViewById(R.id.tv_category_detail);
         tvDeliveryType = findViewById(R.id.tv_delivery_type);
-        tvLocationDetail = findViewById(R.id.tv_location_detail);
-        tvRatingDetail = findViewById(R.id.tv_rating_detail);
-        tvReviewsDetail = findViewById(R.id.tv_reviews_detail);
         tvDescription = findViewById(R.id.tv_description);
-        btnEdit = findViewById(R.id.btn_edit);
 
         btnAddToCart = findViewById(R.id.btn_add_to_cart);
         btnIncrease = findViewById(R.id.btn_increase);
@@ -113,11 +109,20 @@ public class FoodDetailActivity extends AppCompatActivity {
                     if (menuItem.getCategoryName() != null) tvCategoryDetail.setText(menuItem.getCategoryName());
                     if (menuItem.getDescription() != null) tvDescription.setText(menuItem.getDescription());
 
-                    tvLocationDetail.setText("Restaurant Location");
-                    tvDeliveryType.setText("Delivery Available");
-                    tvRatingDetail.setText("4.5");
-                    tvReviewsDetail.setText("(120 Reviews)");
-                    imgFoodDetail.setImageResource(R.drawable.onboarding1);
+                    // Load image from URL if available
+                    if (menuItem.getImageUrl() != null && !menuItem.getImageUrl().isEmpty()) {
+                        try {
+                            com.bumptech.glide.Glide.with(FoodDetailActivity.this)
+                                    .load(menuItem.getImageUrl())
+                                    .placeholder(R.drawable.onboarding1)
+                                    .error(R.drawable.onboarding1)
+                                    .into(imgFoodDetail);
+                        } catch (Exception e) {
+                            imgFoodDetail.setImageResource(R.drawable.onboarding1);
+                        }
+                    } else {
+                        imgFoodDetail.setImageResource(R.drawable.onboarding1);
+                    }
 
                     setupIngredients();
                 });
@@ -137,11 +142,8 @@ public class FoodDetailActivity extends AppCompatActivity {
         String foodPrice = getIntent().getStringExtra("food_price");
         String foodCategory = getIntent().getStringExtra("food_category");
         int foodImage = getIntent().getIntExtra("food_image", R.drawable.onboarding1);
-        String foodLocation = getIntent().getStringExtra("food_location");
         String foodDescription = getIntent().getStringExtra("food_description");
         String deliveryType = getIntent().getStringExtra("food_delivery_type");
-        float foodRating = getIntent().getFloatExtra("food_rating", 0.0f);
-        int foodReviews = getIntent().getIntExtra("food_reviews", 0);
 
         if (foodName != null) tvFoodNameDetail.setText(foodName);
         if (foodPrice != null) {
@@ -149,12 +151,8 @@ public class FoodDetailActivity extends AppCompatActivity {
             tvPriceBottom.setText(foodPrice); // Cập nhật giá ở bottom bar
         }
         if (foodCategory != null) tvCategoryDetail.setText(foodCategory);
-        if (foodLocation != null) tvLocationDetail.setText(foodLocation);
         if (foodDescription != null) tvDescription.setText(foodDescription);
         if (deliveryType != null) tvDeliveryType.setText(deliveryType);
-
-        tvRatingDetail.setText(String.valueOf(foodRating));
-        tvReviewsDetail.setText("(" + foodReviews + " Reviews)");
         imgFoodDetail.setImageResource(foodImage);
 
         setupIngredients();
@@ -162,7 +160,6 @@ public class FoodDetailActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         btnBack.setOnClickListener(v -> finish());
-        btnEdit.setOnClickListener(v -> {});
 
         btnIncrease.setOnClickListener(v -> {
             quantity++;

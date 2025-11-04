@@ -24,7 +24,8 @@
             app:title="Yummy Go"
             app:titleTextColor="@color/black"
             app:navigationIcon="@drawable/ic_menu"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:menu="@menu/menu_home" />
 
         <!-- Search Bar -->
         <LinearLayout
@@ -35,6 +36,7 @@
             android:background="@color/white">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_search"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -45,6 +47,8 @@
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
                 app:startIconDrawable="@drawable/ic_search"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_search"
                 app:boxStrokeColor="@color/orange">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -157,90 +161,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Featured Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/white"
-                android:layout_marginBottom="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Món ăn nổi bật"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_margin="16dp" />
-
-                <!-- Featured Food Card -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginBottom="16dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
-
-                        <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:src="@drawable/chicken_thai_biriyani"
-                            android:scaleType="centerCrop"
-                            android:background="@drawable/rounded_corner_background" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginStart="16dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Món ăn đặc biệt hôm nay"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/black" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Chicken Thai Biriyani"
-                                android:textSize="14sp"
-                                android:textColor="@color/medium_gray"
-                                android:layout_marginTop="4dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="150,000 VND"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/orange"
-                                android:layout_marginTop="8dp" />
-
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_arrow_forward"
-                            android:layout_gravity="center_vertical" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
+            <!-- Featured Section removed per requirement -->
 
             <!-- Food List Section -->
             <LinearLayout
@@ -309,6 +230,8 @@
         android:src="@drawable/ic_map"
         app:backgroundTint="@color/orange"
         app:tint="@color/white" />
+
+    
 
     <Button
         android:id="@+id/btnGoToMain"
