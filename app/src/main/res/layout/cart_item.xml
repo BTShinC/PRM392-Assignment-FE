@@ -24,8 +24,11 @@
         android:id="@+id/imgFood"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:background="@drawable/bg_image_rounded"
         android:scaleType="centerCrop"
+        android:background="@drawable/bg_image_rounded"
+        android:elevation="2dp"
+        android:clipToOutline="true"
+        android:layout_marginEnd="12dp"
         tools:src="@drawable/pizza" />
 
     <LinearLayout
@@ -39,10 +42,10 @@
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="Pizza Calzone European" />
+            tools:text="Bánh pizza" />
 
         <TextView
             android:id="@+id/tvPrice"
@@ -51,7 +54,7 @@
             android:layout_marginTop="4dp"
             android:textColor="#FF9800"
             android:textSize="14sp"
-            tools:text="$64.00" />
+            tools:text="60.000 VND" />
 
     </LinearLayout>
 
@@ -78,7 +81,7 @@
             android:minWidth="32dp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
             tools:text="2" />

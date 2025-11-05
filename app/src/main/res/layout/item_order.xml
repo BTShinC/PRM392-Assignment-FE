@@ -23,7 +23,7 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Order" />
+            tools:text="Đơn hàng" />
 
         <TextView
             android:id="@+id/tv_order_date"
@@ -60,7 +60,7 @@
                 android:id="@+id/tv_label_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total:"
+                android:text="Tổng:"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -73,7 +73,7 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                tools:text="$99.99" />
+                tools:text="60.000 VND" />
 
             <!-- Spacer để đẩy nút sang phải -->
             <View

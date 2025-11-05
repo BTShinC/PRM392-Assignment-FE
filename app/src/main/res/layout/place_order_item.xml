@@ -32,18 +32,18 @@
             android:id="@+id/tvName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:maxLines="1"
             android:ellipsize="end"
             android:textStyle="bold"
-            tools:text="Pepperoni Pizza" />
+            tools:text="Bánh pizza" />
 
         <TextView
             android:id="@+id/tvQuantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/orange"
             android:textSize="14sp"
             tools:text="x2" />
 
@@ -57,7 +57,7 @@
         android:textColor="@color/orange"
         android:textStyle="bold"
         android:textSize="16sp"
-        tools:text="$20.00" />
+        tools:text="20.000 VND" />
 
 </LinearLayout>
 
