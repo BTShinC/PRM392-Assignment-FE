@@ -30,6 +30,8 @@ import com.example.prm392_assignment_food.utils.TokenManager;
 import com.example.prm392_assignment_food.viewmodel.OrderViewModel;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +50,7 @@ public class PlaceOrderActivity extends AppCompatActivity {
 
     private RecyclerView orderItemsRecyclerView;
     private PlaceOrderAdapter adapter;
-    private TextView tvProductsTotal, tvDeliveryFee, tvTotalPayment;
+    private TextView tvDeliveryFee, tvTotalPayment, tvPromotion; // Sửa lại tên biến cho rõ ràng
     private ProgressBar progressBar;
     private ImageView backButton;
     private AppCompatButton buttonPlaceOrder;
@@ -133,13 +135,25 @@ public class PlaceOrderActivity extends AppCompatActivity {
         adapter.updateItems(this.currentCartItems);
 
         BigDecimal productsTotal = cart.getTotalPrice() != null ? cart.getTotalPrice() : BigDecimal.ZERO;
-        BigDecimal deliveryFeeVND = new BigDecimal("20000");
+        BigDecimal deliveryFeeVND = new BigDecimal("0");
         BigDecimal totalPayment = productsTotal.add(deliveryFeeVND);
 
+        // Tạo đối tượng định dạng tiền tệ cho Việt Nam và tùy chỉnh ký hiệu
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        if (currencyFormatter instanceof java.text.DecimalFormat) {
+            java.text.DecimalFormat decimalFormat = (java.text.DecimalFormat) currencyFormatter;
+            java.text.DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
+            symbols.setCurrencySymbol(" VND"); // Đặt ký hiệu là " VND" (có khoảng trắng ở đầu)
+            decimalFormat.setDecimalFormatSymbols(symbols);
+        }
 
-        tvProductsTotal.setText(currencyFormatter.format(productsTotal));
-        tvDeliveryFee.setText(currencyFormatter.format(deliveryFeeVND));
+        // Cập nhật các TextView theo đúng logic
+        // 1. Giữ nguyên label "Tổng tiền" (textViewProductTotalLabel)
+        // 2. Cập nhật giá trị của tổng tiền (textViewDeliveryFee)
+        tvDeliveryFee.setText(currencyFormatter.format(productsTotal));
+        // 3. Cập nhật giá trị của phí giao hàng (textViewPromotion)
+        tvPromotion.setText(currencyFormatter.format(deliveryFeeVND));
+        // 4. Cập nhật tổng thanh toán cuối cùng (textViewTotalPayment)
         tvTotalPayment.setText(currencyFormatter.format(totalPayment));
     }
 
@@ -184,9 +198,11 @@ public class PlaceOrderActivity extends AppCompatActivity {
 
     private void initViews() {
         orderItemsRecyclerView = findViewById(R.id.cartRecyclerView);
-        tvProductsTotal = findViewById(R.id.textViewProductTotal);
-        tvDeliveryFee = findViewById(R.id.textViewDeliveryFee);
-        tvTotalPayment = findViewById(R.id.textViewTotalPayment);
+        // Ánh xạ các TextView hiển thị giá trị
+        tvDeliveryFee = findViewById(R.id.textViewDeliveryFee); // Hiển thị giá trị TỔNG SẢN PHẨM
+        tvPromotion = findViewById(R.id.textViewPromotion);   // Hiển thị giá trị PHÍ GIAO HÀNG
+        tvTotalPayment = findViewById(R.id.textViewTotalPayment); // Hiển thị TỔNG THANH TOÁN
+
         progressBar = findViewById(R.id.progressBar);
         backButton = findViewById(R.id.backButton);
         buttonPlaceOrder = findViewById(R.id.buttonPlaceOrder);

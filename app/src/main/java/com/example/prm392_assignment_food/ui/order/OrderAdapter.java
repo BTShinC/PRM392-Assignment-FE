@@ -24,6 +24,10 @@ import com.example.prm392_assignment_food.data.model.order.OrderItemDto;
 import com.example.prm392_assignment_food.data.network.ApiClient;
 import com.example.prm392_assignment_food.data.network.ApiService;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -46,12 +50,23 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final Context context;
     private final ApiService apiService;
     private final OrderInteractionListener listener;
+    private final NumberFormat currencyFormatter; // Đối tượng định dạng tiền tệ
 
     public OrderAdapter(Context context, List<OrderDto> orderList, OrderInteractionListener listener) {
         this.context = context;
         this.orderList = orderList;
         this.apiService = ApiClient.getApiService();
         this.listener = listener;
+
+        // Khởi tạo đối tượng định dạng tiền tệ cho Việt Nam
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        if (formatter instanceof DecimalFormat) {
+            DecimalFormat decimalFormat = (DecimalFormat) formatter;
+            DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
+            symbols.setCurrencySymbol(" VND"); // Đặt ký hiệu là " VND" (có khoảng trắng ở đầu)
+            decimalFormat.setDecimalFormatSymbols(symbols);
+        }
+        this.currencyFormatter = formatter;
     }
 
     @NonNull
@@ -73,26 +88,23 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             OrderViewHolder orderHolder = (OrderViewHolder) holder;
             OrderDto order = orderList.get(position);
 
-            orderHolder.tvOrderCode.setText("Order #" + order.getOrderId().toString().substring(0, 8));
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+            // Đã xóa dòng setText cho tvOrderCode để hiển thị text mặc định từ XML
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
             try {
-                ZonedDateTime zonedDateTime = ZonedDateTime.parse(order.getCreatedAt());
-                orderHolder.tvOrderDate.setText(zonedDateTime.format(formatter));
+                LocalDateTime localDateTime = LocalDateTime.parse(order.getCreatedAt());
+                orderHolder.tvOrderDate.setText(localDateTime.format(formatter));
             } catch (Exception e) {
                 orderHolder.tvOrderDate.setText(order.getCreatedAt());
             }
 
-            orderHolder.tvTotalAmount.setText(String.format(Locale.getDefault(), "$%.2f", order.getTotalPrice()));
-
-            // Trong file OrderAdapter.java, phương thức onBindViewHolder            orderHolder.tvTotalAmount.setText(String.format(Locale.getDefault(), "$%.2f", order.getTotalPrice()));
-
-            // THÊM DÒNG NÀY ĐỂ DEBUG
-            android.util.Log.d("OrderAdapterStatus", "ID: " + order.getOrderId().toString().substring(0,4) + ", Trạng thái: '" + order.getStatus() + "'");
+            // Format lại tổng tiền thành VND
+            orderHolder.tvTotalAmount.setText(currencyFormatter.format(order.getTotalPrice()));
 
             Button btnCancel = orderHolder.itemView.findViewById(R.id.btn_cancel_order);
 
-            if ("AWAITING_PAYMENT".equals(order.getStatus().name())) {
+            if (order.getStatus() != null && "AWAITING_PAYMENT".equals(order.getStatus().toString())) {
                 btnCancel.setVisibility(View.VISIBLE);
             } else {
                 btnCancel.setVisibility(View.GONE);
@@ -102,9 +114,7 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (listener != null) {
                     new AlertDialog.Builder(context)
                             .setTitle("Xác nhận hủy đơn")
-                            // --- SỬA LỖI TẠI ĐÂY ---
                             .setMessage("Bạn có chắc chắn muốn hủy đơn hàng #" + order.getOrderId().toString().substring(0, 8) + "?")
-                            // ----------------------
                             .setPositiveButton("Hủy đơn", (dialog, which) -> listener.onCancelOrder(order.getOrderId().toString()))
                             .setNegativeButton("Không", null)
                             .show();
@@ -177,7 +187,8 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (response.isSuccessful() && response.body() != null) {
                         MenuItemResponse menuItem = response.body();
                         holder.tvName.setText(menuItem.getName());
-                        holder.tvPrice.setText(String.format(Locale.getDefault(), "$%.2f", menuItem.getPrice()));
+                        // Format lại giá tiền của từng sản phẩm thành VND
+                        holder.tvPrice.setText(currencyFormatter.format(menuItem.getPrice()));
                         Glide.with(context).load(menuItem.getImageUrl()).into(holder.imgFood);
                     } else {
                         Toast.makeText(context, "Failed to load menu item details", Toast.LENGTH_SHORT).show();

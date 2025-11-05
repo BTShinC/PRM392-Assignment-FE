@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.tvFoodName.setText(food.getName());
         holder.tvCategory.setText(food.getCategory());
         holder.tvPrice.setText(food.getPrice());
+        Glide.with(context).load(food.getImageUrl()).into(holder.imgFood);
 
         // Set click listener for the entire item
         holder.itemView.setOnClickListener(v -> {

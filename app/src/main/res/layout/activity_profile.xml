@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Edit Profile"
+        android:text="Chỉnh sửa hồ sơ"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/ivBack"
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:text="FULL NAME"
+        android:text="Họ và tên"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
@@ -57,7 +57,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/edit_text_background"
-        android:hint="Vishal Khadok"
+        android:hint="Vui lòng nhập họ và tên"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +80,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/edit_text_background"
-        android:hint="hello@halallab.co"
+        android:hint="abc123@gmail.com"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:text="PHONE NUMBER"
+        android:text="Số điẹne thoại"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
@@ -103,7 +103,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/edit_text_background"
-        android:hint="408-841-0926"
+        android:hint="0123456789"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:text="BIO"
+        android:text="Ghi chú"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPhoneNumber" />
 
@@ -127,7 +127,7 @@
         android:layout_marginEnd="32dp"
         android:background="@drawable/edit_text_background"
         android:gravity="top"
-        android:hint="I love fast food"
+        android:hint="Tôi thích ăn gà"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -142,7 +142,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:backgroundTint="#F9A825"
-        android:text="SAVE"
+        android:text="Lưu"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -153,7 +153,7 @@
         android:layout_width="46dp"
         android:layout_height="43dp"
         app:srcCompat="@drawable/cayviet"
-        tools:layout_editor_absoluteX="220dp"
-        tools:layout_editor_absoluteY="151dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+        app:layout_constraintEnd_toEndOf="@+id/profile_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

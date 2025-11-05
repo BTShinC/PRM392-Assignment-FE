@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E2C"
+    android:background="#ffff"
     tools:context=".ui.cart.CartActivity">
 
     <ImageView
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Giỏ hàng"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/backButton"
@@ -126,7 +126,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/textViewTotalLabel"
             app:layout_constraintStart_toEndOf="@+id/textViewTotalLabel"
             app:layout_constraintTop_toTopOf="@+id/textViewTotalLabel"
-            tools:text="96 VND" />
+            tools:text="96.000 VND" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/buttonPlaceOrder"

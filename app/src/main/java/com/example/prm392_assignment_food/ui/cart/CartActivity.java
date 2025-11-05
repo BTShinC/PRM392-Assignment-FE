@@ -28,6 +28,9 @@ import com.example.prm392_assignment_food.utils.JwtUtils;
 import com.example.prm392_assignment_food.utils.TokenManager;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
@@ -55,6 +58,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnIte
     private CartAdapter cartAdapter;
     private String currentUserId;
     private boolean isInEditMode = false;
+    private NumberFormat currencyFormatter; // Đối tượng định dạng tiền tệ
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,17 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnIte
         textViewEditItems = findViewById(R.id.textViewEditItems);
         buttonPlaceOrder = findViewById(R.id.buttonPlaceOrder);
         buttonDeleteSelected = findViewById(R.id.buttonDeleteSelected);
+
+        // Khởi tạo đối tượng định dạng tiền tệ
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        if (formatter instanceof DecimalFormat) {
+            DecimalFormat decimalFormat = (DecimalFormat) formatter;
+            DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
+            // Đặt ký hiệu là " VND" (có khoảng trắng ở đầu)
+            symbols.setCurrencySymbol(" VND");
+            decimalFormat.setDecimalFormatSymbols(symbols);
+        }
+        this.currencyFormatter = formatter;
     }
 
     private void initApi() {
@@ -98,12 +113,10 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnIte
         textViewEditItems.setOnClickListener(v -> toggleEditMode());
         buttonDeleteSelected.setOnClickListener(v -> deleteSelectedItems());
 
-        // --- THÊM VÀO ---
         buttonPlaceOrder.setOnClickListener(v -> {
             Intent intent = new Intent(CartActivity.this, PlaceOrderActivity.class);
             startActivity(intent);
         });
-        // --- KẾT THÚC THÊM ---
     }
 
     private void toggleEditMode() {
@@ -184,7 +197,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnIte
             buttonDeleteSelected.setEnabled(false);
         }
     }
-    
+
     private void showEditAddressDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Edit Delivery Address");
@@ -294,7 +307,8 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnIte
         cartAdapter.updateItems(cart.getItems());
 
         BigDecimal totalPrice = cart.getTotalPrice() != null ? cart.getTotalPrice() : BigDecimal.ZERO;
-        textViewTotalPrice.setText(String.format(Locale.US, "%.2f VND", totalPrice));
+        // Sử dụng đối tượng định dạng tiền tệ đã tạo
+        textViewTotalPrice.setText(currencyFormatter.format(totalPrice));
 
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
             Toast.makeText(CartActivity.this, "Giỏ hàng của bạn đang trống", Toast.LENGTH_SHORT).show();
