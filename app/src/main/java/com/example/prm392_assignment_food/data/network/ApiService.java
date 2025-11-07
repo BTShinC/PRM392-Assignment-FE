@@ -13,6 +13,8 @@ import com.example.prm392_assignment_food.data.model.auth.RegisterRequest;
 import com.example.prm392_assignment_food.data.model.auth.RegisterResponse;
 import com.example.prm392_assignment_food.data.model.auth.ResetPasswordRequest;
 import com.example.prm392_assignment_food.data.model.auth.ResetPasswordResponse;
+import com.example.prm392_assignment_food.data.model.auth.User;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import com.example.prm392_assignment_food.data.model.CartItemRequest;
@@ -35,6 +37,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -169,4 +172,9 @@ public interface ApiService {
     @GET("/api/admin/wallet")
     Call<Double> getAdminWallet();
 
+    @GET("api/users/profile")
+    Call<User> getUserProfile(@Header("Authorization") String token);
+
+    @PUT("api/users/profile")
+    Call<User> updateUserProfile(@Header("Authorization") String token, @Body User user);
 }
