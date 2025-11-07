@@ -22,7 +22,7 @@
             android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:paddingTop="8dp"
+            android:paddingTop="20dp"
             android:paddingBottom="8dp"
             android:background="@color/white">
 
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="Yummy"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.03" />
 
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:text=" Go"
                 android:textColor="@color/orange"
-                android:textSize="20sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.03" />
         </LinearLayout>
@@ -85,8 +85,10 @@
                 android:src="@drawable/ic_shopping_cart"
                 android:background="@drawable/circle_background_orange"
                 android:padding="12dp"
+                android:layout_marginTop="10dp"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true"
+                app:tint="@android:color/white" />
 
         </LinearLayout>
 
@@ -95,7 +97,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            android:layout_marginTop="15dp"
+            >
+
 
             <LinearLayout
                 android:id="@+id/layout_categories"
