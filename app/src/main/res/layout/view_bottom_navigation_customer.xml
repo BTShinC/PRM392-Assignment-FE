@@ -67,7 +67,7 @@
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_home"
-            app:tint="@color/deep_orange"
+            app:tint="@color/tab_bg_selected"
             android:contentDescription="Home" />
     </FrameLayout>
 
