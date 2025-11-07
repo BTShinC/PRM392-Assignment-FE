@@ -3,16 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".ui.customer.CustomerMainActivity">
 
     <!-- Vùng chứa nội dung cho các Fragment -->
+
+    <!-- Thanh điều hướng cố định -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_navigation_container" />
+        android:layout_above="@+id/bottom_navigation_container"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="-2dp" />
 
-    <!-- Thanh điều hướng cố định -->
     <FrameLayout
         android:id="@+id/bottom_navigation_container"
         android:layout_width="match_parent"
