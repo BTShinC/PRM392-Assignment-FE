@@ -20,7 +20,7 @@ import com.example.prm392_assignment_food.data.model.auth.LoginResponse;
 import com.example.prm392_assignment_food.data.network.ApiClient;
 import com.example.prm392_assignment_food.data.network.ApiService;
 import com.example.prm392_assignment_food.ui.admin.AdminActivity;
-import com.example.prm392_assignment_food.ui.customer.HomeActivity;
+import com.example.prm392_assignment_food.ui.customer.CustomerMainActivity;
 import com.example.prm392_assignment_food.utils.TokenManager;
 
 import retrofit2.Call;
@@ -167,8 +167,8 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "Redirecting to AdminActivity");
                 intent = new Intent(LoginActivity.this, AdminActivity.class);
             } else {
-                Log.d(TAG, "Redirecting to HomeActivity");
-                intent = new Intent(LoginActivity.this, HomeActivity.class);
+                Log.d(TAG, "Redirecting to CustomerMainActivity");
+                intent = new Intent(LoginActivity.this, CustomerMainActivity.class);
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

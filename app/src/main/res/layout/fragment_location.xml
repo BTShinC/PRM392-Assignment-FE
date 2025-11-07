@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context=".ui.location.AccessLocationActivity">
+    tools:context=".ui.location.LocationFragment">
 
     <ImageView
         android:id="@+id/ivMap"
@@ -26,7 +26,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:backgroundTint="@color/orange"
-        android:text="ACCESS LOCATION"
+        android:text="TRUY CẬP VỊ TRÍ"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         app:cornerRadius="12dp"
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="DFOOD WILL ACCESS YOUR LOCATION\nONLY WHILE USING THE APP"
+        android:text="DFOOD SẼ TRUY CẬP VỊ TRÍ CỦA BẠN\nCHỈ KHI SỬ DỤNG ỨNG DỤNG"
         android:textAlignment="center"
         android:textColor="#8A8A8E"
         app:layout_constraintBottom_toBottomOf="parent"
