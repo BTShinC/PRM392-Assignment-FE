@@ -31,7 +31,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Track Order"
+            android:text="Vị trí quán"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="200dp"
+        app:behavior_peekHeight="150dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
@@ -70,11 +70,14 @@
                 android:layout_marginTop="16dp"
                 android:gravity="center_vertical">
 
+                <!-- Placeholder for an image if you have one -->
+
                 <ImageView
                     android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/logo"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/uttora_coffee_house" />
+                    android:src="@drawable/logo" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -84,41 +87,24 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tvRestaurantName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Uttora Coffee House"
+                        android:text="Quán Yummy"
                         android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvRestaurantAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Orderd At 06 Sept, 10:00pm"
-                        android:textColor="#8A8A8E" />
+                        android:text="160 Ngô Tất Tố, P. 22, Bình Thạnh, TP. HCM"
+                        android:textColor="#8A8A8E"
+                        android:layout_marginTop="4dp"/>
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2x Burger"
-                    android:textColor="#8A8A8E" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="4x Sanwitch"
-                    android:textColor="#8A8A8E" />
-
-            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

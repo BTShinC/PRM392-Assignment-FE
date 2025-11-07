@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +20,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
 
     private MapView mapView;
     private GoogleMap googleMap;
+    private TextView tvRestaurantName, tvRestaurantAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,9 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_track_order);
 
         mapView = findViewById(R.id.mapView);
+        tvRestaurantName = findViewById(R.id.tvRestaurantName);
+        tvRestaurantAddress = findViewById(R.id.tvRestaurantAddress);
+        
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
@@ -36,6 +41,11 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                 finish();
             }
         });
+        
+        // Dữ liệu có thể được đặt ở đây từ Intent hoặc API call
+        // Ví dụ:
+        // String restaurantName = getIntent().getStringExtra("RESTAURANT_NAME");
+        // tvRestaurantName.setText(restaurantName);
     }
 
     @Override
@@ -44,19 +54,22 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
 
         googleMap.getUiSettings().setZoomControlsEnabled(true);
 
-        // Convert 250dp to pixels (200dp for bottom sheet + 50dp margin)
+        // Convert 150dp (peekHeight) to pixels for bottom padding
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int padding = (int) (250 * displayMetrics.density);
+        int padding = (int) (150 * displayMetrics.density);
         googleMap.setPadding(0, 0, 0, padding);
 
-        // Add a marker for the restaurant and customer locations
-        LatLng restaurantLocation = new LatLng(23.8103, 90.4125); // Example location
-        LatLng customerLocation = new LatLng(23.8150, 90.4225); // Example location
+        // --- GHIM VỊ TRÍ TẠI TP. HỒ CHÍ MINH ---
+        // Tọa độ của Quán Yummy
+        LatLng yummyQuanLocation = new LatLng(10.79047772693391, 106.71594203047574);
 
-        googleMap.addMarker(new MarkerOptions().position(restaurantLocation).title("Uttora Coffee House"));
-        googleMap.addMarker(new MarkerOptions().position(customerLocation).title("Your Location"));
+        // Thêm ghim (marker) vào bản đồ
+        googleMap.addMarker(new MarkerOptions()
+                .position(yummyQuanLocation)
+                .title("Quán Yummy"));
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurantLocation, 12));
+        // Di chuyển camera đến vị trí đã ghim và zoom vào
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(yummyQuanLocation, 16));
     }
 
     @Override
