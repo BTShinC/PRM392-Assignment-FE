@@ -2,11 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".ui.order.OrderActivity">
+    tools:context=".ui.order.OrderFragment">
 
     <!-- Header: Mũi tên quay lại và tiêu đề -->
     <RelativeLayout
@@ -24,6 +23,7 @@
             android:layout_centerVertical="true"
             android:padding="12dp"
             android:src="@drawable/ic_arrow_back"
+            android:visibility="gone"
             android:contentDescription="Quay lại"/>
 
         <TextView

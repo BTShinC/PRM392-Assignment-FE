@@ -20,7 +20,6 @@ import com.example.prm392_assignment_food.MainActivity;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.CartItemResponse; // <<<--- THÊM IMPORT
 import com.example.prm392_assignment_food.ui.location.TrackOrderActivity;
-import com.example.prm392_assignment_food.ui.order.OrderActivity;
 import com.example.prm392_assignment_food.ui.placeOrder.PlaceOrderAdapter; // <<<--- SỬ DỤNG ADAPTER TỪ MÀN HÌNH TRƯỚC
 import com.example.prm392_assignment_food.utils.Constants;
 import com.google.gson.Gson; // <<<--- THÊM IMPORT

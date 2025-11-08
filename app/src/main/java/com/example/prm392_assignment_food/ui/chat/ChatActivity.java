@@ -50,7 +50,7 @@ public class ChatActivity extends AppCompatActivity {
     /** Xử lý nút quay lại **/
     private void setupBackButton() {
         btnBack.setOnClickListener(v -> {
-            Intent intent = new Intent(ChatActivity.this, MessageListActivity.class);
+            Intent intent = new Intent(ChatActivity.this, NotificationFragment.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish(); // kết thúc ChatActivity hiện tại
