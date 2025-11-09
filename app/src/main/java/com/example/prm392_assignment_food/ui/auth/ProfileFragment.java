@@ -18,8 +18,15 @@ import androidx.fragment.app.Fragment;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.prm392_assignment_food.R;
+import com.example.prm392_assignment_food.data.model.auth.User;
+import com.example.prm392_assignment_food.data.model.auth.UserProfileResponse;
+import com.example.prm392_assignment_food.data.network.ApiClient;
+import com.example.prm392_assignment_food.data.network.ApiService;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileFragment extends Fragment {
 
@@ -29,6 +36,7 @@ public class ProfileFragment extends Fragment {
     private CircleImageView profileImage;
     private EditText etFullName, etEmail, etPhoneNumber, etBio;
     private View rootView;
+    private ApiService apiService;
 
     @Nullable
     @Override
@@ -41,6 +49,8 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        apiService = ApiClient.getApiService();
+
         ivBack = rootView.findViewById(R.id.ivBack);
         profileImage = rootView.findViewById(R.id.profile_image);
         etFullName = rootView.findViewById(R.id.etFullName);
@@ -51,10 +61,10 @@ public class ProfileFragment extends Fragment {
         // Hide back button as navigation is handled by the main activity
         ivBack.setVisibility(View.GONE);
 
-        loadProfileFromToken();
+        loadProfile();
     }
 
-    private void loadProfileFromToken() {
+    private void loadProfile() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("FoodAppPrefs", Context.MODE_PRIVATE);
         String token = prefs.getString("AUTH_TOKEN", null);
 
@@ -65,21 +75,33 @@ public class ProfileFragment extends Fragment {
 
         try {
             DecodedJWT jwt = JWT.decode(token);
+            String userId = jwt.getClaim("userId").asString();
 
-            String name = jwt.getClaim("name").asString();
-            String email = jwt.getClaim("username").asString();
-            String phoneNumber = ""; // Not in token
-            String address = ""; // Not in token
+            apiService.getUserProfile(userId).enqueue(new Callback<UserProfileResponse>() {
+                @Override
+                public void onResponse(Call<UserProfileResponse> call, Response<UserProfileResponse> response) {
+                    if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                        User user = response.body().getData();
+                        etFullName.setText(user.getFullName());
+                        etEmail.setText(user.getEmail());
+                        etPhoneNumber.setText(user.getPhone());
+                        etBio.setText(user.getAddress());
 
-            etFullName.setText(name);
-            etEmail.setText(email);
-            etPhoneNumber.setText(phoneNumber);
-            etBio.setText(address);
+                        etFullName.setEnabled(false);
+                        etEmail.setEnabled(false);
+                        etPhoneNumber.setEnabled(false);
+                        etBio.setEnabled(false);
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to load profile", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
-            etFullName.setEnabled(false);
-            etEmail.setEnabled(false);
-            etPhoneNumber.setEnabled(false);
-            etBio.setEnabled(false);
+                @Override
+                public void onFailure(Call<UserProfileResponse> call, Throwable t) {
+                    Log.e(TAG, "Profile load error: " + t.getMessage());
+                    Toast.makeText(requireContext(), "Error loading profile", Toast.LENGTH_SHORT).show();
+                }
+            });
 
         } catch (Exception e) {
             Log.e(TAG, "JWT Decode Error: " + e.getMessage());
