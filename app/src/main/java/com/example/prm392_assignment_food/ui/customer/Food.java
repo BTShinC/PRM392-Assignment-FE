@@ -7,21 +7,18 @@ public class Food {
     private String name;
     private String price;
     private String category;
-    private int imageResource;
-    private String location;
+    private String imageUrl;
     private String description;
 
 
 
     // Constructor
-    public Food(String id, String name, String price, String category,
-                int imageResource, String location, String description ){
+    public Food(String id, String name, String price, String category, String imageUrl, String description ){
         this.id = id;
         this.name = name;
         this.price = price;
         this.category = category;
-        this.imageResource = imageResource;
-        this.location = location;
+        this.imageUrl = imageUrl;
         this.description = description;
     }
 
@@ -41,11 +38,14 @@ public class Food {
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 
-    public int getImageResource() { return imageResource; }
-    public void setImageResource(int imageResource) { this.imageResource = imageResource; }
 
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }

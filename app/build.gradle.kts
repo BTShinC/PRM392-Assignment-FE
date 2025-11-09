@@ -44,6 +44,10 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.circleimageview)
+    // AndroidX UI components used in Home screen layouts
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.cardview:cardview:1.0.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -63,9 +67,10 @@ dependencies {
     // Glide
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.github.bumptech.glide:okhttp3-integration:4.12.0")
 
 
-
+    implementation("com.github.bumptech.glide:okhttp3-integration:4.12.0")
     implementation("com.auth0:java-jwt:4.4.0")
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)

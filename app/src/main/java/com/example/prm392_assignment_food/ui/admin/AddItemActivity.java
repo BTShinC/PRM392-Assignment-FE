@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.MenuCategoryResponse;
 import com.example.prm392_assignment_food.data.model.MenuItemRequest;
@@ -130,7 +131,7 @@ public class AddItemActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
-            ivMainImage.setImageURI(imageUri);
+            Glide.with(this).load(imageUri).into(ivMainImage);
         }
     }
 

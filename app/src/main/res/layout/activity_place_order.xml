@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E2C"
+    android:background="#ffff"
     tools:context=".ui.placeOrder.PlaceOrderActivity">
 
     <!-- Nút quay lại -->
@@ -27,8 +27,8 @@
         android:id="@+id/textViewCartTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Place Order"
-        android:textColor="@android:color/white"
+        android:text="Đơn hàng"
+        android:textColor="@android:color/black"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/backButton"
@@ -80,7 +80,7 @@
                 android:id="@+id/textViewAddressTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delivery Address"
+                android:text="Địa chỉ giao hàng"
                 android:textColor="#888888"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -111,44 +111,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Products Total"
+            android:text="Tổng tiền"
             android:textColor="#888888"
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@+id/divider1"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textViewProductTotal"
+            android:id="@+id/textViewDeliveryFee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$85.00"
+            android:text="30.000 VND"
             android:textColor="#222222"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@+id/textViewProductTotalLabel"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Phí giao hàng -->
-        <TextView
-            android:id="@+id/textViewDeliveryFeeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Delivery Fee"
-            android:textColor="#888888"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewProductTotalLabel" />
-
-        <TextView
-            android:id="@+id/textViewDeliveryFee"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$5.00"
-            android:textColor="#222222"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textViewDeliveryFeeLabel"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Khuyến mãi -->
@@ -157,17 +134,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Promotion"
+            android:text="Phí giao hàng"
             android:textColor="#888888"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewDeliveryFeeLabel" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewProductTotalLabel" />
 
         <TextView
             android:id="@+id/textViewPromotion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="−$4.00"
+            android:text="0 VND"
             android:textColor="#4CAF50"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -189,7 +166,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Total Payment"
+            android:text="Tổng thanh toán"
             android:textColor="#555555"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -200,7 +177,7 @@
             android:id="@+id/textViewTotalPayment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$86.00"
+            android:text="85.000 VND"
             android:textColor="#000000"
             android:textSize="26sp"
             android:textStyle="bold"
@@ -214,7 +191,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/background_orange_button"
-            android:text="PLACE ORDER"
+            android:text="Đặt hàng"
             android:textAllCaps="false"
             android:letterSpacing="0.05"
             android:textColor="@android:color/white"

@@ -15,6 +15,9 @@ import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.CartItemResponse;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +27,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     private List<CartItemResponse> items;
     private final OnItemInteractionListener listener;
+    private final NumberFormat currencyFormatter; // Đối tượng định dạng tiền tệ
 
     // --- Chế độ chỉnh sửa ---
     private boolean isEditMode = false;
@@ -39,6 +43,20 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public CartAdapter(List<CartItemResponse> items, OnItemInteractionListener listener) {
         this.items = items;
         this.listener = listener;
+
+        // Khởi tạo đối tượng định dạng tiền tệ cho Việt Nam
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+        // Tùy chỉnh ký hiệu tiền tệ từ "đ" thành " VND"
+        if (formatter instanceof DecimalFormat) {
+            DecimalFormat decimalFormat = (DecimalFormat) formatter;
+            DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
+            // Đặt ký hiệu là " VND" (có khoảng trắng ở đầu)
+            symbols.setCurrencySymbol(" VND");
+            decimalFormat.setDecimalFormatSymbols(symbols);
+        }
+
+        this.currencyFormatter = formatter;
     }
 
     @NonNull
@@ -54,7 +72,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
         holder.itemName.setText(currentItem.getMenuItemName());
         if (currentItem.getUnitPrice() != null) {
-            holder.itemPrice.setText(String.format(Locale.US, "$%.2f", currentItem.getUnitPrice()));
+            // Sử dụng đối tượng định dạng đã tạo để hiển thị giá tiền
+            holder.itemPrice.setText(currencyFormatter.format(currentItem.getUnitPrice()));
         }
         holder.itemQuantity.setText(String.valueOf(currentItem.getQuantity()));
 

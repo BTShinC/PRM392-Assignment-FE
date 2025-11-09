@@ -14,13 +14,14 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.prm392_assignment_food.ui.admin.AdminActivity;
 import com.example.prm392_assignment_food.ui.admin.AddItemActivity;
 import com.example.prm392_assignment_food.ui.admin.ManageCategoriesActivity;
-import com.example.prm392_assignment_food.ui.auth.ProfileActivity;
+import com.example.prm392_assignment_food.ui.auth.ProfileFragment;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
 import com.example.prm392_assignment_food.ui.chat.InboxActivity;
 import com.example.prm392_assignment_food.ui.chat.MessageListActivity;
 import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
 import com.example.prm392_assignment_food.ui.customer.FoodListActivity;
-import com.example.prm392_assignment_food.ui.profile.AdminProfileActivity;
+import com.example.prm392_assignment_food.ui.location.LocationFragment;
+import com.example.prm392_assignment_food.ui.order.OrderFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         btnOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AccessLocationActivity.class);
+                Intent intent = new Intent(MainActivity.this, LocationFragment.class);
                 startActivity(intent);
             }
         });
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         btnTestProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                Intent intent = new Intent(MainActivity.this, ProfileFragment.class);
                 startActivity(intent);
             }
         });
@@ -97,6 +98,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button btnMyOrder = findViewById(R.id.btn_my_order);
+        btnMyOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, OrderFragment.class);
+                startActivity(intent);
+            }
+        });
+
 
         Button btnTestChat = findViewById(R.id.btnTestChat);
         btnTestChat.setOnClickListener(new View.OnClickListener() {

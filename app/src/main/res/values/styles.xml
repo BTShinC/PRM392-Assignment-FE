@@ -22,4 +22,28 @@
         <item name="android:lineSpacingExtra">4sp</item>
         <item name="android:textAlignment">center</item>
     </style>
+    <style name="OrderTab">
+        <!-- Kích thước và căn chỉnh -->
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+
+        <!-- Kiểu chữ -->
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+
+        <!-- Bo góc và màu nền -->
+        <item name="android:background">@drawable/bg_order_tab_default</item>
+
+        <!-- Cho phép click -->
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
 </resources>

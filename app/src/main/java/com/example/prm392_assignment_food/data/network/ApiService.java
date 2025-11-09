@@ -1,9 +1,10 @@
 package com.example.prm392_assignment_food.data.network;
 
 import com.example.prm392_assignment_food.data.model.ApiResponse;
-
+import com.example.prm392_assignment_food.data.model.ApiResponseDto;
+import com.example.prm392_assignment_food.data.model.admin.DashboardResponse;
 import com.example.prm392_assignment_food.data.model.MenuCategoryRequest;
-import com.example.prm392_assignment_food.data.model.MenuItemRequest;
+import com.example.prm392_assignment_food.data.model.OrderResponse;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordRequest;
 import com.example.prm392_assignment_food.data.model.auth.ForgotPasswordResponse;
 import com.example.prm392_assignment_food.data.model.auth.LoginRequest;
@@ -12,6 +13,8 @@ import com.example.prm392_assignment_food.data.model.auth.RegisterRequest;
 import com.example.prm392_assignment_food.data.model.auth.RegisterResponse;
 import com.example.prm392_assignment_food.data.model.auth.ResetPasswordRequest;
 import com.example.prm392_assignment_food.data.model.auth.ResetPasswordResponse;
+import com.example.prm392_assignment_food.data.model.auth.User;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import com.example.prm392_assignment_food.data.model.CartItemRequest;
@@ -26,6 +29,9 @@ import com.example.prm392_assignment_food.data.model.ResponseDto;
 import com.example.prm392_assignment_food.data.model.UpdateQuantityRequest;
 import com.example.prm392_assignment_food.data.model.VnPayCreateRequest;
 import com.example.prm392_assignment_food.data.model.VnPayCreateResponse;
+import com.example.prm392_assignment_food.data.model.order.OrderDto;
+
+import java.util.List;
 import com.example.prm392_assignment_food.ui.chat.ChatMessageRequest;
 import com.example.prm392_assignment_food.ui.chat.ChatMessageResponse;
 import com.example.prm392_assignment_food.ui.chat.NotificationResponse;
@@ -35,10 +41,9 @@ import java.util.UUID;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -158,4 +163,43 @@ public interface ApiService {
     Call<Void> markAllNotificationsAsRead(@Path("userId") String userId);
 
 
+    @PUT("/api/admins/orders/status")
+    Call<Void> adminUpdateOrderStatus(@Query("orderId") String orderId, @Query("orderStatus") String orderStatus);
+
+    @GET("/api/admins/orders")
+    Call<ApiResponseDto<PageResponse<OrderResponse>>> getOrders(
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("sort") List<String> sort,
+            @Query("status") String status,
+            @Query("search") String search
+    );
+
+    @GET("api/dashboard")
+    Call<DashboardResponse> getDashboardAll();
+
+    @GET("api/dashboard/{month}")
+    Call<DashboardResponse> getDashboardByMonth(@Path("month") int month);
+
+    @GET("/api/orders/status/{userId}")
+    Call<ResponseDto<List<OrderDto>>> getOrdersByStatus(
+            @Path("userId") String userId,
+            @Query("orderStatus") String status
+    );
+
+    @PUT("/api/orders")
+    Call<ResponseDto> updateOrderStatus(
+            @Query("orderId") String orderId,
+            @Query("orderStatus") String status
+    );
+
+
+    @GET("/api/admin/wallet")
+    Call<Double> getAdminWallet();
+
+    @GET("api/users/profile")
+    Call<User> getUserProfile(@Header("Authorization") String token);
+
+    @PUT("api/users/profile")
+    Call<User> updateUserProfile(@Header("Authorization") String token, @Body User user);
 }

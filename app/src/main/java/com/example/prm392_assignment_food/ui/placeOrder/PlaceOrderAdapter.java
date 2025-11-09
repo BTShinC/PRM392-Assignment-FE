@@ -8,20 +8,37 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.CartItemResponse;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class PlaceOrderAdapter extends RecyclerView.Adapter<PlaceOrderAdapter.ViewHolder> {
 
-    // Sửa: Bỏ 'final' để có thể cập nhật danh sách
     private List<CartItemResponse> items;
+    private final NumberFormat currencyFormatter; // Đối tượng định dạng tiền tệ
 
     public PlaceOrderAdapter(List<CartItemResponse> items) {
         this.items = items;
+
+        // Khởi tạo đối tượng định dạng tiền tệ cho Việt Nam
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+        // Tùy chỉnh ký hiệu tiền tệ từ "đ" thành " VND"
+        if (formatter instanceof DecimalFormat) {
+            DecimalFormat decimalFormat = (DecimalFormat) formatter;
+            DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
+            symbols.setCurrencySymbol(" VND"); // Đặt ký hiệu là " VND" (có khoảng trắng ở đầu)
+            decimalFormat.setDecimalFormatSymbols(symbols);
+        }
+
+        this.currencyFormatter = formatter;
     }
 
     @NonNull
@@ -40,10 +57,16 @@ public class PlaceOrderAdapter extends RecyclerView.Adapter<PlaceOrderAdapter.Vi
 
         if (item.getUnitPrice() != null) {
             double totalPrice = item.getUnitPrice().doubleValue() * item.getQuantity();
-            holder.tvPrice.setText(String.format(Locale.US, "$%.2f", totalPrice));
+            // Sử dụng đối tượng định dạng đã tạo
+            holder.tvPrice.setText(currencyFormatter.format(totalPrice));
         }
 
-        holder.imgFood.setImageResource(R.drawable.halim);
+        // Cải thiện: Dùng Glide để tải ảnh từ URL
+        Glide.with(holder.itemView.getContext())
+                .load(item.getImageUrl())
+                .placeholder(R.drawable.halim) // Ảnh chờ
+                .error(R.drawable.halim)       // Ảnh khi lỗi
+                .into(holder.imgFood);
     }
 
     @Override
@@ -51,7 +74,6 @@ public class PlaceOrderAdapter extends RecyclerView.Adapter<PlaceOrderAdapter.Vi
         return items != null ? items.size() : 0;
     }
 
-    // --- THÊM VÀO: Phương thức để cập nhật dữ liệu ---
     public void updateItems(List<CartItemResponse> newItems) {
         if (this.items == null) {
             this.items = new ArrayList<>();
@@ -60,9 +82,8 @@ public class PlaceOrderAdapter extends RecyclerView.Adapter<PlaceOrderAdapter.Vi
         if (newItems != null) {
             this.items.addAll(newItems);
         }
-        notifyDataSetChanged(); // Báo cho RecyclerView biết dữ liệu đã thay đổi
+        notifyDataSetChanged();
     }
-    // --- KẾT THÚC THÊM ---
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgFood;
