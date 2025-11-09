@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F9FAFB"
-    tools:context=".ui.chat.MessageListActivity">
+    tools:context=".ui.chat.InboxActivity">
 
     <LinearLayout
         android:id="@+id/main_content"
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:text="Notifications"
+                android:text="Inbox"
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -76,24 +76,16 @@
             android:layout_height="1dp"
             android:background="#E0E0E0" />
 
-        <!-- RecyclerView Notifications -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewNotifications"
+        <!-- =================================================== -->
+        <!-- =============== ĐÂY LÀ PHẦN SỬA LỖI =============== -->
+        <!-- Xóa bỏ 2 RecyclerView cũ và thay bằng FrameLayout này. -->
+        <!-- Đây chính là cái "khung" mà code Java đang tìm kiếm. -->
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:overScrollMode="never"
-            android:paddingHorizontal="16dp" />
-
-        <!-- RecyclerView Messages -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewMessages"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:overScrollMode="never"
-            android:paddingHorizontal="16dp"
-            android:visibility="gone" />
+            android:layout_weight="1" />
+        <!-- =================================================== -->
 
     </LinearLayout>
 
@@ -103,8 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_alignParentBottom="true">
-
-
+        <!-- Có thể bạn sẽ đặt một bottom navigation view ở đây sau này -->
     </FrameLayout>
 
 </RelativeLayout>

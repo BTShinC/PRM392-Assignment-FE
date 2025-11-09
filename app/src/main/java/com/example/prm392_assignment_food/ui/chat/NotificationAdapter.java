@@ -58,8 +58,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         // --- Gán dữ liệu cơ bản ---
         holder.tvAction.setText(item.getContent());
         holder.tvName.setText("Thông báo hệ thống");
-
-        // <<< CẬP NHẬT: Định dạng ngày giờ đầy đủ >>>
         holder.tvTime.setText(formatDateTime(item.getCreatedAt()));
 
         // --- Logic thay đổi màu sắc và icon dựa trên type ---
@@ -69,6 +67,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         NotificationType type = item.getType();
         if (type != null) {
             switch (type) {
+                // ... (toàn bộ khối switch của bạn giữ nguyên)
                 case ORDER_COMPLETED:
                 case ORDER_DELIVERED:
                 case ORDER_PAID:
@@ -91,7 +90,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     break;
                 case GENERAL:
                 default:
-                    // Giữ giá trị mặc định đã khai báo ở trên
                     break;
             }
         }
@@ -99,6 +97,20 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         // Áp dụng màu và icon đã chọn vào Views
         holder.indicator.setBackgroundColor(ContextCompat.getColor(context, indicatorColorRes));
         holder.imgAvatar.setImageResource(avatarIconRes);
+
+        // <<<--- LOGIC MỚI ĐỂ LÀM MỜ ITEM ĐÃ ĐỌC --- >>>
+
+        // ⚠️ LƯU Ý: Đảm bảo class 'NotificationResponse' của bạn có hàm getStatus()
+        // và trả về chuỗi "READ" hoặc "UNREAD".
+        if (item.getStatus() != null && item.getStatus().equals("READ")) {
+            // Nếu đã đọc (READ), giảm độ sáng (alpha) của toàn bộ item
+            holder.itemView.setAlpha(0.6f); // 0.6f là mờ 40%, bạn có thể chỉnh (ví dụ 0.5f)
+        } else {
+            // Nếu chưa đọc (UNREAD), hiển thị bình thường (quan trọng!)
+            holder.itemView.setAlpha(1.0f);
+        }
+        // <<<--- KẾT THÚC LOGIC MỚI --- >>>
+
 
         // --- Bắt sự kiện click ---
         holder.itemView.setOnClickListener(v -> {

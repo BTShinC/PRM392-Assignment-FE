@@ -159,13 +159,15 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     // <<< HÀM CÒN THIẾU 1: connectWebSocket >>>
+// <<< THAY THẾ TOÀN BỘ HÀM NÀY >>>
     @SuppressLint("CheckResult")
     private void connectWebSocket() {
-        String webSocketUrl = "ws://prm392.nguyenhoangan.site/ws/chat-websocket";
+        // SỬA LẠI ĐÚNG ĐỊA CHỈ IP VÀ CỔNG MÀ BACKEND CUNG CẤP
+        String webSocketUrl = "ws://109.123.238.244:3050/ws/chat-websocket";
 
         // 1. Lấy token từ TokenManager
         TokenManager tokenManager = new TokenManager(this);
-        String tokenWithBearer = tokenManager.getToken(); // Giả sử nó có thể trả về "Bearer xxxx"
+        String tokenWithBearer = tokenManager.getToken();
 
         if (tokenWithBearer == null) {
             Log.e(TAG, "Cannot connect to WebSocket: token is null.");
@@ -173,19 +175,19 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
 
-        // 2. <<< SỬA ĐỔI QUAN TRỌNG: LUÔN LOẠI BỎ "Bearer " TRƯỚC KHI GỬI >>>
+        // 2. Loại bỏ "Bearer " khỏi token
         String rawToken = tokenWithBearer;
         if (rawToken.toLowerCase().startsWith("bearer ")) {
             rawToken = rawToken.substring(7);
         }
 
-        // 3. Xây dựng URL mới với token thô (raw token)
-        String webSocketUrlWithToken  = webSocketUrl + "?token=" + rawToken;
+        // 3. Xây dựng URL cuối cùng với token
+        String webSocketUrlWithToken = webSocketUrl + "?token=" + rawToken;
 
         // In ra để kiểm tra
         Log.d(TAG, "Connecting to WebSocket with URL: " + webSocketUrlWithToken);
 
-        // 4. Kết nối mà KHÔNG cần thêm header nữa
+        // 4. Khởi tạo StompClient với URL ĐÚNG
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, webSocketUrlWithToken);
 
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
@@ -224,6 +226,7 @@ public class ChatActivity extends AppCompatActivity {
     // <<< HÀM CÒN THIẾU 2: sendMessage >>>
     @SuppressLint("CheckResult")
     private void sendMessage() {
+        Log.d(TAG, "Send button clicked. Sender ID: " + currentUserId + ", Receiver ID: " + receiverId);
         String content = etMessage.getText().toString().trim();
         if (content.isEmpty() || stompClient == null || !stompClient.isConnected()) {
             return;
@@ -231,6 +234,8 @@ public class ChatActivity extends AppCompatActivity {
 
         ChatMessageRequest request = new ChatMessageRequest(currentUserId, receiverId, content);
         String jsonPayload = gson.toJson(request);
+
+        Log.d(TAG, "Sending JSON Payload: " + jsonPayload);
 
         stompClient.send("/app/chat.send", jsonPayload).subscribe(() -> {
             runOnUiThread(() -> {

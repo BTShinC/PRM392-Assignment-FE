@@ -202,4 +202,11 @@ public interface ApiService {
 
     @PUT("api/users/profile")
     Call<User> updateUserProfile(@Header("Authorization") String token, @Body User user);
+
+    @PATCH("api/notifications/{notificationId}/status")
+    Call<Void> updateNotificationStatus(
+            @Path("notificationId") String notificationId,
+            @Body String status
+    );
+
 }

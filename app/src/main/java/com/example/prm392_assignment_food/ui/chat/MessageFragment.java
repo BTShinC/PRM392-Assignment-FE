@@ -41,6 +41,9 @@ public class MessageFragment extends Fragment {
     private MessageListAdapter messageAdapter;
     private TextView tvEmptyMessages;
 
+    // <<< THÊM DÒNG NÀY: ĐỊNH NGHĨA ID CỦA ADMIN >>>
+    private static final UUID ADMIN_ID = UUID.fromString("dc662642-5435-4487-8b78-e4df3c339aa9");
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -115,40 +118,112 @@ public class MessageFragment extends Fragment {
         });
     }
 
-    private List<Conversation> processMessagesToConversations(List<ChatMessageResponse> messages) {
-        Map<UUID, List<ChatMessageResponse>> groupedMessages = new ConcurrentHashMap<>();
-        for (ChatMessageResponse msg : messages) {
-            UUID otherUserId;
-            if (msg.getSenderId().equals(currentUserId)) {
-                otherUserId = msg.getReceiverId();
-            } else {
-                otherUserId = msg.getSenderId();
-            }
-            groupedMessages.computeIfAbsent(otherUserId, k -> new ArrayList<>()).add(msg);
+//    private List<Conversation> processMessagesToConversations(List<ChatMessageResponse> messages) {
+//        Map<UUID, List<ChatMessageResponse>> groupedMessages = new ConcurrentHashMap<>();
+//        for (ChatMessageResponse msg : messages) {
+//            UUID otherUserId;
+//            if (msg.getSenderId().equals(currentUserId)) {
+//                otherUserId = msg.getReceiverId();
+//            } else {
+//                otherUserId = msg.getSenderId();
+//            }
+//            groupedMessages.computeIfAbsent(otherUserId, k -> new ArrayList<>()).add(msg);
+//        }
+//        List<Conversation> conversations = new ArrayList<>();
+//        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm");
+//        for (Map.Entry<UUID, List<ChatMessageResponse>> entry : groupedMessages.entrySet()) {
+//            Conversation conversation = new Conversation();
+//            List<ChatMessageResponse> conversationMessages = entry.getValue();
+//            if (conversationMessages.isEmpty()) continue;
+//            conversationMessages.sort(Comparator.comparing(ChatMessageResponse::getCreatedAt).reversed());
+//            ChatMessageResponse lastMessage = conversationMessages.get(0);
+//            conversation.setOtherUserId(entry.getKey());
+//            conversation.setOtherUserName("User " + entry.getKey().toString().substring(0, 4));
+//            conversation.setLastMessageContent(lastMessage.getContent());
+//            try {
+//                LocalDateTime dateTime = LocalDateTime.parse(lastMessage.getCreatedAt());
+//                conversation.setLastMessageTime(dateTime.format(outputFormatter));
+//            } catch (Exception e) {
+//                conversation.setLastMessageTime("");
+//            }
+//            long unread = conversationMessages.stream()
+//                    .filter(m -> !m.isRead() && !m.getSenderId().equals(currentUserId))
+//                    .count();
+//            conversation.setUnreadCount((int) unread);
+//            conversations.add(conversation);
+//        }
+//        return conversations;
+//    }
+private List<Conversation> processMessagesToConversations(List<ChatMessageResponse> messages) {
+    Map<UUID, List<ChatMessageResponse>> groupedMessages = new ConcurrentHashMap<>();
+    for (ChatMessageResponse msg : messages) {
+        UUID otherUserId;
+        if (msg.getSenderId().equals(currentUserId)) {
+            otherUserId = msg.getReceiverId();
+        } else {
+            otherUserId = msg.getSenderId();
         }
-        List<Conversation> conversations = new ArrayList<>();
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        for (Map.Entry<UUID, List<ChatMessageResponse>> entry : groupedMessages.entrySet()) {
-            Conversation conversation = new Conversation();
-            List<ChatMessageResponse> conversationMessages = entry.getValue();
-            if (conversationMessages.isEmpty()) continue;
-            conversationMessages.sort(Comparator.comparing(ChatMessageResponse::getCreatedAt).reversed());
-            ChatMessageResponse lastMessage = conversationMessages.get(0);
-            conversation.setOtherUserId(entry.getKey());
-            conversation.setOtherUserName("User " + entry.getKey().toString().substring(0, 4));
-            conversation.setLastMessageContent(lastMessage.getContent());
-            try {
-                LocalDateTime dateTime = LocalDateTime.parse(lastMessage.getCreatedAt());
-                conversation.setLastMessageTime(dateTime.format(outputFormatter));
-            } catch (Exception e) {
-                conversation.setLastMessageTime("");
-            }
-            long unread = conversationMessages.stream()
-                    .filter(m -> !m.isRead() && !m.getSenderId().equals(currentUserId))
-                    .count();
-            conversation.setUnreadCount((int) unread);
-            conversations.add(conversation);
-        }
-        return conversations;
+        groupedMessages.computeIfAbsent(otherUserId, k -> new ArrayList<>()).add(msg);
     }
+
+    List<Conversation> conversations = new ArrayList<>();
+    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+    // <<< THÊM BIẾN NÀY ĐỂ KIỂM TRA >>>
+    boolean adminConversationExists = false;
+
+    for (Map.Entry<UUID, List<ChatMessageResponse>> entry : groupedMessages.entrySet()) {
+        Conversation conversation = new Conversation();
+        List<ChatMessageResponse> conversationMessages = entry.getValue();
+        if (conversationMessages.isEmpty()) continue;
+        conversationMessages.sort(Comparator.comparing(ChatMessageResponse::getCreatedAt).reversed());
+        ChatMessageResponse lastMessage = conversationMessages.get(0);
+
+        conversation.setOtherUserId(entry.getKey());
+
+        // <<< KIỂM TRA XEM CUỘC TRÒ CHUYỆN NÀY CÓ PHẢI LÀ VỚI ADMIN KHÔNG >>>
+        if (conversation.getOtherUserId().equals(ADMIN_ID)) {
+            adminConversationExists = true;
+            // Bạn có thể đặt tên thân thiện hơn cho Admin
+            conversation.setOtherUserName("Admin Support");
+        } else {
+            // Giữ logic cũ của bạn cho những người dùng khác
+            conversation.setOtherUserName("User " + entry.getKey().toString().substring(0, 4));
+        }
+
+        conversation.setLastMessageContent(lastMessage.getContent());
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(lastMessage.getCreatedAt());
+            conversation.setLastMessageTime(dateTime.format(outputFormatter));
+        } catch (Exception e) {
+            conversation.setLastMessageTime("");
+        }
+        long unread = conversationMessages.stream()
+                .filter(m -> !m.isRead() && !m.getSenderId().equals(currentUserId))
+                .count();
+        conversation.setUnreadCount((int) unread);
+        conversations.add(conversation);
+    }
+
+    // <<< LOGIC CHÍNH: NẾU KHÔNG TÌM THẤY ADMIN, TẠO MỘT CUỘC TRÒ CHUYỆN MỚI >>>
+    if (!adminConversationExists) {
+        Conversation adminConversation = new Conversation();
+        adminConversation.setOtherUserId(ADMIN_ID);
+        adminConversation.setOtherUserName("Admin Support"); // Đặt tên
+
+        // Lời chào mặc định theo yêu cầu của bạn
+        adminConversation.setLastMessageContent("Chào bạn, chúng tôi có thể giúp gì cho bạn?");
+
+        // Đặt thời gian là hiện tại
+        adminConversation.setLastMessageTime(LocalDateTime.now().format(outputFormatter));
+
+        // Đặt là 1 tin nhắn chưa đọc (vì admin "vừa gửi" cho bạn)
+        adminConversation.setUnreadCount(1);
+
+        // Thêm vào đầu danh sách để luôn ở trên cùng
+        conversations.add(0, adminConversation);
+    }
+
+    return conversations;
+}
 }

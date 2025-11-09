@@ -17,8 +17,6 @@ import com.example.prm392_assignment_food.ui.admin.ManageCategoriesActivity;
 import com.example.prm392_assignment_food.ui.auth.ProfileFragment;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
 import com.example.prm392_assignment_food.ui.chat.InboxActivity;
-import com.example.prm392_assignment_food.ui.chat.MessageListActivity;
-import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
 import com.example.prm392_assignment_food.ui.customer.FoodListActivity;
 import com.example.prm392_assignment_food.ui.location.LocationFragment;
 import com.example.prm392_assignment_food.ui.order.OrderFragment;
