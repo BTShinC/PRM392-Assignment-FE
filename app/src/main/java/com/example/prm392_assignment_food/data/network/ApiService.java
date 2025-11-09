@@ -26,6 +26,12 @@ import com.example.prm392_assignment_food.data.model.ResponseDto;
 import com.example.prm392_assignment_food.data.model.UpdateQuantityRequest;
 import com.example.prm392_assignment_food.data.model.VnPayCreateRequest;
 import com.example.prm392_assignment_food.data.model.VnPayCreateResponse;
+import com.example.prm392_assignment_food.ui.chat.ChatMessageRequest;
+import com.example.prm392_assignment_food.ui.chat.ChatMessageResponse;
+import com.example.prm392_assignment_food.ui.chat.NotificationResponse;
+
+import java.util.List;
+import java.util.UUID;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -34,6 +40,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
@@ -131,6 +138,24 @@ public interface ApiService {
 
     @POST("api/v1/payments/vnpay/create")
     Call<VnPayCreateResponse> createVnPayPayment(@Body VnPayCreateRequest request);
+
+    // 1. Lấy lịch sử tin nhắn với một người dùng cụ thể
+    @GET("api/v1/chat/{userId}")
+    Call<List<ChatMessageResponse>> getChatHistory(@Path("userId") UUID userId);
+
+    // 2. Gửi một tin nhắn qua REST (dùng để test hoặc khi không kết nối ws)
+    @POST("api/v1/chat/send")
+    Call<ChatMessageResponse> sendChatMessage(@Body ChatMessageRequest message);
+
+    // Sửa lại hàm getNotifications
+    @GET("api/notifications/users/{userId}")
+    Call<ApiResponse<List<NotificationResponse>>> getNotifications(@Path("userId") UUID userId);
+
+    @GET("api/notifications/users/{userId}")
+    Call<List<NotificationResponse>> getAllNotificationsForUser(@Path("userId") String userId);
+
+    @PATCH("api/notifications/users/{userId}/read-all")
+    Call<Void> markAllNotificationsAsRead(@Path("userId") String userId);
 
 
 }

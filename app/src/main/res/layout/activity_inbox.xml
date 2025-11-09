@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F9FAFB"
-    tools:context=".ui.chat.MessageListActivity">
+    tools:context=".ui.chat.InboxActivity">
 
     <!-- Thanh trên cùng -->
     <LinearLayout
@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Notifications"
+            android:text="Inbox"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginStart="12dp" />
@@ -57,7 +57,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Messages (3)"
+            android:text="Messages"
             android:textSize="16sp"
             android:textColor="#999999"
             android:gravity="center"
@@ -70,25 +70,12 @@
         android:layout_height="1dp"
         android:background="#E0E0E0" />
 
-    <!-- RecyclerView Notifications -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewNotifications"
+    <!-- <<< NƠI CHỨA CÁC FRAGMENT >>> -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingHorizontal="16dp"
-        android:overScrollMode="never" />
-
-    <!-- RecyclerView Messages -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMessages"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingHorizontal="16dp"
-        android:overScrollMode="never"
-        android:visibility="gone" />
-
+        android:layout_weight="1" />
 
     <!-- Thanh navigation dưới -->
     <LinearLayout
@@ -98,36 +85,7 @@
         android:background="#FFFFFF"
         android:gravity="center"
         android:elevation="6dp">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_grid"
-            android:layout_marginHorizontal="20dp" />
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_menu"
-            android:layout_marginHorizontal="20dp" />
-
-        <ImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:src="@drawable/ic_add_circle"
-            android:layout_marginHorizontal="20dp" />
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_bell"
-            android:layout_marginHorizontal="20dp" />
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_profile"
-            android:layout_marginHorizontal="20dp" />
+        <!-- Các ImageView của bạn ở đây -->
     </LinearLayout>
 
 </LinearLayout>

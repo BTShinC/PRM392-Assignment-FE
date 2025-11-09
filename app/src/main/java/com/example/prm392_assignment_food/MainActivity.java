@@ -16,6 +16,8 @@ import com.example.prm392_assignment_food.ui.admin.AddItemActivity;
 import com.example.prm392_assignment_food.ui.admin.ManageCategoriesActivity;
 import com.example.prm392_assignment_food.ui.auth.ProfileActivity;
 import com.example.prm392_assignment_food.ui.cart.CartActivity;
+import com.example.prm392_assignment_food.ui.chat.InboxActivity;
+import com.example.prm392_assignment_food.ui.chat.MessageListActivity;
 import com.example.prm392_assignment_food.ui.location.AccessLocationActivity;
 import com.example.prm392_assignment_food.ui.customer.FoodListActivity;
 import com.example.prm392_assignment_food.ui.profile.AdminProfileActivity;
@@ -92,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ManageCategoriesActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btnTestChat = findViewById(R.id.btnTestChat);
+        btnTestChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Tạo Intent để mở MessageListActivity
+                Intent intent = new Intent(MainActivity.this, InboxActivity.class);
                 startActivity(intent);
             }
         });

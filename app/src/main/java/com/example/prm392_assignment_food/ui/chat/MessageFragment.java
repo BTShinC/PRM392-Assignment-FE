@@ -2,13 +2,15 @@ package com.example.prm392_assignment_food.ui.chat;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,89 +33,67 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MessageListActivity extends AppCompatActivity {
-    private RecyclerView recyclerViewMessages;
-    private MessageListAdapter messageAdapter;
+public class MessageFragment extends Fragment {
+
     private ApiService apiService;
     private UUID currentUserId;
-
-    // <<< BƯỚC 1: KHAI BÁO CÁC VIEW MỚI CẦN TƯƠNG TÁC >>>
-    private TextView tabNotifications, tabMessages;
-
-    private RecyclerView recyclerViewNotifications;
-
+    private RecyclerView recyclerViewMessages;
+    private MessageListAdapter messageAdapter;
     private TextView tvEmptyMessages;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inbox);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_messages, container, false);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        recyclerViewMessages = view.findViewById(R.id.recyclerViewMessages);
+        tvEmptyMessages = view.findViewById(R.id.tvEmptyMessages);
         apiService = ApiClient.getAuthenticatedApiService();
 
-        // <<< BƯỚC 2: ÁNH XẠ CÁC VIEW TỪ LAYOUT XML >>>
-        recyclerViewMessages = findViewById(R.id.recyclerViewMessages);
-        recyclerViewNotifications = findViewById(R.id.recyclerViewNotifications);
-        tabNotifications = findViewById(R.id.tabNotifications);
-        tabMessages = findViewById(R.id.tabMessages);
-        tvEmptyMessages = findViewById(R.id.tvEmptyMessages);
-
-        TokenManager tokenManager = new TokenManager(this);
+        TokenManager tokenManager = new TokenManager(requireActivity());
         String token = tokenManager.getToken();
         String userIdStr = JwtUtils.getUserId(token);
-
-        if (userIdStr == null) {
-            Toast.makeText(this, "User not authenticated. Please login again.", Toast.LENGTH_LONG).show();
-            finish();
+        if (userIdStr != null) {
+            currentUserId = UUID.fromString(userIdStr);
+        } else {
+            Toast.makeText(getActivity(), "User not authenticated.", Toast.LENGTH_SHORT).show();
             return;
         }
-        currentUserId = UUID.fromString(userIdStr);
 
         setupRecyclerView();
         loadConversations();
-
-        // <<< BƯỚC 3: THIẾT LẬP SỰ KIỆN CLICK CHO CÁC TAB >>>
-        tabNotifications.setOnClickListener(v -> switchTab(true));
-        tabMessages.setOnClickListener(v -> switchTab(false));
-
-        // <<< BƯỚC 4: ĐẶT TRẠNG THÁI BAN ĐẦU CHO MÀN HÌNH >>>
-        // Mặc định hiển thị tab Notifications
-        switchTab(true);
-    }
-
-    // <<< BƯỚC 5: TẠO HÀM ĐỂ XỬ LÝ VIỆC CHUYỂN TAB >>>
-    private void switchTab(boolean isNotificationsSelected) {
-        if (isNotificationsSelected) {
-            // Cập nhật màu sắc cho Tab
-            tabNotifications.setTextColor(ContextCompat.getColor(this, R.color.orange_active));
-            tabMessages.setTextColor(ContextCompat.getColor(this, R.color.gray_inactive));
-
-            // Cập nhật hiển thị cho RecyclerView
-            recyclerViewNotifications.setVisibility(View.VISIBLE);
-            recyclerViewMessages.setVisibility(View.GONE);
-        } else {
-            // Cập nhật màu sắc cho Tab
-            tabNotifications.setTextColor(ContextCompat.getColor(this, R.color.gray_inactive));
-            tabMessages.setTextColor(ContextCompat.getColor(this, R.color.orange_active));
-
-            // Cập nhật hiển thị cho RecyclerView
-            recyclerViewNotifications.setVisibility(View.GONE);
-            recyclerViewMessages.setVisibility(View.VISIBLE);
-        }
     }
 
     private void setupRecyclerView() {
         messageAdapter = new MessageListAdapter(new ArrayList<>(), this::openChat);
-        recyclerViewMessages.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewMessages.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewMessages.setAdapter(messageAdapter);
-        // TODO: Bạn cũng cần setup adapter cho recyclerViewNotifications ở đây
+    }
+
+    private void openChat(Conversation conversation) {
+        // 1. Tạo một "lá thư" (Intent) để gửi đến ChatActivity
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
+
+        // 2. Ghi ID của người nhận lên lá thư (đã có)
+        intent.putExtra("receiver_id", conversation.getOtherUserId().toString());
+
+        // 3. <<< THÊM DÒNG NÀY: Ghi TÊN của người nhận lên lá thư >>>
+        intent.putExtra("receiver_name", conversation.getOtherUserName());
+
+        // 4. Gửi lá thư đi
+        startActivity(intent);
     }
 
     private void loadConversations() {
         apiService.getChatHistory(currentUserId).enqueue(new Callback<List<ChatMessageResponse>>() {
             @Override
             public void onResponse(Call<List<ChatMessageResponse>> call, Response<List<ChatMessageResponse>> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (isAdded() && response.isSuccessful() && response.body() != null) {
                     List<ChatMessageResponse> allMessages = response.body();
                     List<Conversation> conversations = processMessagesToConversations(allMessages);
                     if (conversations.isEmpty()) {
@@ -124,22 +104,19 @@ public class MessageListActivity extends AppCompatActivity {
                         tvEmptyMessages.setVisibility(View.GONE);
                         messageAdapter.updateData(conversations);
                     }
-                } else {
-                    Toast.makeText(MessageListActivity.this, "Failed to load messages", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<List<ChatMessageResponse>> call, Throwable t) {
-                Toast.makeText(MessageListActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("MessageListActivity", "API call failed", t);
+                if(isAdded()) {
+                    Toast.makeText(getActivity(), "Error loading messages.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
     private List<Conversation> processMessagesToConversations(List<ChatMessageResponse> messages) {
         Map<UUID, List<ChatMessageResponse>> groupedMessages = new ConcurrentHashMap<>();
-
         for (ChatMessageResponse msg : messages) {
             UUID otherUserId;
             if (msg.getSenderId().equals(currentUserId)) {
@@ -149,43 +126,29 @@ public class MessageListActivity extends AppCompatActivity {
             }
             groupedMessages.computeIfAbsent(otherUserId, k -> new ArrayList<>()).add(msg);
         }
-
         List<Conversation> conversations = new ArrayList<>();
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
         for (Map.Entry<UUID, List<ChatMessageResponse>> entry : groupedMessages.entrySet()) {
             Conversation conversation = new Conversation();
             List<ChatMessageResponse> conversationMessages = entry.getValue();
-
             if (conversationMessages.isEmpty()) continue;
-
             conversationMessages.sort(Comparator.comparing(ChatMessageResponse::getCreatedAt).reversed());
             ChatMessageResponse lastMessage = conversationMessages.get(0);
-
             conversation.setOtherUserId(entry.getKey());
             conversation.setOtherUserName("User " + entry.getKey().toString().substring(0, 4));
             conversation.setLastMessageContent(lastMessage.getContent());
-
             try {
                 LocalDateTime dateTime = LocalDateTime.parse(lastMessage.getCreatedAt());
                 conversation.setLastMessageTime(dateTime.format(outputFormatter));
             } catch (Exception e) {
                 conversation.setLastMessageTime("");
             }
-
             long unread = conversationMessages.stream()
                     .filter(m -> !m.isRead() && !m.getSenderId().equals(currentUserId))
                     .count();
             conversation.setUnreadCount((int) unread);
-
             conversations.add(conversation);
         }
         return conversations;
-    }
-
-    private void openChat(Conversation conversation) {
-        Intent intent = new Intent(this, ChatActivity.class);
-        intent.putExtra("receiver_id", conversation.getOtherUserId().toString());
-        startActivity(intent);
     }
 }

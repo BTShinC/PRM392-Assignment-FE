@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- File: res/drawable/notification_indicator.xml -->
+<!-- Thanh indicator cam bên trái để làm nổi bật thông báo -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <gradient
+        android:angle="90"
+        android:startColor="#FF6B35"
+        android:centerColor="#FF8C5A"
+        android:endColor="#FF6B35"
+        android:type="linear" />
+
+    <corners
+        android:topLeftRadius="14dp"
+        android:bottomLeftRadius="14dp" />
+
+</shape>

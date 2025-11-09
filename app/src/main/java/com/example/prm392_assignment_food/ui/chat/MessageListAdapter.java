@@ -10,58 +10,76 @@ import com.example.prm392_assignment_food.R;
 import java.util.List;
 
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.ViewHolder> {
+    private List<Conversation> conversations; // <<< SỬA LỖI 1: Thay đổi kiểu dữ liệu của List
+    private final OnConversationClickListener listener;
 
-    public interface OnUserClickListener {
-        void onUserClick(MessageUser user);
+    // Thay đổi Interface để làm việc với Conversation
+    public interface OnConversationClickListener {
+        void onConversationClick(Conversation conversation);
     }
 
-    private List<MessageUser> users;
-    private OnUserClickListener listener;
-
-    public MessageListAdapter(List<MessageUser> users, OnUserClickListener listener) {
-        this.users = users;
+    // Thay đổi Constructor để nhận đúng kiểu dữ liệu
+    public MessageListAdapter(List<Conversation> conversations, OnConversationClickListener listener) {
+        this.conversations = conversations;
         this.listener = listener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Hãy đảm bảo bạn có file layout item_message_user.xml với các ID đúng
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_message, parent, false);
+                .inflate(R.layout.item_message_user, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        MessageUser user = users.get(position);
-        holder.tvName.setText(user.getName());
-        holder.tvMessagePreview.setText(user.getLastMessage());
-        holder.tvTime.setText(user.getTime());
-
-        if (user.getUnreadCount() > 0) {
-            holder.tvUnreadCount.setVisibility(View.VISIBLE);
-            holder.tvUnreadCount.setText(String.valueOf(user.getUnreadCount()));
-        } else {
-            holder.tvUnreadCount.setVisibility(View.GONE);
-        }
-
-        holder.itemView.setOnClickListener(v -> listener.onUserClick(user));
+        // Lấy đối tượng Conversation từ list
+        Conversation conversation = conversations.get(position);
+        holder.bind(conversation, listener);
     }
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return conversations.size();
+    }
+
+    // <<< SỬA LỖI 2: Thêm phương thức updateData mà MessageListActivity đang gọi >>>
+    public void updateData(List<Conversation> newConversations) {
+        this.conversations.clear();
+        this.conversations.addAll(newConversations);
+        notifyDataSetChanged(); // Báo cho RecyclerView biết dữ liệu đã thay đổi để vẽ lại
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvMessagePreview, tvTime, tvUnreadCount;
+        // Vui lòng kiểm tra lại ID trong file item_message_user.xml của bạn
+        TextView name, lastMessage, time, unreadCount;
 
         ViewHolder(View itemView) {
             super(itemView);
-            tvName = itemView.findViewById(R.id.tvName);
-            tvMessagePreview = itemView.findViewById(R.id.tvMessagePreview);
-            tvTime = itemView.findViewById(R.id.tvTime);
-            tvUnreadCount = itemView.findViewById(R.id.tvUnreadCount);
+            // Ánh xạ các view từ layout
+            name = itemView.findViewById(R.id.tvUserName);
+            lastMessage = itemView.findViewById(R.id.tvLastMessage);
+            time = itemView.findViewById(R.id.tvTime);
+            unreadCount = itemView.findViewById(R.id.tvUnreadCount);
+        }
+
+        // Phương thức bind để gán dữ liệu từ Conversation vào View
+        void bind(final Conversation conversation, final OnConversationClickListener listener) {
+            name.setText(conversation.getOtherUserName());
+            lastMessage.setText(conversation.getLastMessageContent());
+            time.setText(conversation.getLastMessageTime());
+
+            if (conversation.getUnreadCount() > 0) {
+                unreadCount.setVisibility(View.VISIBLE);
+                unreadCount.setText(String.valueOf(conversation.getUnreadCount()));
+            } else {
+                unreadCount.setVisibility(View.GONE);
+            }
+
+            // Gán sự kiện click cho cả item
+            itemView.setOnClickListener(v -> listener.onConversationClick(conversation));
         }
     }
 }

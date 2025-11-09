@@ -154,6 +154,15 @@
             android:name=".ui.admin.UpdateItemActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.chat.NotificationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.chat.InboxActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
     </application>
 
 </manifest>

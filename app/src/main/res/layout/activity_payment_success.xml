@@ -7,6 +7,7 @@
 
     <!-- Header Success Section -->
     <LinearLayout
+        android:id="@+id/llHeader"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,13 +18,13 @@
         android:gravity="center">
 
         <ImageView
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:id="@+id/ivStatusIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_payment_success"
             android:contentDescription="Success" />
 
-        <!-- ID ĐÃ ĐƯỢC THÊM VÀO ĐÂY -->
         <TextView
             android:id="@+id/tvPaymentStatus"
             android:layout_width="wrap_content"
@@ -36,7 +37,6 @@
             android:layout_marginTop="20dp"
             android:letterSpacing="0.02" />
 
-        <!-- ID ĐÃ ĐƯỢC THÊM VÀO ĐÂY -->
         <TextView
             android:id="@+id/tvOrderId"
             android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
             android:scrollbars="none" />
     </LinearLayout>
 
-    <!-- Bottom Action Section -->
+    <!-- Bottom Action Section với 2 button nằm ngang -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -100,32 +100,42 @@
             android:background="#E8E8E8"
             android:layout_marginBottom="16dp" />
 
-        <Button
-            android:id="@+id/btnTrackOrder"
+        <!-- Container cho 2 buttons nằm ngang -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="TRACK ORDER"
-            android:background="@drawable/bg_button_track_order"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:letterSpacing="0.05"
-            android:elevation="4dp" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-        <!-- ID ĐÃ ĐƯỢC THÊM VÀO ĐÂY -->
-        <Button
-            android:id="@+id/btnBackToHome"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="12dp"
-            android:text="GO HOME"
-            android:background="@drawable/bg_payment_unselected"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:letterSpacing="0.05"
-            android:elevation="4dp" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnBackToHome"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="GO HOME"
+                android:background="@drawable/bg_button_home"
+                android:textColor="#FF6B35"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:letterSpacing="0.05"
+                android:elevation="2dp" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnTrackOrder"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="TRACK ORDER"
+                android:background="@drawable/bg_button_track_order"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:letterSpacing="0.05"
+                android:elevation="4dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

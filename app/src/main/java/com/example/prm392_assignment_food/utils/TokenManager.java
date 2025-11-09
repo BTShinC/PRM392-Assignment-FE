@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.util.UUID;
+
 /**
  * Manager class to manage JWT token and user session
  * Uses SharedPreferences to persist data
@@ -58,6 +60,29 @@ public class TokenManager {
         }
         long currentTime = System.currentTimeMillis();
         return (currentTime - loginTimestamp) > EXPIRATION_TIME_IN_MILLIS;
+    }
+
+    public UUID getCurrentUserId() {
+        String token = getToken();
+        if (token == null) {
+            Log.w("TokenManager", "getCurrentUserId: Token is null.");
+            return null;
+        }
+
+        String userIdStr = JwtUtils.getUserId(token);
+        if (userIdStr == null) {
+            Log.w("TokenManager", "getCurrentUserId: Could not extract userId from token.");
+            return null;
+        }
+
+        Log.d("DEBUG_USER_ID", "User ID from token is: " + userIdStr);
+
+        try {
+            return UUID.fromString(userIdStr);
+        } catch (IllegalArgumentException e) {
+            Log.e("TokenManager", "getCurrentUserId: Invalid UUID format in token.", e);
+            return null;
+        }
     }
 
     public void clear() {
