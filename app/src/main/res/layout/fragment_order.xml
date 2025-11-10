@@ -83,10 +83,10 @@
                 style="@style/OrderTab"
                 android:text="Đang giao hàng" />
 
-            <TextView
-                android:id="@+id/DELIVERED"
-                style="@style/OrderTab"
-                android:text="Đã giao hàng" />
+<!--            <TextView-->
+<!--                android:id="@+id/DELIVERED"-->
+<!--                style="@style/OrderTab"-->
+<!--                android:text="Đã giao hàng" />-->
 
             <TextView
                 android:id="@+id/COMPLETED"
