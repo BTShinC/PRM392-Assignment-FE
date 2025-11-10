@@ -26,6 +26,7 @@ import com.example.prm392_assignment_food.data.network.ApiService;
 import com.example.prm392_assignment_food.utils.JwtUtils;
 import com.example.prm392_assignment_food.utils.TokenManager;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -41,6 +42,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
     private RecyclerView rvOrders;
     private OrderAdapter orderAdapter;
     private List<OrderDto> orderList = new ArrayList<>();
+    private List<OrderDto> rawOrderList = new ArrayList<>(); // To store the original list from API
     private ApiService apiService;
     private TokenManager tokenManager;
     private String userId;
@@ -132,7 +134,9 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
 
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().isSuccess() && response.body().getData() != null) {
-                        processAndDisplayOrders(response.body().getData());
+                        rawOrderList.clear();
+                        rawOrderList.addAll(response.body().getData()); // Store raw list
+                        processAndDisplayOrders(rawOrderList); // Process for display
                     }
                 } else {
                     Toast.makeText(requireContext(), "Lỗi tải dữ liệu: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -167,45 +171,95 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         List<String> itemFingerprints = new ArrayList<>();
         if (order.getOrderItems() != null) {
             for (OrderItemDto item : order.getOrderItems()) {
-                itemFingerprints.add(item.getMenuItemId() + "x" + item.getQuantity());
+                itemFingerprints.add(item.getMenuItemId().toString() + "x" + item.getQuantity());
             }
         }
         Collections.sort(itemFingerprints);
-        // Use the user ID from the order's user object for the fingerprint
-        String userIdString = (order.getUsers() != null && order.getUsers().getUserId() != null) ? order.getUsers().getUserId().toString() : "unknown";
-        return userIdString + "|" + order.getTotalPrice() + "|" + String.join(";", itemFingerprints);
-    }
 
+        String userIdString = "unknown-user";
+        if (order.getUsers() != null && order.getUsers().getUserId() != null) {
+            userIdString = order.getUsers().getUserId().toString();
+        }
+
+        String totalPriceString = "0";
+        if (order.getTotalPrice() != null) {
+            totalPriceString = order.getTotalPrice().setScale(0, RoundingMode.HALF_UP).toPlainString();
+        }
+
+        return userIdString + "|" + totalPriceString + "|" + String.join(";", itemFingerprints);
+    }
 
     @Override
     public void onCancelOrder(String orderId) {
         progressBar.setVisibility(View.VISIBLE);
-        apiService.updateOrderStatus(orderId, "CANCELLED").enqueue(new Callback<ResponseDto>() {
-            @Override
-            public void onResponse(Call<ResponseDto> call, Response<ResponseDto> response) {
-                if (!isAdded()) return;
-                progressBar.setVisibility(View.GONE);
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    Toast.makeText(requireContext(), "Hủy đơn hàng thành công", Toast.LENGTH_SHORT).show();
-                    // Simply reload the list for the current status. The fingerprinting will handle removal.
-                    loadOrdersByStatus(currentStatusString, currentStatusView);
-                } else {
-                    String errorMsg = "Có lỗi xảy ra, vui lòng thử lại.";
-                    if(response.body() != null && response.body().getMessage() != null){
-                        errorMsg = response.body().getMessage();
-                    }
-                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseDto> call, Throwable t) {
-                if (!isAdded()) return;
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(requireContext(), "Lỗi kết nối mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+        OrderDto cancelledOrder = null;
+        for (OrderDto order : rawOrderList) {
+            if (order.getOrderId().toString().equals(orderId)) {
+                cancelledOrder = order;
+                break;
             }
-        });
+        }
+
+        if (cancelledOrder == null) {
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(requireContext(), "Không tìm thấy đơn hàng để hủy.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String fingerprintToCancel = createOrderFingerprint(cancelledOrder);
+
+        List<OrderDto> ordersToCancel = new ArrayList<>();
+        for (OrderDto order : rawOrderList) {
+            if (createOrderFingerprint(order).equals(fingerprintToCancel)) {
+                ordersToCancel.add(order);
+            }
+        }
+
+        final int[] successCount = {0};
+        final int[] failureCount = {0};
+        int totalCalls = ordersToCancel.size();
+        if (totalCalls == 0) {
+            progressBar.setVisibility(View.GONE);
+            loadOrdersByStatus(currentStatusString, currentStatusView); // Reload just in case
+            return;
+        }
+
+
+        for (OrderDto orderToCancel : ordersToCancel) {
+            apiService.updateOrderStatus(orderToCancel.getOrderId().toString(), "CANCELLED").enqueue(new Callback<ResponseDto>() {
+                @Override
+                public void onResponse(Call<ResponseDto> call, Response<ResponseDto> response) {
+                    if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                        successCount[0]++;
+                    } else {
+                        failureCount[0]++;
+                    }
+                    checkAllCancellationsComplete();
+                }
+
+                @Override
+                public void onFailure(Call<ResponseDto> call, Throwable t) {
+                    failureCount[0]++;
+                    checkAllCancellationsComplete();
+                }
+
+                private void checkAllCancellationsComplete() {
+                    if (successCount[0] + failureCount[0] == totalCalls) {
+                        if (!isAdded()) return;
+                        if (failureCount[0] > 0) {
+                            Toast.makeText(requireContext(), "Có lỗi xảy ra khi hủy một số đơn hàng.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(requireContext(), "Hủy đơn hàng thành công", Toast.LENGTH_SHORT).show();
+                        }
+                        // Always reload from server to get the latest state
+                        loadOrdersByStatus(currentStatusString, currentStatusView);
+                    }
+                }
+            });
+        }
     }
+
 
     @Override
     public void onClick(View v) {
