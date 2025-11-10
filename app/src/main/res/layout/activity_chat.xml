@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="44dp"
-            android:hint="Write something..."
+            android:hint="nhập nội dung tin nhắn"
             android:paddingHorizontal="20dp"
             android:paddingVertical="12dp"
             android:background="@drawable/bg_edittext_chat"

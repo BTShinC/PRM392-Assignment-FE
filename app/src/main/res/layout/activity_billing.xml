@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Cash"
+                android:text="Tiền mặt"
                 android:textColor="#000"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -105,7 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="36dp"
-        android:text="TOTAL: $96"
+        android:text="Tổng: $96"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#000" />

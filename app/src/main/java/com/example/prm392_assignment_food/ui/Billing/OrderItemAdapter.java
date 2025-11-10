@@ -37,7 +37,6 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.View
 
         holder.tvName.setText(item.getName());
         holder.tvPrice.setText(String.format("%,.0f đ", item.getPrice()));
-        holder.tvSize.setText(item.getSize());
         holder.tvQuantity.setText("x" + item.getQuantity());
     }
 
@@ -48,14 +47,13 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.View
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgFood;
-        TextView tvName, tvPrice, tvSize, tvQuantity;
+        TextView tvName, tvPrice, tvQuantity;
 
         ViewHolder(View itemView) {
             super(itemView);
             imgFood = itemView.findViewById(R.id.imgFood);
             tvName = itemView.findViewById(R.id.tvName);
             tvPrice = itemView.findViewById(R.id.tvPrice);
-            tvSize = itemView.findViewById(R.id.tvSize);
             tvQuantity = itemView.findViewById(R.id.tvQuantity);
         }
     }

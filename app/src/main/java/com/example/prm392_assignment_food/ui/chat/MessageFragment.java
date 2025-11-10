@@ -127,42 +127,6 @@ public class MessageFragment extends Fragment {
         loadConversations();
     }
 
-//    private List<Conversation> processMessagesToConversations(List<ChatMessageResponse> messages) {
-//        Map<UUID, List<ChatMessageResponse>> groupedMessages = new ConcurrentHashMap<>();
-//        for (ChatMessageResponse msg : messages) {
-//            UUID otherUserId;
-//            if (msg.getSenderId().equals(currentUserId)) {
-//                otherUserId = msg.getReceiverId();
-//            } else {
-//                otherUserId = msg.getSenderId();
-//            }
-//            groupedMessages.computeIfAbsent(otherUserId, k -> new ArrayList<>()).add(msg);
-//        }
-//        List<Conversation> conversations = new ArrayList<>();
-//        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("HH:mm");
-//        for (Map.Entry<UUID, List<ChatMessageResponse>> entry : groupedMessages.entrySet()) {
-//            Conversation conversation = new Conversation();
-//            List<ChatMessageResponse> conversationMessages = entry.getValue();
-//            if (conversationMessages.isEmpty()) continue;
-//            conversationMessages.sort(Comparator.comparing(ChatMessageResponse::getCreatedAt).reversed());
-//            ChatMessageResponse lastMessage = conversationMessages.get(0);
-//            conversation.setOtherUserId(entry.getKey());
-//            conversation.setOtherUserName("User " + entry.getKey().toString().substring(0, 4));
-//            conversation.setLastMessageContent(lastMessage.getContent());
-//            try {
-//                LocalDateTime dateTime = LocalDateTime.parse(lastMessage.getCreatedAt());
-//                conversation.setLastMessageTime(dateTime.format(outputFormatter));
-//            } catch (Exception e) {
-//                conversation.setLastMessageTime("");
-//            }
-//            long unread = conversationMessages.stream()
-//                    .filter(m -> !m.isRead() && !m.getSenderId().equals(currentUserId))
-//                    .count();
-//            conversation.setUnreadCount((int) unread);
-//            conversations.add(conversation);
-//        }
-//        return conversations;
-//    }
 private List<Conversation> processMessagesToConversations(List<ChatMessageResponse> messages) {
     Map<UUID, List<ChatMessageResponse>> groupedMessages = new ConcurrentHashMap<>();
     for (ChatMessageResponse msg : messages) {
@@ -194,7 +158,7 @@ private List<Conversation> processMessagesToConversations(List<ChatMessageRespon
         if (conversation.getOtherUserId().equals(ADMIN_ID)) {
             adminConversationExists = true;
             // Bạn có thể đặt tên thân thiện hơn cho Admin
-            conversation.setOtherUserName("Admin Support");
+            conversation.setOtherUserName("Nhân viên YummyGo");
         } else {
             // Giữ logic cũ của bạn cho những người dùng khác
             conversation.setOtherUserName("User " + entry.getKey().toString().substring(0, 4));
@@ -218,7 +182,7 @@ private List<Conversation> processMessagesToConversations(List<ChatMessageRespon
     if (!adminConversationExists) {
         Conversation adminConversation = new Conversation();
         adminConversation.setOtherUserId(ADMIN_ID);
-        adminConversation.setOtherUserName("Admin Support"); // Đặt tên
+        adminConversation.setOtherUserName("Nhân viên YummyGo"); // Đặt tên
 
         // Lời chào mặc định theo yêu cầu của bạn
         adminConversation.setLastMessageContent("Chào bạn, chúng tôi có thể giúp gì cho bạn?");

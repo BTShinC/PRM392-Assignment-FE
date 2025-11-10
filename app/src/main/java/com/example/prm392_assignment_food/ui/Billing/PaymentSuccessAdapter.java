@@ -42,7 +42,6 @@ public class PaymentSuccessAdapter extends RecyclerView.Adapter<PaymentSuccessAd
 
         holder.tvName.setText(item.getMenuItemName()); // Corrected
         holder.tvPrice.setText(String.format("%,.0f đ", item.getUnitPrice().doubleValue())); // Corrected
-        holder.tvSize.setText("Vừa"); // Assuming "Vừa" is the default size
         holder.tvQuantity.setText(String.valueOf(item.getQuantity())); // Corrected
     }
 
@@ -60,7 +59,6 @@ public class PaymentSuccessAdapter extends RecyclerView.Adapter<PaymentSuccessAd
             imgFood = itemView.findViewById(R.id.imgFood);
             tvName = itemView.findViewById(R.id.tvName);
             tvPrice = itemView.findViewById(R.id.tvPrice);
-            tvSize = itemView.findViewById(R.id.tvSize);
             tvQuantity = itemView.findViewById(R.id.tvQuantity);
         }
     }
