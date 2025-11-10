@@ -23,13 +23,13 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_payment_success"
-            android:contentDescription="Success" />
+            android:contentDescription="Thành công" />
 
         <TextView
             android:id="@+id/tvPaymentStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Congratulations!"
+            android:text="Chúc mừng!"
             android:textStyle="bold"
             android:textSize="26sp"
             android:textColor="#FFFFFF"
@@ -41,7 +41,7 @@
             android:id="@+id/tvOrderId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You successfully made a payment,\nenjoy our service!"
+            android:text="Bạn đã thanh toán thành công,\nhãy tận hưởng dịch vụ của chúng tôi!"
             android:textColor="#E8FFFFFF"
             android:textSize="15sp"
             android:gravity="center"
@@ -62,7 +62,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Order Details"
+            android:text="Chi tiết đơn hàng"
             android:textStyle="bold"
             android:textSize="18sp"
             android:textColor="#2D3436"
@@ -113,7 +113,7 @@
                 android:layout_height="56dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:text="GO HOME"
+                android:text="VỀ TRANG CHỦ"
                 android:background="@drawable/bg_button_home"
                 android:textColor="#FF6B35"
                 android:textStyle="bold"
@@ -127,7 +127,7 @@
                 android:layout_height="56dp"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:text="TRACK ORDER"
+                android:text="THEO DÕI ĐƠN HÀNG"
                 android:background="@drawable/bg_button_track_order"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"

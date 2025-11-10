@@ -1,22 +1,24 @@
 package com.example.prm392_assignment_food.ui.Billing;
 
 public class OrderItem {
-    private int imageResId;
+    private String imageUrl; // Changed from int imageResId
     private String name;
     private double price;
     private String size;
     private int quantity;
 
-    public OrderItem(int imageResId, String name, double price, String size, int quantity) {
-        this.imageResId = imageResId;
+    // Constructor updated to accept imageUrl as a String
+    public OrderItem(String imageUrl, String name, double price, String size, int quantity) {
+        this.imageUrl = imageUrl;
         this.name = name;
         this.price = price;
         this.size = size;
         this.quantity = quantity;
     }
 
-    public int getImageResId() {
-        return imageResId;
+    // Getter for the image URL
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getName() {

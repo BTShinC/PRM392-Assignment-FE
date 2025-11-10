@@ -23,7 +23,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import retrofit2.Call;
@@ -35,7 +38,6 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
     public static final String TAG = "RunningOrdersBottomSheetFragment";
     private static final String ARG_STATUS = "status";
     public static final String REQUEST_KEY = "requestRefresh";
-
 
     private ApiService apiService;
     private List<RunningOrder> runningOrderList = new ArrayList<>();
@@ -90,8 +92,7 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
             fetchConfirmedAndShippingOrders();
         } else if ("PAID".equals(currentStatus)) {
             fetchPaidAndAwaitingPaymentOrders();
-        }
-        else {
+        } else {
             apiService.getOrders(0, 50, Collections.singletonList("createdAt,DESC"), currentStatus, null).enqueue(new Callback<ApiResponseDto<PageResponse<OrderResponse>>>() {
                 @Override
                 public void onResponse(Call<ApiResponseDto<PageResponse<OrderResponse>>> call, Response<ApiResponseDto<PageResponse<OrderResponse>>> response) {
@@ -100,7 +101,7 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                             Toast.makeText(getContext(), "No orders found with status: " + currentStatus, Toast.LENGTH_SHORT).show();
                             dismiss();
                         } else {
-                            processOrders(response.body().getData().getContent());
+                            fetchAllMenuItemsAndThenProcessOrders(response.body().getData().getContent());
                         }
                     } else {
                         Toast.makeText(getContext(), "Failed to fetch orders", Toast.LENGTH_SHORT).show();
@@ -129,7 +130,7 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                         Toast.makeText(getContext(), "No order requests found", Toast.LENGTH_SHORT).show();
                         dismiss();
                     } else {
-                        processOrders(combinedOrders);
+                        fetchAllMenuItemsAndThenProcessOrders(combinedOrders);
                     }
                 }
             }
@@ -140,7 +141,7 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                         Toast.makeText(getContext(), "Error fetching some orders", Toast.LENGTH_SHORT).show();
                         dismiss();
                     } else {
-                        processOrders(combinedOrders);
+                        fetchAllMenuItemsAndThenProcessOrders(combinedOrders);
                     }
                 }
             }
@@ -166,7 +167,7 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                         Toast.makeText(getContext(), "No running orders found", Toast.LENGTH_SHORT).show();
                         dismiss();
                     } else {
-                        processOrders(combinedOrders);
+                        fetchAllMenuItemsAndThenProcessOrders(combinedOrders);
                     }
                 }
             }
@@ -177,7 +178,7 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
                         Toast.makeText(getContext(), "Error fetching some orders", Toast.LENGTH_SHORT).show();
                         dismiss();
                     } else {
-                        processOrders(combinedOrders);
+                        fetchAllMenuItemsAndThenProcessOrders(combinedOrders);
                     }
                 }
             }
@@ -187,45 +188,81 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
         apiService.getOrders(0, 25, Collections.singletonList("createdAt,DESC"), "SHIPPING", null).enqueue(callback);
     }
 
+    private void fetchAllMenuItemsAndThenProcessOrders(List<OrderResponse> orderResponses) {
+        apiService.getMenuItems(0, 1000, "name,asc", null, null).enqueue(new Callback<PageResponse<MenuItemResponse>>() {
+            @Override
+            public void onResponse(Call<PageResponse<MenuItemResponse>> call, Response<PageResponse<MenuItemResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Map<String, MenuItemResponse> menuItemMap = new HashMap<>();
+                    for (MenuItemResponse item : response.body().getContent()) {
+                        menuItemMap.put(item.getId(), item);
+                    }
+                    processOrdersWithMenuItemMap(orderResponses, menuItemMap);
+                } else {
+                    Toast.makeText(getContext(), "Failed to load menu item details.", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-    private void processOrders(List<OrderResponse> orderResponses) {
+            @Override
+            public void onFailure(Call<PageResponse<MenuItemResponse>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error loading menu item details: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void processOrdersWithMenuItemMap(List<OrderResponse> orderResponses, Map<String, MenuItemResponse> menuItemMap) {
+        Map<String, OrderResponse> uniqueOrders = new LinkedHashMap<>();
+        for (OrderResponse order : orderResponses) {
+            if (order.users != null && order.users.userId != null && order.orderItems != null && !order.orderItems.isEmpty()) {
+
+                // Create a unique "fingerprint" based on the order's content
+                // to definitively eliminate duplicates caused by backend issues.
+                List<String> itemFingerprints = new ArrayList<>();
+                for (OrderResponse.OrderItemResponse item : order.orderItems) {
+                    itemFingerprints.add(item.menuItemId + "x" + item.quantity);
+                }
+                Collections.sort(itemFingerprints); // Sort to ensure consistency
+                String itemsKey = String.join(";", itemFingerprints);
+
+                String uniqueKey = order.users.userId + "|" + order.totalPrice + "|" + itemsKey;
+                
+                uniqueOrders.put(uniqueKey, order);
+
+            } else if (order.orderId != null) {
+                // Fallback for orders with missing data
+                uniqueOrders.put(order.orderId, order);
+            }
+        }
+
         runningOrderList.clear();
-        AtomicInteger counter = new AtomicInteger(orderResponses.size());
-
-        for (OrderResponse orderResponse : orderResponses) {
+        for (OrderResponse orderResponse : uniqueOrders.values()) {
             if (orderResponse.orderItems != null && !orderResponse.orderItems.isEmpty()) {
-                String menuItemId = orderResponse.orderItems.get(0).menuItemId;
-                apiService.getMenuItemById(menuItemId).enqueue(new Callback<MenuItemResponse>() {
-                    @Override
-                    public void onResponse(Call<MenuItemResponse> call, Response<MenuItemResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            MenuItemResponse menuItem = response.body();
-                            runningOrderList.add(new RunningOrder(
-                                    orderResponse.orderId,
-                                    menuItem.getCategoryName(),
-                                    menuItem.getName(),
-                                    orderResponse.totalPrice,
-                                    menuItem.getImageUrl(),
-                                    orderResponse.orderStatus
-                            ));
-                        }
-                        if (counter.decrementAndGet() == 0) {
-                            adapter.notifyDataSetChanged();
-                        }
+                OrderResponse.OrderItemResponse firstItem = orderResponse.orderItems.get(0);
+                MenuItemResponse menuItemDetails = menuItemMap.get(firstItem.menuItemId);
+
+                if (menuItemDetails != null) {
+                    String displayName;
+                    int otherItemsCount = orderResponse.orderItems.size() - 1;
+
+                    if (otherItemsCount > 0) {
+                        displayName = menuItemDetails.getName() + " và " + otherItemsCount + " món khác";
+                    } else {
+                        displayName = menuItemDetails.getName();
                     }
-                    @Override
-                    public void onFailure(Call<MenuItemResponse> call, Throwable t) {
-                        if (counter.decrementAndGet() == 0) {
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                });
-            } else {
-                if (counter.decrementAndGet() == 0) {
-                    adapter.notifyDataSetChanged();
+
+                    RunningOrder runningOrder = new RunningOrder(
+                            orderResponse.orderId,
+                            orderResponse.users.name,
+                            displayName,
+                            orderResponse.totalPrice,
+                            menuItemDetails.getImageUrl(),
+                            orderResponse.orderStatus
+                    );
+                    runningOrderList.add(runningOrder);
                 }
             }
         }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -247,6 +284,11 @@ public class RunningOrdersBottomSheetFragment extends BottomSheetDialogFragment 
     @Override
     public void onCancelClick(RunningOrder order) {
         updateStatus(order, "CANCELLED");
+    }
+    
+    @Override
+    public void onItemClick(RunningOrder order) {
+        AdminOrderDetailDialogFragment.newInstance(order.getId()).show(getParentFragmentManager(), AdminOrderDetailDialogFragment.TAG);
     }
 
     private void updateStatus(RunningOrder order, String newStatus) {

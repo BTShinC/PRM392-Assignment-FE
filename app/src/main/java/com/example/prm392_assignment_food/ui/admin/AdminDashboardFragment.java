@@ -100,7 +100,7 @@ public class AdminDashboardFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateOrderCounts();
-        loadAndProcessChartData();
+        loadAndProcessChartData(); // This will refresh the data
     }
 
     private void showOrdersBottomSheet(String status) {

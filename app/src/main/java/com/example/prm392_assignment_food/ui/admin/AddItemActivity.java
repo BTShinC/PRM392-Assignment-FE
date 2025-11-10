@@ -184,6 +184,7 @@ public class AddItemActivity extends AppCompatActivity {
             public void onResponse(Call<MenuItemResponse> call, Response<MenuItemResponse> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(AddItemActivity.this, "Thêm sản phẩm thành công!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
                     finish(); // Go back to the previous activity
                 } else {
                     String errorMsg = "Thêm sản phẩm thất bại. Mã lỗi: " + response.code();

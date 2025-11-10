@@ -109,8 +109,7 @@
             android:textAllCaps="false"
             android:textColor="#FB6D3A"
             app:cornerRadius="8dp"
-            app:strokeColor="#FB6D3A"
-            android:visibility="gone" />
+            app:strokeColor="#FB6D3A" />
     </LinearLayout>
 
 </RelativeLayout>

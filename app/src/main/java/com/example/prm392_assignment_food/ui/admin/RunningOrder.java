@@ -1,7 +1,9 @@
 package com.example.prm392_assignment_food.ui.admin;
 
-public class RunningOrder {
-    private String id; // Order ID
+import java.io.Serializable;
+
+public class RunningOrder implements Serializable {
+    private String id;
     private String category;
     private String name;
     private double price;
@@ -17,11 +19,19 @@ public class RunningOrder {
         this.status = status;
     }
 
+    // Getters
     public String getId() { return id; }
     public String getCategory() { return category; }
     public String getName() { return name; }
     public double getPrice() { return price; }
     public String getImageUrl() { return imageUrl; }
     public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; } // Add setter for status
+
+    // Setters
+    public void setId(String id) { this.id = id; }
+    public void setCategory(String category) { this.category = category; }
+    public void setName(String name) { this.name = name; }
+    public void setPrice(double price) { this.price = price; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setStatus(String status) { this.status = status; }
 }
