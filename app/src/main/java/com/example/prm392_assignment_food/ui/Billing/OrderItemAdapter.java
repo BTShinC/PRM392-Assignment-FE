@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 import java.util.List;
 
@@ -29,10 +30,15 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OrderItem item = items.get(position);
-        holder.imgFood.setImageResource(item.getImageResId());
+
+        Glide.with(holder.itemView.getContext())
+             .load(item.getImageUrl())
+             .into(holder.imgFood);
+
         holder.tvName.setText(item.getName());
-        holder.tvPrice.setText("$" + (int) item.getPrice());
-        holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
+        holder.tvPrice.setText(String.format("%,.0f đ", item.getPrice()));
+        holder.tvSize.setText(item.getSize());
+        holder.tvQuantity.setText("x" + item.getQuantity());
     }
 
     @Override
@@ -42,13 +48,14 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.View
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgFood;
-        TextView tvName, tvPrice, tvQuantity;
+        TextView tvName, tvPrice, tvSize, tvQuantity;
 
         ViewHolder(View itemView) {
             super(itemView);
             imgFood = itemView.findViewById(R.id.imgFood);
             tvName = itemView.findViewById(R.id.tvName);
             tvPrice = itemView.findViewById(R.id.tvPrice);
+            tvSize = itemView.findViewById(R.id.tvSize);
             tvQuantity = itemView.findViewById(R.id.tvQuantity);
         }
     }

@@ -13,8 +13,6 @@ import com.example.prm392_assignment_food.ui.auth.ProfileFragment;
 import com.example.prm392_assignment_food.ui.chat.InboxActivity;
 import com.example.prm392_assignment_food.ui.location.LocationFragment;
 import com.example.prm392_assignment_food.ui.order.OrderFragment;
-import com.example.prm392_assignment_food.ui.chat.NotificationFragment;
-
 
 public class CustomerMainActivity extends AppCompatActivity {
 
@@ -31,12 +29,25 @@ public class CustomerMainActivity extends AppCompatActivity {
         initNavViews();
         setupNavClickListeners();
 
-        // Load HomeFragment as the default screen
-        if (savedInstanceState == null) {
-            loadFragment(new HomeFragment());
-            lastSelectedNavView = homeContainer;
-            updateIconTints(homeContainer);
+        // Check for navigation intent first
+        if (getIntent().hasExtra("NAVIGATE_TO")) {
+            String destination = getIntent().getStringExtra("NAVIGATE_TO");
+            if ("ORDER_FRAGMENT".equals(destination)) {
+                loadFragment(new OrderFragment());
+                lastSelectedNavView = dashboardContainer; // dashboardContainer corresponds to OrderFragment
+                updateIconTints(dashboardContainer);
+            } else {
+                loadHomeFragmentByDefault(); // fallback to home
+            }
+        } else if (savedInstanceState == null) {
+            loadHomeFragmentByDefault();
         }
+    }
+
+    private void loadHomeFragmentByDefault() {
+        loadFragment(new HomeFragment());
+        lastSelectedNavView = homeContainer;
+        updateIconTints(homeContainer);
     }
 
     private void initNavViews() {
@@ -68,8 +79,7 @@ public class CustomerMainActivity extends AppCompatActivity {
 
     private void handleNavigation(View targetView, Fragment fragment) {
         if (lastSelectedNavView != null && lastSelectedNavView.getId() == targetView.getId()) {
-            // Do nothing if the user taps on the current tab
-            return;
+            return; // Do nothing if the user taps on the current tab
         }
 
         targetView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
@@ -85,7 +95,7 @@ public class CustomerMainActivity extends AppCompatActivity {
     }
 
     private void updateIconTints(View selectedView) {
-        // Reset all icons to default color (dark gray)
+        // Reset all icons to default color
         ivDashboard.setColorFilter(getColor(R.color.dark_gray));
         ivList.setColorFilter(getColor(R.color.dark_gray));
         ivNotification.setColorFilter(getColor(R.color.dark_gray));
@@ -100,7 +110,6 @@ public class CustomerMainActivity extends AppCompatActivity {
 
         if (viewId == R.id.dashboard_container) selectedIcon = ivDashboard;
         else if (viewId == R.id.list_container) selectedIcon = ivList;
-        // Home is handled above
         else if (viewId == R.id.notification_container) selectedIcon = ivNotification;
         else if (viewId == R.id.profile_container) selectedIcon = ivProfile;
 

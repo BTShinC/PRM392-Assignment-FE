@@ -26,5 +26,6 @@
     <color name="tab_text_selected">#FFFFFF</color> <!-- trắng -->
     <color name="tab_bg_default">#E0E0E0</color> <!-- xám nền -->
     <color name="tab_bg_selected">#FF5722</color> <!-- cam nổi bật -->
+    <color name="colorPrimary">#FF5722</color>
 
 </resources>

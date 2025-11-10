@@ -12,11 +12,11 @@
     <string name="reviews">(%d Review)</string>
 
     <!-- Food Detail Screen -->
-    <string name="food_details">Food Details</string>
-    <string name="edit">EDIT</string>
-    <string name="delivery">Delivery</string>
-    <string name="ingredients">INGREDIENTS</string>
-    <string name="description">Description</string>
+    <string name="food_details">Chi tiết món ăn</string>
+    <string name="edit">Chỉnh sửa</string>
+    <string name="delivery">Vận chuyển</string>
+    <string name="ingredients">Thành phần</string>
+    <string name="description">Miêu tả</string>
     <string name="lorem_description">Lorem ipsum dolor sit amet, consetdur Maton adipiscing elit. Bibendum in vel, mattis et amet dui mauris turpis.</string>
 
     <!-- Sample Data -->

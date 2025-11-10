@@ -174,6 +174,7 @@ public class BillingActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
                     CreateOrderResponse orderResponse = response.body().getData();
                     realOrderId = orderResponse.getOrderId();
+                    deleteUserCart();
                     // <<< THÊM LOG ĐỂ KIỂM TRA >>>
                     Log.e("NOTIFICATION_DEBUG", "!!! BƯỚC 1: LẤY DỮ LIỆU THÀNH CÔNG. CHUẨN BỊ GỌI NOTIFICATION HELPER !!!");
 
@@ -231,6 +232,7 @@ public class BillingActivity extends AppCompatActivity {
                     String url = response.body().getPaymentUrl();
                     if (url != null && !url.isEmpty()) {
                         saveCartForLater(realOrderId, cartItems);
+                        deleteUserCart();
                         Log.d("BillingActivity_Direct", "SUCCESS! URL is: " + url);
 
                         // <<< THÊM CODE THÔNG BÁO VÀO ĐÂY >>>
@@ -295,6 +297,28 @@ public class BillingActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+    private void deleteUserCart() {
+        String token = tokenManager.getToken();
+        String userId = JwtUtils.getUserId(token);
+        if (userId == null) {
+            Log.e("BillingActivity", "Cannot delete cart: User not authenticated.");
+            return;
+        }
+        apiService.deleteCart(userId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("BillingActivity", "User cart deleted successfully.");
+                } else {
+                    Log.e("BillingActivity", "Failed to delete user cart. Code: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("BillingActivity", "Network error while deleting cart.", t);
+            }
+        });
     }
 
     private void saveCartForLater(String orderId, List<CartItemResponse> itemsToSave) {

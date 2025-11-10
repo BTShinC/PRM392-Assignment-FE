@@ -14,6 +14,7 @@ import com.example.prm392_assignment_food.data.model.auth.RegisterResponse;
 import com.example.prm392_assignment_food.data.model.auth.ResetPasswordRequest;
 import com.example.prm392_assignment_food.data.model.auth.ResetPasswordResponse;
 import com.example.prm392_assignment_food.data.model.auth.User;
+import com.example.prm392_assignment_food.data.model.auth.UserProfileResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -107,6 +108,9 @@ public interface ApiService {
     @POST("api/carts/{userId}/items")
     Call<CartResponse> addItem(@Path("userId") String userId, @Body CartItemRequest request);
 
+    @DELETE("/api/carts/{userId}/items")
+    Call<Void> deleteCart(@Path("userId") String userId);
+
     @POST("api/orders")
     Call<ApiResponse<CreateOrderResponse>> createOrder(@Body CreateOrderRequest request);
 
@@ -175,6 +179,9 @@ public interface ApiService {
             @Query("search") String search
     );
 
+    @GET("/api/admins/orders/{id}")
+    Call<ApiResponseDto<OrderResponse>> getOrderDetail(@Path("id") String id);
+
     @GET("api/dashboard")
     Call<DashboardResponse> getDashboardAll();
 
@@ -197,8 +204,8 @@ public interface ApiService {
     @GET("/api/admin/wallet")
     Call<Double> getAdminWallet();
 
-    @GET("api/users/profile")
-    Call<User> getUserProfile(@Header("Authorization") String token);
+    @GET("api/users/v1/{userId}/profile")
+    Call<UserProfileResponse> getUserProfile(@Path("userId") String userId);
 
     @PUT("api/users/profile")
     Call<User> updateUserProfile(@Header("Authorization") String token, @Body User user);

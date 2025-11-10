@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Payment"
+            android:text="Thanh Toán"
             android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -115,7 +115,7 @@
         android:id="@+id/btnPayConfirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PAY &amp; CONFIRM"
+        android:text="Thanh Toán &amp; Xác nhận"
         android:backgroundTint="#FF7A00"
         android:textColor="@android:color/white"
         android:textStyle="bold"
