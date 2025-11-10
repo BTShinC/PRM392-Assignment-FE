@@ -1,5 +1,3 @@
-// File: com/example/prm392_assignment_food/ui/Billing/PaymentSuccessAdapter.java
-
 package com.example.prm392_assignment_food.ui.Billing;
 
 import android.view.LayoutInflater;
@@ -11,19 +9,43 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+// === THÊM IMPORT NÀY ===
+import com.bumptech.glide.Glide;
+// =======================
+
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.CartItemResponse;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
 public class PaymentSuccessAdapter extends RecyclerView.Adapter<PaymentSuccessAdapter.ViewHolder> {
 
     private List<CartItemResponse> items;
+    private final NumberFormat currencyFormatter; // <-- THÊM DÒNG NÀY
 
     public PaymentSuccessAdapter(List<CartItemResponse> items) {
         this.items = items;
+
+        // === THÊM KHỐI CODE NÀY (Giống hệt CartAdapter) ===
+        // Khởi tạo đối tượng định dạng tiền tệ cho Việt Nam
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+        // Tùy chỉnh ký hiệu tiền tệ từ "đ" thành " VND"
+        if (formatter instanceof DecimalFormat) {
+            DecimalFormat decimalFormat = (DecimalFormat) formatter;
+            DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
+            // Đặt ký hiệu là " VND" (có khoảng trắng ở đầu)
+            symbols.setCurrencySymbol(" VND");
+            decimalFormat.setDecimalFormatSymbols(symbols);
+        }
+        this.currencyFormatter = formatter;
+        // ================================================
     }
 
     @NonNull
@@ -39,24 +61,34 @@ public class PaymentSuccessAdapter extends RecyclerView.Adapter<PaymentSuccessAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CartItemResponse item = items.get(position);
 
-        // Set tên món ăn (SỬA Ở ĐÂY)
-        // Bây giờ holder.tvName đã tồn tại
+        // Set tên món ăn (Đã đúng)
         holder.tvName.setText(item.getMenuItemName());
 
-        // Set số lượng (Cái này đã đúng)
+        // Set số lượng (Đã đúng)
         holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
 
         // Tính và hiển thị giá (Cái này đã đúng)
         if (item.getUnitPrice() != null) {
             double totalPrice = item.getUnitPrice().doubleValue() * item.getQuantity();
-            holder.tvPrice.setText(String.format(Locale.US, "$%.2f", totalPrice));
+            // === SỬA LỖI Ở ĐÂY ===
+            // holder.tvPrice.setText(String.format(Locale.US, "$%.2f", totalPrice)); // <-- Dòng cũ
+            holder.tvPrice.setText(currencyFormatter.format(totalPrice)); // <-- Dòng mới
+            // ======================
         } else {
-            holder.tvPrice.setText("$0.00");
+            // === SỬA LỖI Ở ĐÂY ===
+            // holder.tvPrice.setText("$0.00"); // <-- Dòng cũ
+            holder.tvPrice.setText(currencyFormatter.format(0)); // <-- Dòng mới
+            // ======================
         }
 
-        // Set hình ảnh (SỬA Ở ĐÂY)
-        // Bây giờ holder.imgFood đã tồn tại
-        holder.imgFood.setImageResource(R.drawable.halim);
+        // === SỬA LỖI Ở ĐÂY ===
+        // Sử dụng Glide để tải hình ảnh thật từ URL, giống như CartAdapter
+        Glide.with(holder.itemView.getContext())
+                .load(item.getImageUrl()) // Lấy URL hình ảnh từ database
+                .placeholder(R.drawable.halim) // (Tùy chọn) Hình ảnh chờ
+                .error(R.drawable.halim)       // (Tùy chọn) Hình ảnh khi lỗi
+                .into(holder.imgFood);
+        // ======================
     }
 
     @Override
@@ -84,10 +116,8 @@ public class PaymentSuccessAdapter extends RecyclerView.Adapter<PaymentSuccessAd
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             // Ánh xạ views từ item_order_success.xml bằng đúng ID
-            imgFood = itemView.findViewById(R.id.imgFood); // <-- Sửa từ ivFoodImage và R.id.ivFoodImage
-            tvName = itemView.findViewById(R.id.tvName); // <-- Sửa từ tvFoodName và R.id.tvFoodName
-
-            // Hai dòng này của bạn đã đúng rồi
+            imgFood = itemView.findViewById(R.id.imgFood);
+            tvName = itemView.findViewById(R.id.tvName);
             tvQuantity = itemView.findViewById(R.id.tvQuantity);
             tvPrice = itemView.findViewById(R.id.tvPrice);
         }
