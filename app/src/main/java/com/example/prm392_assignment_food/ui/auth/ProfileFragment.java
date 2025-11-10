@@ -1,22 +1,27 @@
 package com.example.prm392_assignment_food.ui.auth;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.auth.User;
 import com.example.prm392_assignment_food.data.model.auth.UserProfileResponse;
@@ -32,9 +37,10 @@ public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
 
-    private ImageView ivBack;
+    private ImageView ivBack, ivEditAvatar;
     private CircleImageView profileImage;
     private EditText etFullName, etEmail, etPhoneNumber, etBio;
+    private Button btnLogout;
     private View rootView;
     private ApiService apiService;
 
@@ -57,11 +63,42 @@ public class ProfileFragment extends Fragment {
         etEmail = rootView.findViewById(R.id.etEmail);
         etPhoneNumber = rootView.findViewById(R.id.etPhoneNumber);
         etBio = rootView.findViewById(R.id.etBio);
+        btnLogout = rootView.findViewById(R.id.btnLogout);
+        ivEditAvatar = rootView.findViewById(R.id.imageView);
 
-        // Hide back button as navigation is handled by the main activity
         ivBack.setVisibility(View.GONE);
 
         loadProfile();
+
+        btnLogout.setOnClickListener(v -> {
+            SharedPreferences prefs = requireActivity().getSharedPreferences("FoodAppPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.remove("AUTH_TOKEN");
+            editor.apply();
+
+            Intent intent = new Intent(requireActivity(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
+
+        ivEditAvatar.setOnClickListener(v -> showAvatarSelectionDialog());
+    }
+
+    private void showAvatarSelectionDialog() {
+        final String[] items = {"Nam", "Nữ"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Chọn ảnh đại diện");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (items[which].equals("Nam")) {
+                    Glide.with(requireContext()).load(R.drawable.avartar_men).into(profileImage);
+                } else if (items[which].equals("Nữ")) {
+                    Glide.with(requireContext()).load(R.drawable.avartar_women).into(profileImage);
+                }
+            }
+        });
+        builder.show();
     }
 
     private void loadProfile() {
@@ -86,6 +123,8 @@ public class ProfileFragment extends Fragment {
                         etEmail.setText(user.getEmail());
                         etPhoneNumber.setText(user.getPhone());
                         etBio.setText(user.getAddress());
+
+                        Glide.with(requireContext()).load(user.getAvatar()).placeholder(R.drawable.logo).into(profileImage);
 
                         etFullName.setEnabled(false);
                         etEmail.setEnabled(false);
