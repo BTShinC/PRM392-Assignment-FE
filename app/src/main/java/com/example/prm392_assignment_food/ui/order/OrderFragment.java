@@ -26,6 +26,7 @@ import com.example.prm392_assignment_food.data.network.ApiService;
 import com.example.prm392_assignment_food.utils.JwtUtils;
 import com.example.prm392_assignment_food.utils.TokenManager;
 
+
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,7 +99,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         tvPaymentFailed = rootView.findViewById(R.id.PAYMENT_FAILED);
         tvConfirmed = rootView.findViewById(R.id.CONFIRMED);
         tvShipping = rootView.findViewById(R.id.SHIPPING);
-        tvDelivered = rootView.findViewById(R.id.DELIVERED);
+//        tvDelivered = rootView.findViewById(R.id.DELIVERED);
         tvCompleted = rootView.findViewById(R.id.COMPLETED);
         tvCancelled = rootView.findViewById(R.id.CANCELLED);
 
@@ -107,7 +108,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         tvPaymentFailed.setOnClickListener(this);
         tvConfirmed.setOnClickListener(this);
         tvShipping.setOnClickListener(this);
-        tvDelivered.setOnClickListener(this);
+       // tvDelivered.setOnClickListener(this);
         tvCompleted.setOnClickListener(this);
         tvCancelled.setOnClickListener(this);
     }
@@ -134,9 +135,35 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
 
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().isSuccess() && response.body().getData() != null) {
+
                         rawOrderList.clear();
                         rawOrderList.addAll(response.body().getData()); // Store raw list
                         processAndDisplayOrders(rawOrderList); // Process for display
+
+//                         List<OrderDto> newOrders = response.body().getData();
+//                         if ("AWAITING_PAYMENT".equals(status)) {
+//                             List<OrderDto> filteredOrders = new ArrayList<>();
+//                             Set<String> seenOrders = new HashSet<>();
+//                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+//                             for (OrderDto order : newOrders) {
+//                                 String formattedTime;
+//                                 try {
+//                                     LocalDateTime localDateTime = LocalDateTime.parse(order.getCreatedAt());
+//                                     LocalDateTime vietnamDateTime = localDateTime.plusHours(7);
+//                                     formattedTime = vietnamDateTime.format(formatter);
+//                                 } catch (Exception e) {
+//                                     formattedTime = order.getCreatedAt();
+//                                 }
+//                                 String key = formattedTime + "_" + order.getTotalPrice().toPlainString();
+//                                 if (seenOrders.add(key)) {
+//                                     filteredOrders.add(order);
+//                                 }
+//                             }
+//                             orderList.addAll(filteredOrders);
+//                         } else {
+//                             orderList.addAll(newOrders);
+//                         }
+
                     }
                 } else {
                     Toast.makeText(requireContext(), "Lỗi tải dữ liệu: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -279,9 +306,9 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         } else if (id == R.id.SHIPPING) {
             loadOrdersByStatus("SHIPPING", (TextView) v);
             scrollTabToCenter((TextView) v);
-        } else if (id == R.id.DELIVERED) {
-            loadOrdersByStatus("DELIVERED", (TextView) v);
-            scrollTabToCenter((TextView) v);
+//        } else if (id == R.id.DELIVERED) {
+//            loadOrdersByStatus("DELIVERED", (TextView) v);
+//            scrollTabToCenter((TextView) v);
         } else if (id == R.id.COMPLETED) {
             loadOrdersByStatus("COMPLETED", (TextView) v);
             scrollTabToCenter((TextView) v);

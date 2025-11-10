@@ -108,6 +108,9 @@ public interface ApiService {
     @POST("api/carts/{userId}/items")
     Call<CartResponse> addItem(@Path("userId") String userId, @Body CartItemRequest request);
 
+    @DELETE("/api/carts/{userId}/items")
+    Call<Void> deleteCart(@Path("userId") String userId);
+
     @POST("api/orders")
     Call<ApiResponse<CreateOrderResponse>> createOrder(@Body CreateOrderRequest request);
 
