@@ -118,6 +118,15 @@ public class MessageFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Gọi loadConversations() ở đây.
+        // Hàm này sẽ chạy MỖI KHI fragment quay trở lại màn hình,
+        // bao gồm cả khi bạn bấm Back từ ChatActivity.
+        loadConversations();
+    }
+
 //    private List<Conversation> processMessagesToConversations(List<ChatMessageResponse> messages) {
 //        Map<UUID, List<ChatMessageResponse>> groupedMessages = new ConcurrentHashMap<>();
 //        for (ChatMessageResponse msg : messages) {
