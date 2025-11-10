@@ -1,7 +1,10 @@
 package com.example.prm392_assignment_food.data.model.auth;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
     private String userId;
+    @SerializedName("name")
     private String fullName;
     private String email;
     private String phone;

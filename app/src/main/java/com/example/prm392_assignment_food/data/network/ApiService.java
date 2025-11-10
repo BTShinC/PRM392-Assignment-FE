@@ -14,6 +14,7 @@ import com.example.prm392_assignment_food.data.model.auth.RegisterResponse;
 import com.example.prm392_assignment_food.data.model.auth.ResetPasswordRequest;
 import com.example.prm392_assignment_food.data.model.auth.ResetPasswordResponse;
 import com.example.prm392_assignment_food.data.model.auth.User;
+import com.example.prm392_assignment_food.data.model.auth.UserProfileResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -172,8 +173,8 @@ public interface ApiService {
     @GET("/api/admin/wallet")
     Call<Double> getAdminWallet();
 
-    @GET("api/users/profile")
-    Call<User> getUserProfile(@Header("Authorization") String token);
+    @GET("api/users/v1/{userId}/profile")
+    Call<UserProfileResponse> getUserProfile(@Path("userId") String userId);
 
     @PUT("api/users/profile")
     Call<User> updateUserProfile(@Header("Authorization") String token, @Body User user);
