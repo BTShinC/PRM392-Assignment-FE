@@ -12,6 +12,16 @@
     <color name="medium_gray">#9E9E9E</color>
     <color name="red_star">#FF5722</color>
     <color name="background_gray">#F8F8F8</color>
+
+    <color name="orange_active">#FF6F00</color>
+    <color name="gray_inactive">#999999</color>
+
+    <!-- Màu cho các loại notification -->
+    <color name="notification_success">#4CAF50</color> <!-- Xanh lá cây -->
+    <color name="notification_error">#F44336</color>   <!-- Đỏ -->
+    <color name="notification_info">#2196F3</color>    <!-- Xanh dương -->
+    <color name="notification_warning">#FF9800</color> <!-- Cam -->
+    <color name="notification_general">#607D8B</color> <!-- Xám -->
     <color name="tab_text_default">#757575</color> <!-- xám nhạt -->
     <color name="tab_text_selected">#FFFFFF</color> <!-- trắng -->
     <color name="tab_bg_default">#E0E0E0</color> <!-- xám nền -->

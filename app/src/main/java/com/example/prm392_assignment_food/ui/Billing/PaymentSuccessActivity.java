@@ -3,50 +3,61 @@
 package com.example.prm392_assignment_food.ui.Billing;
 
 import android.content.Intent;
-import android.content.SharedPreferences; // <<<--- THÊM IMPORT
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager; // <<<--- THÊM IMPORT
-import androidx.recyclerview.widget.RecyclerView; // <<<--- THÊM IMPORT
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_assignment_food.MainActivity;
 import com.example.prm392_assignment_food.R;
-import com.example.prm392_assignment_food.data.model.CartItemResponse; // <<<--- THÊM IMPORT
+import com.example.prm392_assignment_food.data.model.CartItemResponse;
+import com.example.prm392_assignment_food.ui.customer.CustomerMainActivity;
 import com.example.prm392_assignment_food.ui.location.TrackOrderActivity;
-import com.example.prm392_assignment_food.ui.placeOrder.PlaceOrderAdapter; // <<<--- SỬ DỤNG ADAPTER TỪ MÀN HÌNH TRƯỚC
 import com.example.prm392_assignment_food.utils.Constants;
-import com.google.gson.Gson; // <<<--- THÊM IMPORT
-import com.google.gson.reflect.TypeToken; // <<<--- THÊM IMPORT
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type; // <<<--- THÊM IMPORT
-import java.util.ArrayList; // <<<--- THÊM IMPORT
-import java.util.List; // <<<--- THÊM IMPORT
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+// ... (các import khác)
+import com.example.prm392_assignment_food.ui.chat.NotificationType;
+import com.example.prm392_assignment_food.ui.Billing.NotificationHelper;
 
 public class PaymentSuccessActivity extends AppCompatActivity {
 
     private Button btnTrackOrder, btnBackToHome;
     private TextView tvPaymentStatus, tvOrderId;
-    private RecyclerView recyclerViewOrders; // <<<--- THÊM BIẾN NÀY
+    private RecyclerView recyclerViewOrders;
     private String orderId = "";
+
+    private ImageView ivStatusIcon;
+    private LinearLayout llHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_success);
 
-        // Ánh xạ View (dựa trên ID chính xác trong file XML của bạn)
+        // Ánh xạ View
         btnTrackOrder = findViewById(R.id.btnTrackOrder);
         btnBackToHome = findViewById(R.id.btnBackToHome);
         tvPaymentStatus = findViewById(R.id.tvPaymentStatus);
         tvOrderId = findViewById(R.id.tvOrderId);
-        recyclerViewOrders = findViewById(R.id.recyclerViewOrders); // <<<--- ÁNH XẠ RECYCLERVIEW
+        recyclerViewOrders = findViewById(R.id.recyclerViewOrders);
+
+        ivStatusIcon = findViewById(R.id.ivStatusIcon);
+        llHeader = findViewById(R.id.llHeader);
 
         // Xử lý Intent khi Activity được tạo
         handleIntent(getIntent());
@@ -62,12 +73,15 @@ public class PaymentSuccessActivity extends AppCompatActivity {
         });
 
         btnBackToHome.setOnClickListener(v -> {
-            Intent homeIntent = new Intent(this, MainActivity.class);
+            // <<< SỬA TẠI ĐÂY >>>
+            // Giả sử tên Activity của bạn là CustomerMainActivity.java
+            // Hãy thay đổi "CustomerMainActivity.class" nếu tên file của bạn khác
+            Intent homeIntent = new Intent(this, CustomerMainActivity.class);
+
             homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(homeIntent);
             finish();
         });
-
     }
 
     @Override
@@ -79,31 +93,65 @@ public class PaymentSuccessActivity extends AppCompatActivity {
     private void handleIntent(Intent intent) {
         Uri data = intent.getData();
 
-        // Trường hợp 1: Mở bằng Deep Link
+        // <<< THÊM CÁC BIẾN ĐỂ GỬI THÔNG BÁO >>>
+        String notificationTitle = "";
+        String notificationMessage = "";
+        NotificationType notificationType = null;
+
+        // Trường hợp 1: Mở bằng Deep Link (VNPAY Return)
         if (data != null && "prm392food".equals(data.getScheme())) {
             String status = data.getQueryParameter("status");
             this.orderId = data.getQueryParameter("orderId");
 
             if ("success".equals(status)) {
                 updateUiForSuccess();
+
+                // <<< THÊM THÔNG BÁO THÀNH CÔNG >>>
+                notificationTitle = "Thanh toán thành công!";
+                notificationMessage = "Đã nhận thanh toán VNPAY cho đơn #" + this.orderId;
+                notificationType = NotificationType.ORDER_PAID;
+
             } else {
+                // Giả sử bất kỳ status nào khác là "failure"
                 updateUiForFailure();
+
+                // <<< THÊM THÔNG BÁO THẤT BẠI >>>
+                notificationTitle = "Thanh toán thất bại";
+                notificationMessage = "Thanh toán VNPAY cho đơn #" + this.orderId + " đã thất bại.";
+                notificationType = NotificationType.ORDER_PAYMENT_FAILED;
             }
+
+            // <<< GỌI NOTIFICATIONHELPER >>>
+            if(notificationType != null) {
+                NotificationHelper.showNotification(
+                        getApplicationContext(),
+                        notificationType,
+                        notificationTitle,
+                        notificationMessage
+                );
+            }
+
         }
-        // Trường hợp 2: Mở bình thường (thanh toán tiền mặt)
+        // Trường hợp 2: Mở bình thường (thanh toán tiền mặt - COD)
         else {
             this.orderId = intent.getStringExtra(Constants.EXTRA_ORDER_ID);
             updateUiForSuccess();
+
+            // CHÚNG TA KHÔNG GỬI THÔNG BÁO Ở ĐÂY
+            // vì BillingActivity đã gửi thông báo "Đặt hàng thành công!" cho COD rồi.
         }
     }
 
     private void updateUiForSuccess() {
-        // Cập nhật text dựa trên layout của bạn
+        // Cập nhật UI
+        ivStatusIcon.setImageResource(R.drawable.ic_payment_success);
+        llHeader.setBackgroundResource(R.drawable.bg_success_header);
+
         tvPaymentStatus.setText("Congratulations!");
-        tvOrderId.setText("You successfully made a payment for order #" + this.orderId);
+        tvOrderId.setText("You successfully made a payment,\nenjoy our service!");
         btnTrackOrder.setVisibility(View.VISIBLE);
 
-        // <<<--- THÊM PHẦN NÀY VÀO CUỐI HÀM --- >>>
+        // <<<--- SỬ DỤNG PaymentSuccessAdapter MỚI --- >>>
         SharedPreferences prefs = getSharedPreferences("PendingOrders", MODE_PRIVATE);
         String json = prefs.getString(orderId, null);
 
@@ -113,45 +161,51 @@ public class PaymentSuccessActivity extends AppCompatActivity {
             List<CartItemResponse> items = gson.fromJson(json, type);
 
             recyclerViewOrders.setLayoutManager(new LinearLayoutManager(this));
-            recyclerViewOrders.setAdapter(new PlaceOrderAdapter(items));
+            // SỬ DỤNG ADAPTER MỚI ĐẸP HƠN
+            recyclerViewOrders.setAdapter(new PaymentSuccessAdapter(items));
 
             Log.d("PaymentSuccess", "Đọc được " + items.size() + " món cho orderId: " + orderId);
 
-            // Xóa cache sau khi hiển thị xong để tránh lưu cũ
+            // Xóa cache sau khi hiển thị xong
             prefs.edit().remove(orderId).apply();
         } else {
             Log.e("PaymentSuccess", "Không tìm thấy dữ liệu trong SharedPreferences cho orderId=" + orderId);
         }
     }
 
-
     private void updateUiForFailure() {
+        ivStatusIcon.setImageResource(R.drawable.ic_payment_failure);
+        llHeader.setBackgroundResource(R.drawable.bg_success_header);
+
         tvPaymentStatus.setText("Payment Failed!");
-        tvOrderId.setText("There was an issue with your order #" + this.orderId);
+        tvOrderId.setText("There was an issue with your payment.\nPlease try again.");
+
         btnTrackOrder.setVisibility(View.GONE);
-    }
 
-    // <<<--- HÀM MỚI ĐƯỢC THÊM VÀO ĐỂ ĐỌC VÀ HIỂN THỊ DỮ LIỆU --- >>>
-    private void displayOrderItemsFromCache(String orderId) {
-        if (orderId == null || orderId.isEmpty()) return;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) btnBackToHome.getLayoutParams();
+        // Đặt trọng số của nó bằng tổng trọng số để nó chiếm toàn bộ không gian
+        params.weight = 2.0f;
+        // Bỏ margin cuối vì không còn button nào bên cạnh
+        params.setMarginEnd(0);
+        // Áp dụng lại các tham số mới
+        btnBackToHome.setLayoutParams(params);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("PendingOrders", MODE_PRIVATE);
-        String cartJson = sharedPreferences.getString(orderId, null);
 
-        if (cartJson != null) {
+        // Hiển thị order details nếu có (phần này giữ nguyên)
+        SharedPreferences prefs = getSharedPreferences("PendingOrders", MODE_PRIVATE);
+        String json = prefs.getString(orderId, null);
+
+        if (json != null) {
+            recyclerViewOrders.setVisibility(View.VISIBLE);
             Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<CartItemResponse>>(){}.getType();
-            List<CartItemResponse> cartItems = gson.fromJson(cartJson, listType);
+            Type type = new TypeToken<List<CartItemResponse>>(){}.getType();
+            List<CartItemResponse> items = gson.fromJson(json, type);
 
-            if (cartItems != null && !cartItems.isEmpty()) {
-                // Tái sử dụng PlaceOrderAdapter để hiển thị
-                PlaceOrderAdapter adapter = new PlaceOrderAdapter(cartItems);
-                recyclerViewOrders.setLayoutManager(new LinearLayoutManager(this));
-                recyclerViewOrders.setAdapter(adapter);
-            }
-
-            // Xóa dữ liệu tạm sau khi đã dùng để tránh làm đầy bộ nhớ
-            sharedPreferences.edit().remove(orderId).apply();
+            recyclerViewOrders.setLayoutManager(new LinearLayoutManager(this));
+            // Giả sử bạn có PaymentSuccessAdapter
+            recyclerViewOrders.setAdapter(new PaymentSuccessAdapter(items));
+        } else {
+            recyclerViewOrders.setVisibility(View.GONE);
         }
     }
 }

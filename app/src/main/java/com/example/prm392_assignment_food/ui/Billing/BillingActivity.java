@@ -4,13 +4,20 @@ import com.example.prm392_assignment_food.data.model.ApiResponse;
 import com.example.prm392_assignment_food.data.model.CreateOrderRequest;
 import com.example.prm392_assignment_food.data.model.CreateOrderResponse;
 import com.example.prm392_assignment_food.data.model.OrderItemRequest;
+import com.example.prm392_assignment_food.ui.chat.NotificationType;
 import com.example.prm392_assignment_food.utils.Constants;
 import com.example.prm392_assignment_food.data.model.PaymentMethod;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -81,6 +88,7 @@ public class BillingActivity extends AppCompatActivity {
 
         getIntentData();
         setupListeners();
+        askNotificationPermission();
     }
 
     private void getIntentData() {
@@ -166,9 +174,19 @@ public class BillingActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
                     CreateOrderResponse orderResponse = response.body().getData();
                     realOrderId = orderResponse.getOrderId();
+                    // <<< THÊM LOG ĐỂ KIỂM TRA >>>
+                    Log.e("NOTIFICATION_DEBUG", "!!! BƯỚC 1: LẤY DỮ LIỆU THÀNH CÔNG. CHUẨN BỊ GỌI NOTIFICATION HELPER !!!");
 
                     Log.d("BillingActivity", "✅ Order Cash tạo thành công: " + realOrderId);
-
+                    // <<< THÔNG BÁO KHI TẠO ĐƠN THÀNH CÔNG >>>
+// ...
+                    NotificationHelper.showNotification(
+                            getApplicationContext(), // ✅ Sửa: Dùng Context của ứng dụng
+                            NotificationType.ORDER_CONFIRMED,
+// ...
+                            "Đặt hàng thành công!",
+                            "Đơn hàng #" + realOrderId + " của bạn đã được xác nhận."
+                    );
                     saveCartForLater(realOrderId, cartItems);
 
                     Intent intent = new Intent(BillingActivity.this, PaymentSuccessActivity.class);
@@ -214,6 +232,15 @@ public class BillingActivity extends AppCompatActivity {
                     if (url != null && !url.isEmpty()) {
                         saveCartForLater(realOrderId, cartItems);
                         Log.d("BillingActivity_Direct", "SUCCESS! URL is: " + url);
+
+                        // <<< THÊM CODE THÔNG BÁO VÀO ĐÂY >>>
+                        NotificationHelper.showNotification(
+                                getApplicationContext(),
+                                NotificationType.ORDER_AWAITING_PAYMENT, // Dùng type "Chờ thanh toán"
+                                "Đã tạo đơn hàng!",
+                                "Đang chờ thanh toán VNPAY cho đơn #" + realOrderId
+                        );
+                        // <<< KẾT THÚC CODE THÊM >>>
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(browserIntent);
                     } else {
@@ -243,6 +270,25 @@ public class BillingActivity extends AppCompatActivity {
         saveCartForLater(realOrderId, cartItems);
         Log.d("BillingActivity", "Đã lưu giỏ hàng (cash) cho orderId: " + realOrderId);
 
+
+        // =====================================================================
+// <<< HIỂN THỊ THÔNG BÁO TẠI ĐÂY >>>
+// Vì đây là đơn hàng tiền mặt, trạng thái là "đã xác nhận"
+        Log.e("NOTIFICATION_DEBUG", "!!! BƯỚC 1: LẤY DỮ LIỆU THÀNH CÔNG. CHUẨN BỊ GỌI NOTIFICATION HELPER !!!");
+
+// ...
+        NotificationHelper.showNotification(
+                getApplicationContext(), // ✅ Sửa: Dùng Context của ứng dụng
+                NotificationType.ORDER_CONFIRMED,
+// ...
+                "Đặt hàng thành công!",
+                "Đơn hàng #" + realOrderId + " của bạn đã được xác nhận."
+        );
+        // <<< THÊM LOG NỮA >>>
+        Log.e("NOTIFICATION_DEBUG", "!!! BƯỚC 2: ĐÃ GỌI XONG NOTIFICATION HELPER. KIỂM TRA XEM THÔNG BÁO CÓ HIỆN KHÔNG. !!!");
+
+// =====================================================================
+
         // 🔹 2. Điều hướng sang trang PaymentSuccessActivity
         Intent intent = new Intent(this, PaymentSuccessActivity.class);
         intent.putExtra(Constants.EXTRA_ORDER_ID, realOrderId);
@@ -262,6 +308,30 @@ public class BillingActivity extends AppCompatActivity {
         editor.putString(orderId, cartJson);
         editor.apply();
         Log.d("BillingActivity", "Đã lưu giỏ hàng cho orderId: " + orderId);
+    }
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Người dùng đã cấp quyền.
+                    Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Người dùng từ chối quyền.
+                    Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+    private void askNotificationPermission() {
+        // Chỉ áp dụng cho Android 13 (Tiramisu) trở lên
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                // Quyền đã được cấp, không cần làm gì thêm
+            } else {
+                // Yêu cầu quyền từ người dùng
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
     }
 
 }

@@ -90,6 +90,11 @@ public class ApiClient {
         return getClient().create(ApiService.class);
     }
 
+    public static ApiService getAuthenticatedApiService() {
+        // Nó cũng gọi getClient(), vì logic thêm token đã nằm trong getClient()
+        // Việc gọi resetClient() sau khi đăng nhập/đăng xuất là chìa khóa
+        return getClient().create(ApiService.class);
+    }
     public static void resetClient() {
         retrofit = null;
         okHttpClient = null;

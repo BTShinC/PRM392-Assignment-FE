@@ -1,5 +1,6 @@
 package com.example.prm392_assignment_food.ui.customer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.ui.auth.ProfileFragment;
+import com.example.prm392_assignment_food.ui.chat.InboxActivity;
 import com.example.prm392_assignment_food.ui.location.LocationFragment;
 import com.example.prm392_assignment_food.ui.order.OrderFragment;
 import com.example.prm392_assignment_food.ui.chat.NotificationFragment;
@@ -54,7 +56,13 @@ public class CustomerMainActivity extends AppCompatActivity {
         dashboardContainer.setOnClickListener(v -> handleNavigation(v, new OrderFragment()));
         listContainer.setOnClickListener(v -> handleNavigation(v, new LocationFragment()));
         homeContainer.setOnClickListener(v -> handleNavigation(v, new HomeFragment()));
-        notificationContainer.setOnClickListener(v -> handleNavigation(v, new NotificationFragment()));
+
+        notificationContainer.setOnClickListener(v -> {
+            v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+            Intent intent = new Intent(CustomerMainActivity.this, InboxActivity.class);
+            startActivity(intent);
+        });
+
         profileContainer.setOnClickListener(v -> handleNavigation(v, new ProfileFragment()));
     }
 

@@ -25,6 +25,7 @@ import com.example.prm392_assignment_food.data.model.MenuCategoryResponse;
 import com.example.prm392_assignment_food.data.network.ApiClient;
 import com.example.prm392_assignment_food.data.network.ApiService;
 import com.example.prm392_assignment_food.ui.auth.BaseActivity;
+import com.example.prm392_assignment_food.ui.chat.InboxActivity;
 import com.example.prm392_assignment_food.ui.profile.AdminProfileActivity;
 
 import retrofit2.Call;
@@ -36,6 +37,7 @@ public class AdminActivity extends BaseActivity { // Kế thừa từ BaseActivi
     private ImageView ivDashboard;
     private ImageView ivList;
     private ImageView ivProfile;
+    private ImageView ivNotification;
 
     private final Fragment dashboardFragment = new AdminDashboardFragment();
     private final Fragment foodListFragment = new MyFoodListFragment();
@@ -54,6 +56,7 @@ public class AdminActivity extends BaseActivity { // Kế thừa từ BaseActivi
         ivDashboard = findViewById(R.id.iv_dashboard);
         ivList = findViewById(R.id.iv_list);
         ivProfile = findViewById(R.id.iv_profile);
+        ivNotification = findViewById(R.id.iv_notification);
 
         setupBottomNavigation();
 
@@ -74,6 +77,7 @@ public class AdminActivity extends BaseActivity { // Kế thừa từ BaseActivi
         FrameLayout listContainer = findViewById(R.id.list_container);
         FrameLayout fabAddContainer = findViewById(R.id.fab_add_container);
         FrameLayout profileContainer = findViewById(R.id.profile_container);
+        FrameLayout notificationContainer = findViewById(R.id.notification_container);
 
         dashboardContainer.setOnClickListener(v -> {
             if (active != dashboardFragment) {
@@ -96,6 +100,12 @@ public class AdminActivity extends BaseActivity { // Kế thừa từ BaseActivi
         profileContainer.setOnClickListener(v -> {
             Intent intent = new Intent(this, AdminProfileActivity.class);
             startActivity(intent);
+        });
+        notificationContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(this, InboxActivity.class);
+            startActivity(intent);
+            // Chúng ta không cần cập nhật 'active' hoặc 'updateIconColors'
+            // vì nó điều hướng đến một Activity mới, không phải Fragment
         });
     }
 

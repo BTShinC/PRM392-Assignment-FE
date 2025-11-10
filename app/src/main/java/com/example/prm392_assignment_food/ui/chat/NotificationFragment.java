@@ -1,103 +1,184 @@
 package com.example.prm392_assignment_food.ui.chat;
 
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.prm392_assignment_food.R;
+import com.example.prm392_assignment_food.data.model.ApiResponse;
+import com.example.prm392_assignment_food.data.network.ApiClient;
+import com.example.prm392_assignment_food.data.network.ApiService;
+import com.example.prm392_assignment_food.utils.JwtUtils;
+import com.example.prm392_assignment_food.utils.TokenManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class NotificationFragment extends Fragment {
 
-    private RecyclerView recyclerViewMessages, recyclerViewNotifications;
-    private MessageListAdapter messageAdapter;
+    private ApiService apiService;
+    private UUID currentUserId;
+    private RecyclerView recyclerViewNotifications;
     private NotificationAdapter notificationAdapter;
-    private TextView tabNotifications, tabMessages;
-    private View rootView;
+    private TextView tvEmptyNotifications;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_notification, container, false);
-        return rootView;
+        return inflater.inflate(R.layout.fragment_notifications, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // --- Ánh xạ view ---
-        recyclerViewMessages = rootView.findViewById(R.id.recyclerViewMessages);
-        recyclerViewNotifications = rootView.findViewById(R.id.recyclerViewNotifications);
-        tabNotifications = rootView.findViewById(R.id.tabNotifications);
-        tabMessages = rootView.findViewById(R.id.tabMessages);
+        recyclerViewNotifications = view.findViewById(R.id.recyclerViewNotifications);
+        tvEmptyNotifications = view.findViewById(R.id.tvEmptyNotifications);
+        apiService = ApiClient.getAuthenticatedApiService();
 
-        // --- Dữ liệu Messages ---
-        List<MessageUser> users = new ArrayList<>();
-        users.add(new MessageUser("Royal Parvej", "Sounds awesome!", "19:37", 1));
-        users.add(new MessageUser("Cameron Williamson", "Ok, just hurry up little bit...", "19:37", 2));
-        users.add(new MessageUser("Ralph Edwards", "Thanks dude.", "19:37", 0));
-        users.add(new MessageUser("Cody Fisher", "How is going...?", "19:37", 0));
-        users.add(new MessageUser("Eleanor Pena", "Thanks for the awesome food man...!", "19:37", 0));
+        TokenManager tokenManager = new TokenManager(requireActivity());
+        String token = tokenManager.getToken();
+        String userIdStr = JwtUtils.getUserId(token);
+        if (userIdStr != null) {
+            currentUserId = UUID.fromString(userIdStr);
+        } else {
+            Toast.makeText(getActivity(), "User not authenticated.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        messageAdapter = new MessageListAdapter(users, this::openChat);
-        recyclerViewMessages.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerViewMessages.setAdapter(messageAdapter);
+        setupRecyclerView();
+        loadNotifications();
+    }
 
-        // --- Dữ liệu Notifications ---
-        List<NotificationItem> notifications = new ArrayList<>();
-        notifications.add(new NotificationItem("Tanbir Ahmed", "Placed a new order", "20 min ago", R.drawable.pizza1));
-        notifications.add(new NotificationItem("Salim Smith", "left a 5 star review", "20 min ago", R.drawable.pizza1));
-        notifications.add(new NotificationItem("Royal Bengol", "agreed to cancel", "20 min ago", R.drawable.pizza1));
-        notifications.add(new NotificationItem("Pabel Vulya", "Placed a new order", "20 min ago", R.drawable.pizza1));
-        // Add more for scrolling
-        notifications.add(new NotificationItem("Tanbir Ahmed", "Placed a new order", "20 min ago", R.drawable.pizza1));
-        notifications.add(new NotificationItem("Salim Smith", "left a 5 star review", "20 min ago", R.drawable.pizza1));
-
-        notificationAdapter = new NotificationAdapter(notifications);
-        recyclerViewNotifications.setLayoutManager(new LinearLayoutManager(requireContext()));
+    private void setupRecyclerView() {
+        notificationAdapter = new NotificationAdapter(getContext(), new ArrayList<>());
+        recyclerViewNotifications.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewNotifications.setAdapter(notificationAdapter);
 
-        // --- Tab mặc định là Notifications ---
-        showNotifications();
+        notificationAdapter.setOnItemClickListener(notification -> {
 
-        // --- Xử lý sự kiện khi nhấn vào Tabs ---
-        tabNotifications.setOnClickListener(v -> showNotifications());
-        tabMessages.setOnClickListener(v -> showMessages());
+            // 1. Hiển thị dialog (Code này giờ đã đúng vì hàm đã được dời ra ngoài)
+            showNotificationDetailDialog(notification);
+
+            // 2. Gọi API để đánh dấu đã đọc
+            if (notification.getStatus() != null && notification.getStatus().equals("UNREAD")) {
+                if (notification.getNotificationId() != null) {
+                    markNotificationAsRead(notification.getNotificationId().toString());
+                }
+            }
+        });
     }
 
-    private void showNotifications() {
-        recyclerViewNotifications.setVisibility(View.VISIBLE);
-        recyclerViewMessages.setVisibility(View.GONE);
+    private void markNotificationAsRead(String notificationId) {
 
-        tabNotifications.setTextColor(requireContext().getColor(R.color.orange));
-        tabNotifications.setTypeface(null, Typeface.BOLD);
-        tabMessages.setTextColor(requireContext().getColor(R.color.dark_gray));
-        tabMessages.setTypeface(null, Typeface.NORMAL);
+        String newStatus = "READ";
+
+        apiService.updateNotificationStatus(notificationId, newStatus).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("NotificationFragment", "Đã cập nhật trạng thái thông báo " + notificationId + " thành READ");
+
+                    // Code này giờ đã đúng vì hàm đã được dời ra ngoài
+                    loadNotifications();
+                } else {
+                    Log.e("NotificationFragment", "Lỗi khi cập nhật thông báo. Code: " + response.code());
+                    if (getContext() != null) { // Thêm kiểm tra getContext()
+                        Toast.makeText(getContext(), "Lỗi: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            // <<< SỬA LỖI: THÊM HÀM 'onFailure' BỊ THIẾU >>>
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("NotificationFragment", "Lỗi mạng khi cập nhật thông báo", t);
+                if (getContext() != null) { // Thêm kiểm tra getContext()
+                    Toast.makeText(getContext(), "Lỗi mạng, không thể cập nhật thông báo", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }); // <<< SỬA LỖI: THÊM DẤU '});' ĐỂ ĐÓNG 'enqueue' >>>
+
+    } // <<< SỬA LỖI: THÊM DẤU '}' ĐỂ ĐÓNG HÀM 'markNotificationAsRead' >>>
+
+
+    // <<< SỬA LỖI: HÀM NÀY PHẢI NẰM NGOÀI (ở class level) >>>
+    private void loadNotifications() {
+        apiService.getNotifications(currentUserId).enqueue(new Callback<ApiResponse<List<NotificationResponse>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<NotificationResponse>>> call, Response<ApiResponse<List<NotificationResponse>>> response) {
+                if (isAdded()) {
+                    if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                        List<NotificationResponse> notifications = response.body().getData();
+                        if (notifications.isEmpty()) {
+                            recyclerViewNotifications.setVisibility(View.GONE);
+                            tvEmptyNotifications.setVisibility(View.VISIBLE);
+                        } else {
+                            recyclerViewNotifications.setVisibility(View.VISIBLE);
+                            tvEmptyNotifications.setVisibility(View.GONE);
+                            notificationAdapter.updateData(notifications);
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "Failed to load notifications (Code: " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                        recyclerViewNotifications.setVisibility(View.GONE);
+                        tvEmptyNotifications.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ApiResponse<List<NotificationResponse>>> call, Throwable t) {
+                if (isAdded()) {
+                    Toast.makeText(getActivity(), "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    recyclerViewNotifications.setVisibility(View.GONE);
+                    tvEmptyNotifications.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
-    private void showMessages() {
-        recyclerViewMessages.setVisibility(View.VISIBLE);
-        recyclerViewNotifications.setVisibility(View.GONE);
+    // <<< SỬA LỖI: HÀM NÀY PHẢI NẰM NGOÀI (ở class level) >>>
+    private void showNotificationDetailDialog(NotificationResponse notification) {
+        if (getContext() == null) return;
 
-        tabMessages.setTextColor(requireContext(). getColor(R.color.orange));
-        tabMessages.setTypeface(null, Typeface.BOLD);
-        tabNotifications.setTextColor(requireContext().getColor(R.color.dark_gray));
-        tabNotifications.setTypeface(null, Typeface.NORMAL);
-    }
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_notification_detail, null);
 
-    private void openChat(MessageUser user) {
-        Intent intent = new Intent(requireActivity(), ChatActivity.class);
-        startActivity(intent);
+        TextView tvFullContent = dialogView.findViewById(R.id.tvFullNotificationContent);
+        TextView tvTimestamp = dialogView.findViewById(R.id.tvNotificationTimestamp);
+        ImageButton btnClose = dialogView.findViewById(R.id.btnCloseDialog);
+
+        tvFullContent.setText(notification.getContent());
+        if (notification.getCreatedAt() != null && !notification.getCreatedAt().isEmpty()) {
+            tvTimestamp.setText(notification.getCreatedAt().replace("T", " ").substring(0, 16));
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setView(dialogView);
+        final AlertDialog dialog = builder.create();
+
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        dialog.show();
     }
-}
+} // <<< Dấu '}' cuối cùng của class
