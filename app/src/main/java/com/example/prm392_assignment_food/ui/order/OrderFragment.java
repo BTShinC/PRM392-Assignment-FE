@@ -20,13 +20,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.prm392_assignment_food.R;
 import com.example.prm392_assignment_food.data.model.ResponseDto;
 import com.example.prm392_assignment_food.data.model.order.OrderDto;
+import com.example.prm392_assignment_food.data.model.order.OrderItemDto;
 import com.example.prm392_assignment_food.data.network.ApiClient;
 import com.example.prm392_assignment_food.data.network.ApiService;
 import com.example.prm392_assignment_food.utils.JwtUtils;
 import com.example.prm392_assignment_food.utils.TokenManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,14 +69,12 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         String token = tokenManager.getToken();
         if (token == null || token.isEmpty()) {
             Toast.makeText(requireContext(), "Bạn chưa đăng nhập", Toast.LENGTH_LONG).show();
-            // Handle not logged in case, maybe navigate to login
             return;
         }
 
         this.userId = JwtUtils.getUserId(token);
         if (userId == null || userId.isEmpty()) {
             Toast.makeText(requireContext(), "Token không hợp lệ, vui lòng đăng nhập lại", Toast.LENGTH_LONG).show();
-            // Handle invalid token case
             return;
         }
 
@@ -127,11 +129,10 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
                 if (!isAdded()) return;
                 progressBar.setVisibility(View.GONE);
                 rvOrders.setVisibility(View.VISIBLE);
-                orderList.clear();
 
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().isSuccess() && response.body().getData() != null) {
-                        orderList.addAll(response.body().getData());
+                        processAndDisplayOrders(response.body().getData());
                     }
                 } else {
                     Toast.makeText(requireContext(), "Lỗi tải dữ liệu: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -152,6 +153,30 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         });
     }
 
+    private void processAndDisplayOrders(List<OrderDto> orders) {
+        Map<String, OrderDto> uniqueOrders = new LinkedHashMap<>();
+        for (OrderDto order : orders) {
+            String fingerprint = createOrderFingerprint(order);
+            uniqueOrders.put(fingerprint, order);
+        }
+        orderList.clear();
+        orderList.addAll(uniqueOrders.values());
+    }
+
+    private String createOrderFingerprint(OrderDto order) {
+        List<String> itemFingerprints = new ArrayList<>();
+        if (order.getOrderItems() != null) {
+            for (OrderItemDto item : order.getOrderItems()) {
+                itemFingerprints.add(item.getMenuItemId() + "x" + item.getQuantity());
+            }
+        }
+        Collections.sort(itemFingerprints);
+        // Use the user ID from the order's user object for the fingerprint
+        String userIdString = (order.getUsers() != null && order.getUsers().getUserId() != null) ? order.getUsers().getUserId().toString() : "unknown";
+        return userIdString + "|" + order.getTotalPrice() + "|" + String.join(";", itemFingerprints);
+    }
+
+
     @Override
     public void onCancelOrder(String orderId) {
         progressBar.setVisibility(View.VISIBLE);
@@ -162,6 +187,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     Toast.makeText(requireContext(), "Hủy đơn hàng thành công", Toast.LENGTH_SHORT).show();
+                    // Simply reload the list for the current status. The fingerprinting will handle removal.
                     loadOrdersByStatus(currentStatusString, currentStatusView);
                 } else {
                     String errorMsg = "Có lỗi xảy ra, vui lòng thử lại.";

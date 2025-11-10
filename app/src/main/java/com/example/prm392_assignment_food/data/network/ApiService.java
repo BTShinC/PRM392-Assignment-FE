@@ -176,6 +176,9 @@ public interface ApiService {
             @Query("search") String search
     );
 
+    @GET("/api/admins/orders/{id}")
+    Call<ApiResponseDto<OrderResponse>> getOrderDetail(@Path("id") String id);
+
     @GET("api/dashboard")
     Call<DashboardResponse> getDashboardAll();
 

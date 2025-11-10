@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.example.prm392_assignment_food.R;
 import java.util.List;
 
@@ -29,11 +30,15 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OrderItem item = items.get(position);
-        holder.imgFood.setImageResource(item.getImageResId());
+        
+        Glide.with(holder.itemView.getContext())
+             .load(item.getImageUrl())
+             .into(holder.imgFood);
+             
         holder.tvName.setText(item.getName());
-        holder.tvPrice.setText("$" + (int) item.getPrice());
+        holder.tvPrice.setText(String.format("%,.0f đ", item.getPrice()));
         holder.tvSize.setText(item.getSize());
-        holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
+        holder.tvQuantity.setText("x" + item.getQuantity());
     }
 
     @Override
