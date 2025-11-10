@@ -94,7 +94,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         tvPaymentFailed = rootView.findViewById(R.id.PAYMENT_FAILED);
         tvConfirmed = rootView.findViewById(R.id.CONFIRMED);
         tvShipping = rootView.findViewById(R.id.SHIPPING);
-        tvDelivered = rootView.findViewById(R.id.DELIVERED);
+//        tvDelivered = rootView.findViewById(R.id.DELIVERED);
         tvCompleted = rootView.findViewById(R.id.COMPLETED);
         tvCancelled = rootView.findViewById(R.id.CANCELLED);
 
@@ -103,7 +103,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         tvPaymentFailed.setOnClickListener(this);
         tvConfirmed.setOnClickListener(this);
         tvShipping.setOnClickListener(this);
-        tvDelivered.setOnClickListener(this);
+       // tvDelivered.setOnClickListener(this);
         tvCompleted.setOnClickListener(this);
         tvCancelled.setOnClickListener(this);
     }
@@ -199,9 +199,9 @@ public class OrderFragment extends Fragment implements View.OnClickListener, Ord
         } else if (id == R.id.SHIPPING) {
             loadOrdersByStatus("SHIPPING", (TextView) v);
             scrollTabToCenter((TextView) v);
-        } else if (id == R.id.DELIVERED) {
-            loadOrdersByStatus("DELIVERED", (TextView) v);
-            scrollTabToCenter((TextView) v);
+//        } else if (id == R.id.DELIVERED) {
+//            loadOrdersByStatus("DELIVERED", (TextView) v);
+//            scrollTabToCenter((TextView) v);
         } else if (id == R.id.COMPLETED) {
             loadOrdersByStatus("COMPLETED", (TextView) v);
             scrollTabToCenter((TextView) v);

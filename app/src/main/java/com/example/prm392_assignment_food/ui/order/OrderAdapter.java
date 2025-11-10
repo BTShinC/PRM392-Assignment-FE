@@ -94,7 +94,8 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             try {
                 LocalDateTime localDateTime = LocalDateTime.parse(order.getCreatedAt());
-                orderHolder.tvOrderDate.setText(localDateTime.format(formatter));
+                LocalDateTime vietnamDateTime = localDateTime.plusHours(7);
+                orderHolder.tvOrderDate.setText(vietnamDateTime.format(formatter));
             } catch (Exception e) {
                 orderHolder.tvOrderDate.setText(order.getCreatedAt());
             }
